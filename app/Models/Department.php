@@ -9,7 +9,7 @@ class Department extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
-
+    protected $guarded = ['id'];
     public function students()
     {
         return $this->hasMany(Student::class);

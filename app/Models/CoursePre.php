@@ -9,6 +9,7 @@ class CoursePre extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
+    protected $guarded = ['id'];
     public function course()
     {
         return $this->belongsTo(Course::class);

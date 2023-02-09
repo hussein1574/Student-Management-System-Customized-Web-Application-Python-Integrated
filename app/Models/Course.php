@@ -9,6 +9,7 @@ class Course extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
+    protected $guarded = ['id'];
 
     public function studentCourses()
     {
