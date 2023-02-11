@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer("user_id")->unsigned();
             $table->integer("department_id")->unsigned();
             $table->string('batch');
+            $table->integer('grade')->unsigned();
             $table->timestamps();
-
             $table->foreign("user_id")->references("id")->on("users");
             $table->foreign("department_id")->references("id")->on("departments");
         });

@@ -61,10 +61,11 @@ class CoursePreCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(CoursePreRequest::class);
-
+        
         CRUD::field('course_id');
-        CRUD::field('coursePre_id');
+        CRUD::field('coursePre_id')->type('select')->entity('preCourse')->attribute('name');
         CRUD::field('passed');
+        
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

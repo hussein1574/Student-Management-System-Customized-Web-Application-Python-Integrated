@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer("student_id")->unsigned();
             $table->integer("course_id")->unsigned();
             $table->integer("status_id")->unsigned();
+            $table->integer("grade");
             $table->timestamps();
             $table->foreign("student_id")->references("id")->on("students");
             $table->foreign("course_id")->references("id")->on("courses");

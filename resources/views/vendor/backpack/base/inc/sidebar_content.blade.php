@@ -18,4 +18,4 @@
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor-course') }}"><i class="nav-icon la la-question"></i> Professor courses</a></li>
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('course-status') }}"><i class="nav-icon la la-question"></i> Course statuses</a></li>
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor') }}"><i class="nav-icon la la-question"></i> Professors</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('course-statu') }}"><i class="nav-icon la la-question"></i> Course status</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('constant') }}"><i class="nav-icon la la-question"></i> Constants</a></li>

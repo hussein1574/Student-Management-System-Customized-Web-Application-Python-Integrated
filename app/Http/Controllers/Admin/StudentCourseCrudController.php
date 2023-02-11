@@ -39,9 +39,10 @@ class StudentCourseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('student_id');
+        CRUD::column('student_id')->type('select')->entity('student')->attribute('user_id');
         CRUD::column('course_id');
-        CRUD::column('status_id');
+        CRUD::column('status_id')->type('select')->entity('courseStatus')->attribute('status');
+        CRUD::column('grade');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -51,7 +52,11 @@ class StudentCourseCrudController extends CrudController
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
     }
-
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();   
+    }
+    
     /**
      * Define what happens when the Create operation is loaded.
      * 
@@ -61,10 +66,12 @@ class StudentCourseCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(StudentCourseRequest::class);
-
-        CRUD::field('student_id');
+        
+        //write a crud field that will show the student name instead of the student id while we have only the student id which we can get the user id by it
+        CRUD::field('student_id')->type('select')->entity('student')->attribute('user_id');
         CRUD::field('course_id');
-        CRUD::field('status_id');
+        CRUD::field('status_id')->type('select')->entity('courseStatus')->attribute('status');
+        CRUD::field('grade');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

@@ -13,9 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('course_statuses', function (Blueprint $table) {
-            $table->increments("id");
-            $table->string('status');
+        Schema::create('constants', function (Blueprint $table) {
+            $table->id();
+            $table->string('name')->unique();
+            $table->integer('value');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('course_statuses');
+        Schema::dropIfExists('constants');
     }
 };

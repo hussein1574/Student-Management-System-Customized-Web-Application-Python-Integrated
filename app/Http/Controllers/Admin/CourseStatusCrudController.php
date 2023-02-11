@@ -40,7 +40,7 @@ class CourseStatusCrudController extends CrudController
     protected function setupListOperation()
     {
         
-
+        CRUD::column('status');
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -57,7 +57,7 @@ class CourseStatusCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(CourseStatusRequest::class);
-
+        CRUD::field('status');
         
 
         /**

@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\CourseStatuRequest;
+use App\Http\Requests\ConstantRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
- * Class CourseStatuCrudController
+ * Class ConstantCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class CourseStatuCrudController extends CrudController
+class ConstantCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -26,9 +26,9 @@ class CourseStatuCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\CourseStatu::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/course-statu');
-        CRUD::setEntityNameStrings('course statu', 'course status');
+        CRUD::setModel(\App\Models\Constant::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/constant');
+        CRUD::setEntityNameStrings('constant', 'constants');
     }
 
     /**
@@ -39,7 +39,10 @@ class CourseStatuCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        
+        CRUD::column('name');
+        CRUD::column('value');
+        CRUD::column('created_at');
+        CRUD::column('updated_at');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -56,9 +59,10 @@ class CourseStatuCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(CourseStatuRequest::class);
+        CRUD::setValidation();
 
-        
+        CRUD::field('name');
+        CRUD::field('value');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

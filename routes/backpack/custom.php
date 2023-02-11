@@ -33,5 +33,5 @@ Route::group([
     Route::crud('professor-course', 'ProfessorCourseCrudController');
     Route::crud('course-status', 'CourseStatusCrudController');
     Route::crud('professor', 'ProfessorCrudController');
-    Route::crud('course-statu', 'CourseStatuCrudController');
+    Route::crud('constant', 'ConstantCrudController');
 }); // this should be the absolute last line of this file

@@ -20,6 +20,6 @@ class StudentCourse extends Model
     }
     public function courseStatus()
     {
-        return $this->belongsTo(CourseStatu::class);
+        return $this->belongsTo(CourseStatus::class,'status_id', 'id');
     }
 }

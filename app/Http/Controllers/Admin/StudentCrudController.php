@@ -41,6 +41,7 @@ class StudentCrudController extends CrudController
     {
         CRUD::column('user_id');
         CRUD::column('department_id');
+        CRUD::column('grade');
         CRUD::column('batch');
         CRUD::column('created_at');
         CRUD::column('updated_at');
@@ -64,6 +65,7 @@ class StudentCrudController extends CrudController
 
         CRUD::field('user_id');
         CRUD::field('department_id');
+        CRUD::field('grade');
         CRUD::field('batch');
 
         /**
