@@ -59,7 +59,7 @@ class ConstantCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation();
+        CRUD::setValidation(ConstantRequest::class);
 
         CRUD::field('name');
         CRUD::field('value');

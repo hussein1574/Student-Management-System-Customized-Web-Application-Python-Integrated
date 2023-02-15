@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('lectures_time_table', function (Blueprint $table) {
             $table->increments("id");
-            $table->integer("day")->unsigned();
+            $table->integer("day_id")->unsigned();
             $table->integer("lectureTime_id")->unsigned();
             $table->integer("hall_id")->unsigned();
             $table->integer("course_id")->unsigned();
             $table->timestamps();
-            $table->foreign("day")->references("id")->on("days");
+            $table->foreign("day_id")->references("id")->on("days");
             $table->foreign("lectureTime_id")->references("id")->on("lectures_times");
             $table->foreign("hall_id")->references("id")->on("halls");
             $table->foreign("course_id")->references("id")->on("courses");

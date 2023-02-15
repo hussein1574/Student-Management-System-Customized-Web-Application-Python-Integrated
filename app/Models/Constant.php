@@ -12,5 +12,4 @@ class Constant extends Model
 
     protected $guarded = ['id'];
 
-    protected $primaryKey = 'name';
 }

@@ -40,7 +40,7 @@ class CoursePreCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('course_id');
-        CRUD::column('coursePre_id');
+        CRUD::column('coursePre_id')->type('select')->entity('preCourse')->attribute('name');
         CRUD::column('passed');
         CRUD::column('created_at');
         CRUD::column('updated_at');

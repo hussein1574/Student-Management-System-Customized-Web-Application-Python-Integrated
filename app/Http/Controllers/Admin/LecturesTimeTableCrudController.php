@@ -39,8 +39,8 @@ class LecturesTimeTableCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('day');
-        CRUD::column('lectureTime_id');
+        CRUD::column('day_id');
+        CRUD::column('lectureTime_id')->type('select')->entity('lecturesTime')->attribute('timePeriod');
         CRUD::column('hall_id');
         CRUD::column('course_id');
         CRUD::column('created_at');
@@ -63,8 +63,8 @@ class LecturesTimeTableCrudController extends CrudController
     {
         CRUD::setValidation(LecturesTimeTableRequest::class);
 
-        CRUD::field('day');
-        CRUD::field('lectureTime_id');
+        CRUD::field('day_id');
+        CRUD::field('lectureTime_id')->type('select')->entity('lecturesTime')->attribute('timePeriod');
         CRUD::field('hall_id');
         CRUD::field('course_id');
 

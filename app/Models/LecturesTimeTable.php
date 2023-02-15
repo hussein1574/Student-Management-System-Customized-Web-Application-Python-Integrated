@@ -21,7 +21,7 @@ class LecturesTimeTable extends Model
     }
     public function lecturesTime()
     {
-        return $this->belongsTo(LecturesTime::class);
+        return $this->belongsTo(LecturesTime::class, 'lectureTime_id', 'id');
     }
     public function day()
     {

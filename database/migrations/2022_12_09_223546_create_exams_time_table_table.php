@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('exams_time_table', function (Blueprint $table) {
             $table->increments("id");
-            $table->integer("day")->unique();
+            $table->timestamp("day");
             $table->integer("hall_id")->unsigned();
             $table->integer("course_id")->unsigned();
             $table->timestamps();

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->boolean("isElective");
             $table->boolean("hasLab");
             $table->boolean("hasSection");
+            $table->boolean("isClosed");
             $table->timestamps();
         });
     }

@@ -14,9 +14,9 @@ class CoursesSeeder extends Seeder
      */
     public function run()
     {
-        
+        Course::factory(50)->create();
+/*
         $faker = Faker::create();
-
         for ($i = 0; $i < 50; $i++) {
             Course::create([
                 'name' => $faker->word,
@@ -26,5 +26,6 @@ class CoursesSeeder extends Seeder
                 'hasSection' => $faker->boolean,
             ]);
         }
+        */
     }
 }

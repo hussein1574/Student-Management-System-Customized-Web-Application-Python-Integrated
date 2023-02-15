@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\ExamsController;
+use App\Http\Controllers\CourseRegistrationController;
+use App\Http\Controllers\ExamsTimeTableController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GraduationController;
 use App\Http\Controllers\StudentCoursesController;
-use App\Http\Controllers\StudentHoursPerYearController;
-use App\Http\Controllers\StudentFinishedCoursesController;
+use App\Http\Controllers\LectureTimetableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,8 +21,12 @@ use App\Http\Controllers\StudentFinishedCoursesController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('current-courses/{user_id}/', [StudentCoursesController::class, 'index']);
-Route::get('finished-courses/{user_id}/', [StudentFinishedCoursesController::class, 'index']);
-Route::get('/student-hours/{user_id}/', [GraduationController::class, 'index']);
-Route::get('/finished-hours-by-year/{user_id}/', [StudentHoursPerYearController::class, 'index']);
-Route::get('/exams/{user_id}/', [ExamsController::class, 'index']);
+Route::get('current-courses/{user_id}/', [StudentCoursesController::class, 'getCurrentCourses']);
+Route::get('finished-courses/{user_id}/', [StudentCoursesController::class, 'getFinishedCourses']);
+Route::get('/student-hours/{user_id}/', [StudentCoursesController::class, 'getGraduationHours']);
+Route::get('/finished-hours-by-year/{user_id}/', [StudentCoursesController::class, 'getHoursPerYear']);
+Route::get('/exams/{user_id}/', [ExamsTimeTableController::class, 'getExams']);
+Route::get('/time-table/{user_id}/', [LectureTimetableController::class, 'getTimetable']);
+Route::get('/register-courses/{user_id}/', [CourseRegistrationController::class, 'getCoursesStatus']);
+Route::get('/hours-per-term/{user_id}/', [CourseRegistrationController::class, 'getHoursPerTerm']);
+Route::post('/register-courses/{userId}', [CourseRegistrationController::class, 'register']);
