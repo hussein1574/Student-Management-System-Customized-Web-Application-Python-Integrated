@@ -36,14 +36,15 @@ class ExamsTimeTableController extends Controller
     public function getExamsForStudent($studentCourses){
         $exams = [];
         foreach ($studentCourses as $studentCourse) {
-            $courseExams = ExamsTimeTable::where('course_id', $studentCourse->course_id)->get();
-            foreach ($courseExams as $courseExam) {
+            $courseExam = ExamsTimeTable::where('course_id', $studentCourse->course_id)->first();
+            if ($courseExam)
+            {
                 $exams[] = [
                     'hallName' => $courseExam->hall->name,
                     'courseName' => $studentCourse->course->name,
                     'day' => $courseExam->day,
                 ];
-            }
+            }            
         }
         return $exams;
     }

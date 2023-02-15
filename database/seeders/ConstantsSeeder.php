@@ -20,6 +20,7 @@ class ConstantsSeeder extends Seeder
             ['name' => 'minHoursPerTermForMinGPA', 'value' => 10],
             ['name' => 'graduationHours', 'value' => 180],
             ['name' => 'maxRetakeGPA', 'value' => 2],
+            ['name' => 'minGraphLength', 'value' => 5],
         ];
 
         foreach ($constants as $constant) {

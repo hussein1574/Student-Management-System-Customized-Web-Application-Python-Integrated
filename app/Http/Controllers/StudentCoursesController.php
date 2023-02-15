@@ -97,7 +97,7 @@ class StudentCoursesController extends Controller
         ]);
 
     }
-    public function getHoursPerYear(Request $request, $userId)
+    public function getHoursForFinishedYears(Request $request, $userId)
     {
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {

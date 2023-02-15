@@ -21,10 +21,10 @@ use App\Http\Controllers\LectureTimetableController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('current-courses/{user_id}/', [StudentCoursesController::class, 'getCurrentCourses']);
-Route::get('finished-courses/{user_id}/', [StudentCoursesController::class, 'getFinishedCourses']);
+Route::get('/current-courses/{user_id}/', [StudentCoursesController::class, 'getCurrentCourses']);
+Route::get('/finished-courses/{user_id}/', [StudentCoursesController::class, 'getFinishedCourses']);
 Route::get('/student-hours/{user_id}/', [StudentCoursesController::class, 'getGraduationHours']);
-Route::get('/finished-hours-by-year/{user_id}/', [StudentCoursesController::class, 'getHoursPerYear']);
+Route::get('/finished-hours-by-year/{user_id}/', [StudentCoursesController::class, 'getHoursForFinishedYears']);
 Route::get('/exams/{user_id}/', [ExamsTimeTableController::class, 'getExams']);
 Route::get('/time-table/{user_id}/', [LectureTimetableController::class, 'getTimetable']);
 Route::get('/register-courses/{user_id}/', [CourseRegistrationController::class, 'getCoursesStatus']);

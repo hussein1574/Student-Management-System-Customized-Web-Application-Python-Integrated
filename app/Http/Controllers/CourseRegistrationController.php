@@ -11,6 +11,80 @@ use Illuminate\Http\Request;
 
 class CourseRegistrationController extends Controller
 {
+    public function getCoursesStatus(Request $request, $userId)
+    {
+        $student = Student::where('user_id', $userId)->first();
+        if (!$student) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Student not found'
+            ], 404);
+        }
+
+        $courses = Course::all();
+        $studentCourses = StudentCourse::where('student_id', $student->id)->get();
+        $data = [];
+        $maxRetakeGrade = Constant::where('name', 'maxRetakeGPA')->first()->value;
+        foreach ($courses as $course) {
+             $studentTakenCourse = $studentCourses->where('course_id', $course->id)->first();   
+            if ($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade > $maxRetakeGrade) 
+                continue;
+            elseif($studentTakenCourse && $studentTakenCourse->grade <= $maxRetakeGrade && !$course->isClosed)
+            {
+                $data[] = [
+                    'courseId' => $course->id,
+                    'courseName' => $course->name,
+                    'courseHours' => $course->hours,
+                    'state' => 'retake'
+                ];
+                continue;
+            }
+            if ($course->isClosed) {
+                $data[] = [
+                    'courseId' => $course->id,
+                    'courseName' => $course->name,
+                    'courseHours' => $course->hours,
+                    'state' => 'closed'
+                ];
+            } else {
+                $isPreReqPassed = $this->checkPreReqs($course, $studentCourses);
+
+                if ($isPreReqPassed) {
+                    if ($this->isMustTake($course->id)) {
+                        $data[] = [
+                            'courseId' => $course->id,
+                            'courseName' => $course->name,
+                            'courseHours' => $course->hours,
+                            'state' => 'must-take'
+                        ];
+                    } else {
+                        $data[] = [
+                            'courseId' => $course->id,
+                            'courseName' => $course->name,
+                            'courseHours' => $course->hours,
+                            'state' => 'open'
+                        ];
+                    }
+                } else {
+                    $data[] = [
+                        'courseId' => $course->id,
+                        'courseName' => $course->name,
+                        'courseHours' => $course->hours,
+                        'state' => 'need-pre-req'
+                    ];
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'results' => count($data),
+            'data' => [
+                'courses' => $data
+            ]
+        ]);
+
+    }
     public function register(Request $request, $userId)
     {
         $student = Student::where('user_id', $userId)->first();
@@ -108,90 +182,11 @@ class CourseRegistrationController extends Controller
         $minHoursPerTerm = $hoursPerTerm->getData()->data->minHoursPerTerm;
         $maxHoursPerTerm = $hoursPerTerm->getData()->data->maxHoursPerTerm;
         if($totalHours > $maxHoursPerTerm)
-        {
-            
             $data = "Exceed";
-        }
-        elseif($totalHours < $minHoursPerTerm)
-        {
-           
+        elseif($totalHours < $minHoursPerTerm) 
             $data = "Less";
-        }
+
         return $data;
-    }
-    public function getCoursesStatus(Request $request, $userId)
-    {
-        $student = Student::where('user_id', $userId)->first();
-        if (!$student) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'Student not found'
-            ], 404);
-        }
-
-        $courses = Course::all();
-        $studentCourses = StudentCourse::where('student_id', $student->id)->get();
-        $data = [];
-        $maxRetakeGrade = Constant::where('name', 'maxRetakeGPA')->first()->value;
-        foreach ($courses as $course) {
-             $studentTakenCourse = $studentCourses->where('course_id', $course->id)->first();   
-            if ($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade >= $maxRetakeGrade) 
-                continue;
-            elseif($studentTakenCourse && $studentTakenCourse->grade <= $maxRetakeGrade && !$course->isClosed)
-            {
-                $data[] = [
-                    'courseId' => $course->id,
-                    'courseName' => $course->name,
-                    'courseHours' => $course->hours,
-                    'state' => 'retake'
-                ];
-                continue;
-            }
-            if ($course->isClosed) {
-                $data[] = [
-                    'courseId' => $course->id,
-                    'courseName' => $course->name,
-                    'courseHours' => $course->hours,
-                    'state' => 'closed'
-                ];
-            } else {
-                $isPreReqPassed = $this->checkPreReqs($course, $studentCourses);
-
-                if ($isPreReqPassed) {
-                    if ($this->isMustTake($course->id)) {
-                        $data[] = [
-                            'courseId' => $course->id,
-                            'courseName' => $course->name,
-                            'courseHours' => $course->hours,
-                            'state' => 'must-take'
-                        ];
-                    } else {
-                        $data[] = [
-                            'courseId' => $course->id,
-                            'courseName' => $course->name,
-                            'courseHours' => $course->hours,
-                            'state' => 'open'
-                        ];
-                    }
-                } else {
-                    $data[] = [
-                        'courseId' => $course->id,
-                        'courseName' => $course->name,
-                        'courseHours' => $course->hours,
-                        'state' => 'need-pre-req'
-                    ];
-                }
-            }
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'results' => count($data),
-            'data' => [
-                'courses' => $data
-            ]
-        ]);
-
     }
     public function checkPreReqs($course, $studentCourses)
     {
@@ -217,6 +212,7 @@ class CourseRegistrationController extends Controller
     }
     public function isMustTake($courseId)
     {
+        $minGraphLength = Constant::where('name', 'minGraphLength')->first()->value;
         $visited = [];
         $queue = [];
         array_push($queue, $courseId);
@@ -234,11 +230,7 @@ class CourseRegistrationController extends Controller
                 }
             }
         }
-        $openOtherCourses = DB::table('course_pres')
-                        ->where('coursePre_id', $courseId)
-                        ->get();
-        
-        return (count($visited) > $openOtherCourses->count() ? count($visited) : $openOtherCourses->count()) > 2;
+        return count($visited) > $minGraphLength;
     }
     public function getHoursPerTerm(Request $request, $userId)
     {
