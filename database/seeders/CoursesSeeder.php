@@ -14,8 +14,8 @@ class CoursesSeeder extends Seeder
      */
     public function run()
     {
-        Course::factory(50)->create();
-/*
+      //  Course::factory(50)->create();
+
         $faker = Faker::create();
         for ($i = 0; $i < 50; $i++) {
             Course::create([
@@ -24,8 +24,9 @@ class CoursesSeeder extends Seeder
                 'isElective' => $faker->boolean,
                 'hasLab' => $faker->boolean,
                 'hasSection' => $faker->boolean,
+                'isClosed' => $faker->boolean,
             ]);
         }
-        */
+        
     }
 }

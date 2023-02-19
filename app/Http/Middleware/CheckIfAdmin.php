@@ -3,6 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class CheckIfAdmin
 {
@@ -27,8 +30,12 @@ class CheckIfAdmin
      */
     private function checkIfUserIsAdmin($user)
     {
-        //return ($user->roleId == 1);
-        return true;
+        $roleId =DB::table('users')->where('email', $user->email)->first()->role_id;
+        if($roleId == 1){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     /**
@@ -65,4 +72,6 @@ class CheckIfAdmin
 
         return $next($request);
     }
+
+    
 }
