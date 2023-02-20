@@ -10,7 +10,9 @@ class DashboardController extends Controller
     public function failedStudentChartData()
     {
         $courses = \App\Models\Course::all();
-        $StudentCourses = \App\Models\StudentCourse::all();
+        $year = date('Y'); // get current year
+        $StudentCourses = \App\Models\StudentCourse::whereYear('updated_at', '=', $year)->get();
+
         $courseFailureCount = [];
         foreach($courses as $course){
             $courseFailureCount[$course->name] = 0;
