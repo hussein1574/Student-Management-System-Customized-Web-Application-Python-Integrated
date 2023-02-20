@@ -25,8 +25,8 @@ class StudentRequest extends FormRequest
     public function rules()
     {
         return [
-            'Department' => 'required',
-            'Grade' => 'required'
+            // 'Department' => 'required',
+            // 'Grade' => 'required'
         ];
     }
 

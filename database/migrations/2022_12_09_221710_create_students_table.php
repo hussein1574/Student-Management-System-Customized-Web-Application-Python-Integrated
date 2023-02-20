@@ -22,6 +22,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreign("user_id")->references("id")->on("users");
             $table->foreign("department_id")->references("id")->on("departments");
+            $table->unique("user_id");
         });
     }
 
