@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreign("student_id")->references("id")->on("students");
             $table->foreign("course_id")->references("id")->on("courses");
             $table->foreign("status_id")->references("id")->on("course_statuses");
+            $table->unique(['student_id', 'course_id']);
         });
     }
 
