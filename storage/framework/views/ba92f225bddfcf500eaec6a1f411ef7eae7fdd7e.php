@@ -1,0 +1,3 @@
+<?php if($crud->hasAccess('create')): ?>
+	<a href="<?php echo e(url($crud->route.'/create')); ?>" class="btn btn-primary" data-style="zoom-in"><span class="ladda-label"><i class="la la-plus"></i> <?php echo e(trans('backpack::crud.add')); ?> <?php echo e($crud->entity_name); ?></span></a>
+<?php endif; ?><?php /**PATH D:\Programming\Graduation-project\2022-2023\Laravel\intelligent-college-timetable-scheduler\vendor\backpack\crud\src\resources\views\crud/buttons/create.blade.php ENDPATH**/ ?>
