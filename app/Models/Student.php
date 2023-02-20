@@ -13,7 +13,7 @@ class Student extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class)->where('role_id', 3);
+        return $this->belongsTo(User::class);
     }
     public function studentCourses()
     {
