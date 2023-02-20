@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -13,6 +14,7 @@ class CourseStatusesTableSeeder extends Seeder
      */
     public function run()
     {
+
         CourseStatus::insert([
             ['status' => 'Pass'],
             ['status' => 'Fail'],

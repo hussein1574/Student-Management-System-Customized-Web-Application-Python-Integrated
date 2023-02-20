@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\ConstantsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,17 +14,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        //$this->call(RolesTableSeeder::class);
-        //$this->call(CourseStatusesTableSeeder::class);
-        //$this->call(ConstantsSeeder::class);
-        //$this->call(DaysTableSeeder::class);
-        //$this->call(LecturesTimesSeeder::class);
+        $this->call(RolesTableSeeder::class);
+        $this->call(CourseStatusesTableSeeder::class);
+        $this->call(ConstantsSeeder::class);
+        $this->call(DaysTableSeeder::class);
+        $this->call(LecturesTimesSeeder::class);
         // \App\Models\User::factory(10)->create();
-         $this->call(CoursesSeeder::class);
+        $this->call(CoursesSeeder::class);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        \App\Models\User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
     }
 }
