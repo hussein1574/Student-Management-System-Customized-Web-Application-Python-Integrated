@@ -28,7 +28,7 @@ class ConstantCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\Constant::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/constant');
-        CRUD::setEntityNameStrings('constant', 'constants');
+        CRUD::setEntityNameStrings('setting', 'settings');
     }
 
     /**
