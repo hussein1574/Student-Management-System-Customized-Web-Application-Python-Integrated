@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->increments("id");
+            $table->string("name");
             $table->integer("user_id")->unsigned();
             $table->integer("department_id")->unsigned();
-            $table->string('batch');
+            $table->string('batch')->nullable();
             $table->double('grade')->nullable();
             $table->timestamps();
             $table->foreign("user_id")->references("id")->on("users");

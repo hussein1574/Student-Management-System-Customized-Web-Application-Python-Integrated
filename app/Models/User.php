@@ -3,10 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -19,10 +20,9 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'password',
-        'role_id',
+        'isAdmin',
     ];
 
     /**
@@ -44,16 +44,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function role()
-    {
-        return $this->belongsTo(Role::class);
-    }
     public function professor()
     {
         return $this->hasOne(Professor::class);
     }
     public function student()
     {
-        return $this->hasOne(Student::class)->where('role_id', 3);
+        return $this->hasOne(Student::class);
+    }
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
     }
 }

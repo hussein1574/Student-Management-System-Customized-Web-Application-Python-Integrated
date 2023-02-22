@@ -61,7 +61,7 @@ class ProfessorCourseCrudController extends CrudController
     {
         CRUD::setValidation(ProfessorCourseRequest::class);
 
-        CRUD::field('professor_id');
+        CRUD::field('professor_id')->type('select')->entity('professor')->attribute('name');
         CRUD::field('course_id');
 
         /**

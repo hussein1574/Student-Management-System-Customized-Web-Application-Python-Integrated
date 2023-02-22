@@ -39,6 +39,9 @@ class ConstantCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        CRUD::removeButton('create');
+        CRUD::removeButton('delete');
+        CRUD::removeButton('show');
         CRUD::column('name');
         CRUD::column('value');
         //CRUD::column('created_at');

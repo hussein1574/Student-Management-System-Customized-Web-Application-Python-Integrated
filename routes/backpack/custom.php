@@ -17,7 +17,6 @@ Route::group([
     ),
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
-    Route::crud('role', 'RoleCrudController');
     Route::crud('lectures-time', 'LecturesTimeCrudController');
     Route::crud('user', 'UserCrudController');
     Route::crud('student-course', 'StudentCourseCrudController');

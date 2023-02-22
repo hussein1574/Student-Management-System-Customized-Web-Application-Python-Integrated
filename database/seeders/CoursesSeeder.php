@@ -1,5 +1,7 @@
 <?php
+
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Database\Factories;
 use Faker\Factory as Faker;
@@ -14,7 +16,7 @@ class CoursesSeeder extends Seeder
      */
     public function run()
     {
-      //  Course::factory(50)->create();
+        //Course::factory(50)->create();
 
         $faker = Faker::create();
         for ($i = 0; $i < 50; $i++) {
@@ -27,6 +29,5 @@ class CoursesSeeder extends Seeder
                 'isClosed' => $faker->boolean,
             ]);
         }
-        
     }
 }

@@ -39,7 +39,10 @@ class ProfessorCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('user_id');
+        CRUD::column('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+            return $query->where('isAdmin', false)->get();
+        });
+        CRUD::column('name');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -60,7 +63,10 @@ class ProfessorCrudController extends CrudController
     {
         CRUD::setValidation(ProfessorRequest::class);
 
-        CRUD::field('user_id');
+        CRUD::field('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+            return $query->where('isAdmin', false)->get();
+        });
+        CRUD::field('name');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

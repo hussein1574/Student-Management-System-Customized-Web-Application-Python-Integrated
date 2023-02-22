@@ -1,5 +1,7 @@
 <?php
+
 namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use App\Models\Day;
 
@@ -10,14 +12,24 @@ class DaysTableSeeder extends Seeder
      *
      * @return void
      */
+
+
     public function run()
     {
-        Day::create(['name' => 'Sunday']);
-        Day::create(['name' => 'Monday']);
-        Day::create(['name' => 'Tuesday']);
-        Day::create(['name' => 'Wednesday']);
-        Day::create(['name' => 'Thursday']);
-        Day::create(['name' => 'Friday']);
-        Day::create(['name' => 'Saturday']);
+        $days = [
+            'Sunday',
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday'
+        ];
+
+        foreach ($days as $day) {
+            Day::create([
+                'name' => $day,
+            ]);
+        }
     }
 }

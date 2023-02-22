@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('professor_courses', function (Blueprint $table) {
             $table->increments("id");
+            $table->string("name");
             $table->integer("professor_id")->unsigned();
             $table->integer("course_id")->unsigned();
             $table->timestamps();

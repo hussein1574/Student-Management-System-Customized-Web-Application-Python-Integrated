@@ -14,11 +14,15 @@ class CourseStatusesTableSeeder extends Seeder
      */
     public function run()
     {
-
-        CourseStatus::insert([
-            ['status' => 'Pass'],
-            ['status' => 'Fail'],
-            ['status' => 'Studying']
-        ]);
+        $statuses = [
+            'Pass',
+            'Fail',
+            'Studying'
+        ];
+        foreach ($statuses as $statue) {
+            CourseStatus::create([
+                'status' => $statue
+            ]);
+        }
     }
 }

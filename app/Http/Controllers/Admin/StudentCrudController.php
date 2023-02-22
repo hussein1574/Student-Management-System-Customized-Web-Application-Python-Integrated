@@ -39,7 +39,10 @@ class StudentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('user_id');
+        CRUD::column('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+            return $query->where('isAdmin', false)->get();
+        });
+        CRUD::column('name');
         CRUD::column('department_id');
         CRUD::column('grade');
         CRUD::column('batch');
@@ -63,7 +66,10 @@ class StudentCrudController extends CrudController
     {
         CRUD::setValidation(StudentRequest::class);
 
-        CRUD::field('user_id');
+        CRUD::field('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+            return $query->where('isAdmin', false)->get();
+        });
+        CRUD::field('name');
         CRUD::field('department_id');
         CRUD::field('grade');
         CRUD::field('batch');

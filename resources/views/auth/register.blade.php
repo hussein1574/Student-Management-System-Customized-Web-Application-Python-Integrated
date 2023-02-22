@@ -33,6 +33,16 @@
             </select>
         </div>
 
+        <div class="mt-4">
+            <label for="department" class="block font-medium text-sm text-gray-700">Department</label>
+            <select id="department" name="department" class="form-select mt-1 block w-full">
+                @foreach ($departments as $department)
+                <option value="{{$department->id}}">{{$department->name}}</option>
+                @endforeach
+
+            </select>
+        </div>
+
 
         <!-- Password -->
         <div class="mt-4">

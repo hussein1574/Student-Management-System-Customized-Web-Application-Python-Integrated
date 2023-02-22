@@ -28,7 +28,7 @@ class LecturesTimeCrudController extends CrudController
     {
         CRUD::setModel(\App\Models\LecturesTime::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/lectures-time');
-        CRUD::setEntityNameStrings('lectures time', 'lectures times');
+        CRUD::setEntityNameStrings('time period', 'time periods');
     }
 
     /**

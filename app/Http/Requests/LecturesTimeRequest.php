@@ -25,6 +25,7 @@ class LecturesTimeRequest extends FormRequest
     public function rules()
     {
         return [
+            'timePeriod' => 'required|min:5|max:255',
             // 'name' => 'required|min:5|max:255'
         ];
     }

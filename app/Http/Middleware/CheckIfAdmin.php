@@ -30,12 +30,8 @@ class CheckIfAdmin
      */
     private function checkIfUserIsAdmin($user)
     {
-        $roleId =DB::table('users')->where('email', $user->email)->first()->role_id;
-        if($roleId == 1){
-            return true;
-        }else{
-            return false;
-        }
+        $isAdmin = DB::table('users')->where('email', $user->email)->first()->isAdmin;
+        return $isAdmin;
     }
 
     /**
@@ -66,12 +62,10 @@ class CheckIfAdmin
             return $this->respondToUnauthorizedRequest($request);
         }
 
-        if (! $this->checkIfUserIsAdmin(backpack_user())) {
+        if (!$this->checkIfUserIsAdmin(backpack_user())) {
             return $this->respondToUnauthorizedRequest($request);
         }
 
         return $next($request);
     }
-
-    
 }

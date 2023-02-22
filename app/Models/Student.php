@@ -23,4 +23,10 @@ class Student extends Model
     {
         return $this->belongsTo(Department::class);
     }
+    public function scopeNonAdmin($query)
+    {
+        return $query->whereHas('user', function ($subQuery) {
+            $subQuery->where('isAdmin', false);
+        });
+    }
 }
