@@ -1,18 +1,20 @@
 <?php
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\DB;
-use App\Models\Student;
 use App\Models\Course;
+use App\Models\Student;
 use App\Models\Constant;
-use App\Models\StudentCourse;
 use App\Models\CoursePre;
 use Illuminate\Http\Request;
+use App\Models\StudentCourse;
+use App\Jobs\RegisterCourseJob;
+use Illuminate\Support\Facades\DB;
 
 class CourseRegistrationController extends Controller
 {
-    public function getCoursesStatus(Request $request, $userId)
+    public function getCoursesStatus(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -80,13 +82,14 @@ class CourseRegistrationController extends Controller
             'status' => 'success',
             'results' => count($data),
             'data' => [
-                'courses' => $data
+            'courses' => $data
             ]
         ]);
 
     }
-    public function register(Request $request, $userId)
+    public function register(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -149,20 +152,22 @@ class CourseRegistrationController extends Controller
                 ], 400);
             }
 
-            if(in_array($courseId, $retakeCourses)){
-                $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $courseId)->first();
-                $studentCourse->status_id = 3;
-                $studentCourse->save();
-            }
-            else
-            {
-                $studentCourse = new StudentCourse();
-                $studentCourse->student_id = $student->id;
-                $studentCourse->course_id = $courseId;
-                $studentCourse->grade = 0;
-                $studentCourse->status_id = 3;
-                $studentCourse->save();
-            }
+            dispatch(new RegisterCourseJob($courseId, $student->id,$retakeCourses));
+            
+            // if(in_array($courseId, $retakeCourses)){
+            //     $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $courseId)->first();
+            //     $studentCourse->status_id = 3;
+            //     $studentCourse->save();
+            // }
+            // else
+            // {
+            //     $studentCourse = new StudentCourse();
+            //     $studentCourse->student_id = $student->id;
+            //     $studentCourse->course_id = $courseId;
+            //     $studentCourse->grade = 0;
+            //     $studentCourse->status_id = 3;
+            //     $studentCourse->save();
+            // }
 
         }
         return response()->json([
@@ -170,15 +175,15 @@ class CourseRegistrationController extends Controller
             'message' => 'Courses registered successfully'
         ]);
     }
-    public function checkCoursesHours($courseIds,Request $request, $userId)
+    public function checkCoursesHours($courseIds,Request $request)
     {
-        $data = "OK";
+        $data = "";
         $totalHours = 0;
         foreach ($courseIds as $courseId) {
             $course = Course::find($courseId);
             $totalHours += $course->hours;
         }
-        $hoursPerTerm = $this->getHoursPerTerm($request, $userId);
+        $hoursPerTerm = $this->getHoursPerTerm($request);
         $minHoursPerTerm = $hoursPerTerm->getData()->data->minHoursPerTerm;
         $maxHoursPerTerm = $hoursPerTerm->getData()->data->maxHoursPerTerm;
         if($totalHours > $maxHoursPerTerm)
@@ -232,8 +237,9 @@ class CourseRegistrationController extends Controller
         }
         return count($visited) > $minGraphLength;
     }
-    public function getHoursPerTerm(Request $request, $userId)
+    public function getHoursPerTerm(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([

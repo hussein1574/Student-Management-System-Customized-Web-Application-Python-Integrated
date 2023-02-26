@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ExamsTimeTableController;
+use App\Http\Controllers\Admin\DashboardController;
 
 // --------------------------
 // Custom Backpack Routes
@@ -17,6 +19,10 @@ Route::group([
     ),
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
+    Route::get('/generate-exams', [ExamsTimeTableController::class, 'index'])->name('generate-exams');
+    Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
+    Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');
+    Route::get('/dashboard/registered-students-chart-data', [DashboardController::class, 'registeredStudentChartData'])->name('dashboard.registeredStudentsChartData');
     Route::crud('lectures-time', 'LecturesTimeCrudController');
     Route::crud('user', 'UserCrudController');
     Route::crud('student-course', 'StudentCourseCrudController');

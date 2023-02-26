@@ -2,15 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ExamsTimeTable;
 use App\Models\Student;
-use App\Models\StudentCourse;
 use Illuminate\Http\Request;
+use App\Models\StudentCourse;
+use App\Jobs\ExamTimetableJob;
+use App\Models\ExamsTimeTable;
+use App\Jobs\ExamTimetableProcess;
+use Symfony\Component\Process\Process;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class ExamsTimeTableController extends Controller
 {
-    public function getExams(Request $request, $userId)
+    public function index(Request $request)
     {
+        return view('generateExams');
+    }
+    public function runScript(Request $request)
+    {
+        try {
+            $request->validate([
+                'maxStds' => ['required', 'int'],
+                'maxRooms' => ['required', 'int'],
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
+        
+        dispatch(new ExamTimetableProcess($request->maxStds,$request->maxRooms));
+        
+        return response()->json([
+        'status' => 'success',
+        'result' => 'The script is running in the background. You will be notified when it has completed.',
+    ]);
+    }
+    public function getExams(Request $request)
+    {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([

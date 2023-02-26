@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendFinishedHoursByYearResponseJob;
 use App\Models\Student;
 use App\Models\StudentCourse;
 use App\Models\Constant;
@@ -9,13 +10,14 @@ use Illuminate\Http\Request;
 
 class StudentCoursesController extends Controller
 {
-    public function getCurrentCourses(Request $request, $userId)
+    public function getCurrentCourses(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
                 'status'=> 'fail',
-                'message' => 'Student not found'], 404);
+                'message' => 'Student not found '], 404);
         }
 
         $courses = StudentCourse::where('student_id', $student->id)
@@ -37,8 +39,9 @@ class StudentCoursesController extends Controller
 
         ]);
     }
-    public function getFinishedCourses(Request $request, $userId)
+    public function getFinishedCourses(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -67,8 +70,9 @@ class StudentCoursesController extends Controller
 
         ]);
     }
-    public function getGraduationHours(Request $request, $userId)
+    public function getGraduationHours(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -97,15 +101,15 @@ class StudentCoursesController extends Controller
         ]);
 
     }
-    public function getHoursForFinishedYears(Request $request, $userId)
+    public function getHoursForFinishedYears(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
                 'status'=> 'fail',
                 'message' => 'Student not found'], 404);
         }
-        
         $courses = StudentCourse::where('student_id', $student->id)
         ->whereIn('status_id', [1, 2])
         ->get();

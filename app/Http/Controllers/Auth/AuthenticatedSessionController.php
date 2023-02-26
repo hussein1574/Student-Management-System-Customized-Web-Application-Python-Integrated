@@ -23,19 +23,26 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        //$request->authenticate();
+       $response =  $request->authenticate($request);
+        if($response->getStatusCode() != 401)
+            $request->session()->regenerate(); 
+  
+        return $response;
+        
+        // return response()->json([
+        //     'status' => 'success',
+        //     'message' => 'Logged in successfully'
+        // ]);
+      //  return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
@@ -43,6 +50,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }

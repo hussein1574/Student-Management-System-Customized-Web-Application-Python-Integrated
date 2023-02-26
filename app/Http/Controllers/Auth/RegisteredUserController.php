@@ -3,19 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Student;
+use App\Models\Professor;
 use Illuminate\View\View;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Department;
-use App\Models\Professor;
-use App\Models\Student;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Validation\ValidationException;
 
 class RegisteredUserController extends Controller
 {
@@ -33,23 +34,34 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'department' => ['int', 'max:255'],
-            'role' => ['required', 'string', 'max:255'],
-        ]);
+
+        try {
+            $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'department' => ['int', 'max:255'],
+                'role' => ['required', 'string', 'max:255'],
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 422);
+        }
 
         $user = User::create([
-
             'email' => $request->email,
             'password' => $request->password,
         ]);
+        
         event(new Registered($user));
+
         $role = $request->input('role');
+        
         if ($role == "Student") {
             $student = Student::create([
                 'user_id' => $user->id,
@@ -65,11 +77,13 @@ class RegisteredUserController extends Controller
             event(new Registered($proffesor));
         }
 
+        //Auth::login($user);
 
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Registered successfully'
+        ]);
 
-
-        Auth::login($user);
-
-        return redirect(RouteServiceProvider::HOME);
+        //return redirect(RouteServiceProvider::HOME);
     }
 }

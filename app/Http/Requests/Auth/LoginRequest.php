@@ -2,11 +2,13 @@
 
 namespace App\Http\Requests\Auth;
 
-use Illuminate\Auth\Events\Lockout;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
@@ -37,20 +39,41 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+        public function authenticate(Request $request): JsonResponse
     {
         $this->ensureIsNotRateLimited();
 
         if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
-            throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
-            ]);
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid email or password',
+            ], 401);
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Logged in successfully',
+        ]);
     }
+
+    // public function authenticate(): void
+    // {
+    //     $this->ensureIsNotRateLimited();
+
+    //     if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+    //         RateLimiter::hit($this->throttleKey());
+
+    //         throw ValidationException::withMessages([
+    //             'email' => trans('auth.failed'),
+    //         ]);
+    //     }
+
+    //     RateLimiter::clear($this->throttleKey());
+    // }
 
     /**
      * Ensure the login request is not rate limited.

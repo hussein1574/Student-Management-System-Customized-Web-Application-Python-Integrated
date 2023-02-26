@@ -9,8 +9,9 @@ use Illuminate\Http\Request;
 
 class LectureTimetableController extends Controller
 {
-    public function getTimetable(Request $request, $userId)
+    public function getTimetable(Request $request)
     {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([

@@ -42,8 +42,18 @@ class UserCrudController extends CrudController
     {
         CRUD::column('email');
         CRUD::column('password');
-        CRUD::column('isAdmin');
-
+        CRUD::column('role')->label('Role')->type('closure')->function(function ($entry) {
+            if ($entry->student) {
+                return 'Student';
+            } elseif ($entry->professor) {
+                return 'Professor';
+            } else {
+                return '-';
+            }
+        });
+        CRUD::column('isAdmin')->label('Is Admin')->type('closure')->function(function ($entry) {
+            return $entry->isAdmin ? 'true' : 'false';
+        });
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
