@@ -7,7 +7,7 @@
 
 </head>
 
-<body class="{{ config('backpack.base.body_class') }}">
+<body class="{{ config('backpack.base.body_class') }}" >
 
   @include(backpack_view('inc.main_header'))
 
@@ -15,7 +15,7 @@
 
     @include(backpack_view('inc.sidebar'))
 
-    <main class="main pt-2">
+    <main class="main pt-2" style="overflow:hidden">
 
        @yield('before_breadcrumbs_widgets')
 

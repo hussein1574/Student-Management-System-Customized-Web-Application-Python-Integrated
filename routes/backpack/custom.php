@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\StudentCourse;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ExamsTimeTableController;
+use App\Http\Controllers\StudentCoursesController;
 use App\Http\Controllers\Admin\DashboardController;
 
 // --------------------------
@@ -19,6 +21,14 @@ Route::group([
     ),
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
+    Route::get('/admit-student-courses/{studentId}',[StudentCoursesController::class,'getStudentCourses'])->name('get-student-courses');
+    Route::post('/admit-student-courses/{studentId}',[StudentCoursesController::class,'admitStudentCourses'])->name('admit-student-courses');
+
+    Route::get('/register-student-course/{studentId}',[StudentCoursesController::class,'showStudentCourse'])->name('show-student-course');
+    Route::post('/register-student-course',[StudentCoursesController::class,'registerStudentCourse'])->name('register-student-course');
+
+    Route::delete('/delete-student-course',[StudentCoursesController::class,'deleteStudentCourse'])->name('delete-student-course');
+
     Route::get('/generate-exams', [ExamsTimeTableController::class, 'index'])->name('generate-exams');
     Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
     Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');

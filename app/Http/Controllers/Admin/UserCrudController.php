@@ -52,8 +52,16 @@ class UserCrudController extends CrudController
             }
         });
         CRUD::column('isAdmin')->label('Is Admin')->type('closure')->function(function ($entry) {
-            return $entry->isAdmin ? 'true' : 'false';
+            return $entry->isAdmin ? "true": 'false';
         });
+        // CRUD::column('isAdmin')->label('Is Admin')->type('closure')->function(function ($entry) {
+        //     $isAdmin = $entry->isAdmin;
+        //     $class = $isAdmin ? 'badge-success' : 'badge-danger';
+        //     $label = $isAdmin ? 'true' : 'false';
+        //     return "<span class='badge $class'>$label</span>";
+        // });
+        
+        
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');

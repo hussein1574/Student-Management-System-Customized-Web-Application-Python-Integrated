@@ -37,7 +37,7 @@ class RegisterCourseJob implements ShouldQueue
     {
         if(in_array($this->courseId, $this->retakeCourses)){
             $studentCourse = StudentCourse::where('student_id', $this->studentId)->where('course_id', $this->courseId)->first();
-            $studentCourse->status_id = 3;
+            $studentCourse->status_id = 4;
             $studentCourse->save();
         }
         else
@@ -46,7 +46,7 @@ class RegisterCourseJob implements ShouldQueue
             $studentCourse->student_id = $this->studentId;
             $studentCourse->course_id = $this->courseId;
             $studentCourse->grade = 0;
-            $studentCourse->status_id = 3;
+            $studentCourse->status_id = 4;
             $studentCourse->save();
         }
     }

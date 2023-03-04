@@ -8,6 +8,7 @@ use App\Models\CoursePre;
 use Illuminate\Http\Request;
 use App\Models\StudentCourse;
 use App\Jobs\RegisterCourseJob;
+use App\Models\DepartmentCourse;
 use Illuminate\Support\Facades\DB;
 
 class CourseRegistrationController extends Controller
@@ -23,13 +24,31 @@ class CourseRegistrationController extends Controller
             ], 404);
         }
 
+        $data = $this->getStudentCoursesStatus($student->id);
+
+        return response()->json([
+            'status' => 'success',
+            'results' => count($data),
+            'data' => [
+            'courses' => $data
+            ]
+        ]);
+
+    }
+
+    public function getStudentCoursesStatus($studentId)
+    {   
+        //$studentDepartment = Student::where('id', $studentId)->first()->department_id;
+        //$courses = DepartmentCourse::where('department_id', $studentDepartment)->get();
         $courses = Course::all();
-        $studentCourses = StudentCourse::where('student_id', $student->id)->get();
+        $studentCourses = StudentCourse::where('student_id', $studentId)->get();
         $data = [];
         $maxRetakeGrade = Constant::where('name', 'maxRetakeGPA')->first()->value;
         foreach ($courses as $course) {
              $studentTakenCourse = $studentCourses->where('course_id', $course->id)->first();   
             if ($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade > $maxRetakeGrade) 
+                continue;
+            elseif($studentTakenCourse && ($studentTakenCourse->status_id == 3 || $studentTakenCourse->status_id == 4 ))
                 continue;
             elseif($studentTakenCourse && $studentTakenCourse->grade <= $maxRetakeGrade && !$course->isClosed)
             {
@@ -37,6 +56,7 @@ class CourseRegistrationController extends Controller
                     'courseId' => $course->id,
                     'courseName' => $course->name,
                     'courseHours' => $course->hours,
+                    'level' => $course->level,
                     'state' => 'retake'
                 ];
                 continue;
@@ -46,6 +66,7 @@ class CourseRegistrationController extends Controller
                     'courseId' => $course->id,
                     'courseName' => $course->name,
                     'courseHours' => $course->hours,
+                    'level' => $course->level,
                     'state' => 'closed'
                 ];
             } else {
@@ -57,6 +78,7 @@ class CourseRegistrationController extends Controller
                             'courseId' => $course->id,
                             'courseName' => $course->name,
                             'courseHours' => $course->hours,
+                            'level' => $course->level,
                             'state' => 'must-take'
                         ];
                     } else {
@@ -64,6 +86,7 @@ class CourseRegistrationController extends Controller
                             'courseId' => $course->id,
                             'courseName' => $course->name,
                             'courseHours' => $course->hours,
+                            'level' => $course->level,
                             'state' => 'open'
                         ];
                     }
@@ -72,21 +95,15 @@ class CourseRegistrationController extends Controller
                         'courseId' => $course->id,
                         'courseName' => $course->name,
                         'courseHours' => $course->hours,
+                        'level' => $course->level,
                         'state' => 'need-pre-req'
                     ];
                 }
             }
         }
-
-        return response()->json([
-            'status' => 'success',
-            'results' => count($data),
-            'data' => [
-            'courses' => $data
-            ]
-        ]);
-
+        return $data;
     }
+    
     public function register(Request $request)
     {
         $userId = $request->user()->id;

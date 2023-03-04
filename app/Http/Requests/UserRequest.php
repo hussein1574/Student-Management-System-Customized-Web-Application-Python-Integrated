@@ -27,6 +27,7 @@ class UserRequest extends FormRequest
         return [
             'email' => 'required|email:rfc,dns',
             'password' => 'required|min:8|max:255',
+            // remove the tags from name field
             // 'name' => 'required|min:5|max:255'
         ];
     }

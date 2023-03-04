@@ -41,9 +41,11 @@ class CourseCrudController extends CrudController
     {
         CRUD::column('name');
         CRUD::column('hours');
+        CRUD::column('level');
         CRUD::column('isElective');
         CRUD::column('hasLab');
         CRUD::column('hasSection');
+        CRUD::column('isClosed');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -66,9 +68,11 @@ class CourseCrudController extends CrudController
 
         CRUD::field('name');
         CRUD::field('hours');
+        CRUD::field('level');
         CRUD::field('isElective');
         CRUD::field('hasLab');
         CRUD::field('hasSection');
+        CRUD::field('isClosed');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

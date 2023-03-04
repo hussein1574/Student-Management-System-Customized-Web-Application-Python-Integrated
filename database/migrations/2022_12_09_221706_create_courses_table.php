@@ -17,6 +17,7 @@ return new class extends Migration
             $table->increments("id");
             $table->string('name');
             $table->integer("hours");
+            $table->integer('level');
             $table->boolean("isElective");
             $table->boolean("hasLab");
             $table->boolean("hasSection");

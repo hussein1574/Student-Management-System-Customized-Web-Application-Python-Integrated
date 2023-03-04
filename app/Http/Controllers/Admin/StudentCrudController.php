@@ -39,6 +39,7 @@ class StudentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $this->crud->addButtonFromView('line', 'admit', 'moderate', 'beginning');
         CRUD::column('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
             return $query->where('isAdmin', false)->get();
         });

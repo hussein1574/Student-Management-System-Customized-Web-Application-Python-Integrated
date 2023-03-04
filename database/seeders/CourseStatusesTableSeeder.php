@@ -17,7 +17,8 @@ class CourseStatusesTableSeeder extends Seeder
         $statuses = [
             'Pass',
             'Fail',
-            'Studying'
+            'Studying',
+            'Pending'
         ];
         foreach ($statuses as $statue) {
             CourseStatus::create([

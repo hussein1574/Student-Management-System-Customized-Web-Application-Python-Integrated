@@ -15,9 +15,9 @@
       <div class="card-header">
         <i class="fa fa-table"></i> Failed Students by Course
       </div>
-      <div class="card-body" style="max-height: 300px; overflow-y:scroll;">
+      <div class="card-body" style="padding:0;max-height: 300px; overflow-y:scroll;">
         <table class="table">
-          <thead>
+          <thead style="position:sticky; top:0;left:0;background-color: #f1f4f8;">
             <tr>
               <th>Course Name</th>
               <th>Failed Students</th>
@@ -42,9 +42,9 @@
       <div class="card-header">
         <i class="fa fa-table"></i> Registered Students by Course
       </div>
-      <div class="card-body" style="max-height: 300px; overflow-y: scroll;">
+      <div class="card-body" style="padding:0;max-height: 300px; overflow-y: scroll;">
         <table class="table">
-          <thead>
+          <thead style="position:sticky; top:0;left:0;background-color: #f1f4f8;">
             <tr>
               <th>Course Name</th>
               <th>Registered Students</th>
