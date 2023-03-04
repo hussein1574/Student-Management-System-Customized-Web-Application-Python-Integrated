@@ -68,21 +68,19 @@ class RegisteredUserController extends Controller
                 'name' => $request->name,
                 'department_id' => $request->department,
             ]);
-            event(new Registered($student));
         } else {
             $proffesor = Professor::create([
                 'user_id' => $user->id,
                 'name' => $request->name,
             ]);
-            event(new Registered($proffesor));
         }
 
-        //Auth::login($user);
+        Auth::login($user);
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Registered successfully'
-        ]);
+            'status' => 'failed',
+            'message' => 'Your account is not activated',
+        ], 401);
 
         //return redirect(RouteServiceProvider::HOME);
     }

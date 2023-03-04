@@ -24,6 +24,7 @@ class CoursesSeeder extends Seeder
                 'name' => $faker->word,
                 'hours' => $faker->numberBetween(1, 10),
                 'isElective' => $faker->boolean,
+                'level' => $faker->numberBetween(1, 5),
                 'hasLab' => $faker->boolean,
                 'hasSection' => $faker->boolean,
                 'isClosed' => $faker->boolean,

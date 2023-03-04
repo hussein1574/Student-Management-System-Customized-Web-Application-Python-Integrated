@@ -44,3 +44,4 @@
     </body>
 </html>
 <?php /**PATH D:\Learning\Graduation-Project\Website\intelligent-college-timetable-scheduler\intelligent-college-timetable-scheduler\resources\views/welcome.blade.php ENDPATH**/ ?>
+use Illuminate\Routing\Route;

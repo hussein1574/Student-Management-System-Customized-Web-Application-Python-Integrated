@@ -23,7 +23,21 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                //return redirect(RouteServiceProvider::HOME);
+                if(Auth::user()->isActivated == 0){
+                    Auth::logout($request);
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Account not activated'
+                    ]);
+                }
+                else{
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => 'Already logged in'
+                    ]);
+                }
+                
             }
         }
 

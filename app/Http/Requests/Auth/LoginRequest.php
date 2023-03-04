@@ -52,6 +52,14 @@ class LoginRequest extends FormRequest
             ], 401);
         }
 
+        if(Auth::user()->isActivated == false)
+        {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Your account is not activated',
+            ], 401);
+        }
+
         RateLimiter::clear($this->throttleKey());
 
         return response()->json([

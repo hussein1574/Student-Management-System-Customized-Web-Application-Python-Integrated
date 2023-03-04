@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Termwind\Components\Dd;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -26,7 +27,7 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request)
     {
         //$request->authenticate();
-       $response =  $request->authenticate($request);
+        $response =  $request->authenticate($request);
         if($response->getStatusCode() != 401)
             $request->session()->regenerate(); 
   
