@@ -4,7 +4,7 @@ import sys
 #maxStds=600, maxRooms= 10, GapDays= 0
 maxStds = int(sys.argv[1])
 maxRooms = int(sys.argv[2])
-gapDays = int(sys.argv[3])
+#gapDays = int(sys.argv[3])
 
 
 # Get the absolute path of the script file
@@ -17,7 +17,7 @@ script_dir = os.path.dirname(script_path)
 filename = os.path.join(script_dir, 'RealData.xlsx')
 
 # Create an instance of ExamTimetableScript with the file
-geneticAlgorithm = ets.ExamTimetableScript(filename,script_dir,maxStds,maxRooms,gapDays)
+geneticAlgorithm = ets.ExamTimetableScript(filename,script_dir,maxStds,maxRooms)
 timeTable = geneticAlgorithm.createTimeTable()
 while(True):
     newTimeTable = geneticAlgorithm.generate(timeTable)

@@ -40,6 +40,7 @@ class CourseCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('name');
+        CRUD::column('code');
         CRUD::column('hours');
         CRUD::column('level');
         CRUD::column('isElective');
@@ -67,6 +68,7 @@ class CourseCrudController extends CrudController
         CRUD::setValidation(CourseRequest::class);
 
         CRUD::field('name');
+        CRUD::field('code');
         CRUD::field('hours');
         CRUD::field('level');
         CRUD::field('isElective');

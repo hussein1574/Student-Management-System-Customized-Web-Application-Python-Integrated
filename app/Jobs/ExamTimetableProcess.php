@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Alert;
 use Throwable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;

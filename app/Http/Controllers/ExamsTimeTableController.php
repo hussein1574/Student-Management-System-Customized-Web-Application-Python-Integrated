@@ -37,7 +37,7 @@ class ExamsTimeTableController extends Controller
         
         return response()->json([
         'status' => 'success',
-        'result' => 'The script is running in the background. You will be notified when it has completed.',
+        'result' => 'The script is running in the background.',
     ]);
     }
     public function getExams(Request $request)

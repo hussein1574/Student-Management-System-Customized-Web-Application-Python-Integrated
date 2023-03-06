@@ -15,13 +15,14 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->increments("id");
+            $table->string('code');
             $table->string('name');
             $table->integer("hours");
             $table->integer('level');
             $table->boolean("isElective");
             $table->boolean("hasLab");
             $table->boolean("hasSection");
-            $table->boolean("isClosed");
+            $table->boolean("isClosed")->default(false);
             $table->timestamps();
         });
     }

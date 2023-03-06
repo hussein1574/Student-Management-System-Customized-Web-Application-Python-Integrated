@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments("id");
             $table->integer("course_id")->unsigned();
             $table->integer("coursePre_id")->unsigned();
-            $table->boolean("passed");
+            $table->boolean("passed")->default(false);
             $table->timestamps();
             $table->foreign("course_id")->references("id")->on("courses");
             $table->foreign("coursePre_id")->references("id")->on("courses");

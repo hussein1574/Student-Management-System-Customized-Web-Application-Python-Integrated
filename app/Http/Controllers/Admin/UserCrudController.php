@@ -41,7 +41,6 @@ class UserCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('email');
-        CRUD::column('password');
         CRUD::column('role')->label('Role')->type('closure')->function(function ($entry) {
             if ($entry->student) {
                 return 'Student';
@@ -51,8 +50,11 @@ class UserCrudController extends CrudController
                 return '-';
             }
         });
-        CRUD::column('isAdmin')->label('Is Admin')->type('closure')->function(function ($entry) {
-            return $entry->isAdmin ? "true": 'false';
+        CRUD::column('isAdmin')->label('Admin')->type('closure')->function(function ($entry) {
+            return $entry->isAdmin ? "Admin": '-';
+        });
+        CRUD::column('isActivated')->label('Active')->type('closure')->function(function ($entry) {
+            return $entry->isActivated ? "Activated": 'Not activated';
         });
         // CRUD::column('isAdmin')->label('Is Admin')->type('closure')->function(function ($entry) {
         //     $isAdmin = $entry->isAdmin;
@@ -81,8 +83,9 @@ class UserCrudController extends CrudController
 
         CRUD::field('email');
         CRUD::field('password')->type('password');
-        CRUD::field('isAdmin');
-
+        CRUD::field('isAdmin')->label('Admin')->type('checkbox');
+        CRUD::field('isActivated')->label('Active')->type('checkbox');
+        
         // // This will update the User model before saving
         // CRUD::modifyField('password', [
         //     'processValue' => function ($value) {
@@ -100,6 +103,9 @@ class UserCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        $this->setupCreateOperation();
+        CRUD::setValidation(UserRequest::class);
+        CRUD::field('email');
+        CRUD::field('isAdmin')->label('Admin')->type('checkbox');
+        CRUD::field('isActivated')->label('Active')->type('checkbox');
     }
 }

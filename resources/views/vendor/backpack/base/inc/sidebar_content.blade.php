@@ -29,6 +29,7 @@
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-book"></i>Courses</a>
        <ul class="nav-dropdown-items">
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-program') }}"><i class="nav-icon la la-newspaper-o"></i>Upload program</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('course') }}"><i class="nav-icon la la-book"></i> Courses</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('course-pre') }}"><i class="nav-icon la la-book"></i> Course prerequisites</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('department-course') }}"><i class="nav-icon la la-question"></i> Course departments</a></li>   

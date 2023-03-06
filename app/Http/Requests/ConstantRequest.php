@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Constant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ConstantRequest extends FormRequest
@@ -27,6 +28,16 @@ class ConstantRequest extends FormRequest
         return [
             'name' => 'required|min:5|max:255|regex:/^[a-zA-Z0-9\s]+$/'
         ];
+    }
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {           
+            $originalName = Constant::where('id', $this->route('id'))->first()->name; // get the original name from the route
+            $newName = $this->input('name'); // get the new value from the input
+
+            if ($newName != $originalName) {
+                $validator->errors()->add('name', 'The name field cannot be changed.');        }
+        });
     }
 
     /**

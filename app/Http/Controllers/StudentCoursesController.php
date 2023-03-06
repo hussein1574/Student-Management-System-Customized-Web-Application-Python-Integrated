@@ -95,7 +95,7 @@ class StudentCoursesController extends Controller
             $finishedHours += $course->course->hours;
         }
 
-        $graduationHours = Constant::where('name', 'graduationHours')->first()->value;
+        $graduationHours = Constant::where('name', 'Graduation Hours')->first()->value;
 
         return response()->json([
             'status' => 'success',

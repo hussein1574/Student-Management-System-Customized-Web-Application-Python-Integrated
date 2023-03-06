@@ -75,13 +75,11 @@ class RegisteredUserController extends Controller
             ]);
         }
 
-        Auth::login($user);
 
         return response()->json([
-            'status' => 'failed',
-            'message' => 'Your account is not activated',
-        ], 401);
+            'status' => 'success',
+            'message' => 'Your registration was successful.',
+        ], 200);
 
-        //return redirect(RouteServiceProvider::HOME);
     }
 }

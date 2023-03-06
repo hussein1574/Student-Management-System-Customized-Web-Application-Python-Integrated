@@ -18,17 +18,17 @@ class CoursesSeeder extends Seeder
     {
         //Course::factory(50)->create();
 
-        $faker = Faker::create();
-        for ($i = 0; $i < 50; $i++) {
-            Course::create([
-                'name' => $faker->word,
-                'hours' => $faker->numberBetween(1, 10),
-                'isElective' => $faker->boolean,
-                'level' => $faker->numberBetween(1, 5),
-                'hasLab' => $faker->boolean,
-                'hasSection' => $faker->boolean,
-                'isClosed' => $faker->boolean,
-            ]);
-        }
+        // $faker = Faker::create();
+        // for ($i = 0; $i < 50; $i++) {
+        //     Course::create([
+        //         'name' => $faker->word,
+        //         'hours' => $faker->numberBetween(1, 10),
+        //         'isElective' => $faker->boolean,
+        //         'level' => $faker->numberBetween(1, 5),
+        //         'hasLab' => $faker->boolean,
+        //         'hasSection' => $faker->boolean,
+        //         'isClosed' => $faker->boolean,
+        //     ]);
+        // }
     }
 }

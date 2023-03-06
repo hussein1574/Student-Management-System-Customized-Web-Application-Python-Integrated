@@ -38,12 +38,12 @@ class CourseRegistrationController extends Controller
 
     public function getStudentCoursesStatus($studentId)
     {   
-        //$studentDepartment = Student::where('id', $studentId)->first()->department_id;
-        //$courses = DepartmentCourse::where('department_id', $studentDepartment)->get();
+        $studentDepartment = Student::where('id', $studentId)->first()->department_id;
+        $courses = DepartmentCourse::where('department_id', $studentDepartment)->get();
         $courses = Course::all();
         $studentCourses = StudentCourse::where('student_id', $studentId)->get();
         $data = [];
-        $maxRetakeGrade = Constant::where('name', 'maxRetakeGPA')->first()->value;
+        $maxRetakeGrade = Constant::where('name', 'Max Retake GPA')->first()->value;
         foreach ($courses as $course) {
              $studentTakenCourse = $studentCourses->where('course_id', $course->id)->first();   
             if ($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade > $maxRetakeGrade) 
@@ -57,6 +57,7 @@ class CourseRegistrationController extends Controller
                     'courseName' => $course->name,
                     'courseHours' => $course->hours,
                     'level' => $course->level,
+                    'elective' => $course->isElective,
                     'state' => 'retake'
                 ];
                 continue;
@@ -67,6 +68,7 @@ class CourseRegistrationController extends Controller
                     'courseName' => $course->name,
                     'courseHours' => $course->hours,
                     'level' => $course->level,
+                    'elective' => $course->isElective,
                     'state' => 'closed'
                 ];
             } else {
@@ -79,6 +81,7 @@ class CourseRegistrationController extends Controller
                             'courseName' => $course->name,
                             'courseHours' => $course->hours,
                             'level' => $course->level,
+                            'elective' => $course->isElective,
                             'state' => 'must-take'
                         ];
                     } else {
@@ -87,6 +90,7 @@ class CourseRegistrationController extends Controller
                             'courseName' => $course->name,
                             'courseHours' => $course->hours,
                             'level' => $course->level,
+                            'elective' => $course->isElective,
                             'state' => 'open'
                         ];
                     }
@@ -96,6 +100,7 @@ class CourseRegistrationController extends Controller
                         'courseName' => $course->name,
                         'courseHours' => $course->hours,
                         'level' => $course->level,
+                        'elective' => $course->isElective,
                         'state' => 'need-pre-req'
                     ];
                 }
@@ -224,7 +229,7 @@ class CourseRegistrationController extends Controller
                             break;
                         }
                     } else {
-                        if (!$studentPreReq || $studentPreReq->status_id == 3) {
+                        if (!$studentPreReq || $studentPreReq->status_id == 3 || $studentPreReq->status_id == 4) {
                             $isPreReqPassed = false;
                             break;
                         }
@@ -234,7 +239,7 @@ class CourseRegistrationController extends Controller
     }
     public function isMustTake($courseId)
     {
-        $minGraphLength = Constant::where('name', 'minGraphLength')->first()->value;
+        $minGraphLength = Constant::where('name', 'Min Graph Length')->first()->value;
         $visited = [];
         $queue = [];
         array_push($queue, $courseId);
@@ -266,13 +271,13 @@ class CourseRegistrationController extends Controller
         }
 
         $constants = Constant::all();
-        $minGPA = $constants->where('name', 'minGPA')->first()->value;
-        $minHoursPerTerm = $constants->where('name', 'minHoursPerTerm')->first()->value;
-        $maxHoursPerTerm = $constants->where('name', 'maxHoursPerTerm')->first()->value;
-        $minHoursPerTermForMinGPA = $constants->where('name', 'minHoursPerTermForMinGPA')->first()->value;
-        $maxHoursPerTermForMinGPA = $constants->where('name', 'maxHoursPerTermForMinGPA')->first()->value;
+        $minGPA = $constants->where('name', 'Min GPA')->first()->value;
+        $minHoursPerTerm = $constants->where('name', 'Min Hours Per Term')->first()->value;
+        $maxHoursPerTerm = $constants->where('name', 'Max Hours Per Term')->first()->value;
+        $minHoursPerTermForMinGPA = $constants->where('name', 'Min Hours Per Term For Min GPA')->first()->value;
+        $maxHoursPerTermForMinGPA = $constants->where('name', 'Max Hours Per Term For Min GPA')->first()->value;
 
-        if ($student->grade >= $minGPA) {
+        if ($student->grade >= $minGPA || $student->grade == 0) {
             return response()->json([
                 'status' => 'success',
                 'data' => [

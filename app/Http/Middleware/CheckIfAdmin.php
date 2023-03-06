@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+use function Termwind\render;
+
 class CheckIfAdmin
 {
     /**
@@ -33,6 +35,11 @@ class CheckIfAdmin
         $isAdmin = DB::table('users')->where('email', $user->email)->first()->isAdmin;
         return $isAdmin;
     }
+    private function checkIfActivated($user)
+    {
+        $isActivated = DB::table('users')->where('email', $user->email)->first()->isActivated;
+        return $isActivated;
+    }
 
     /**
      * Answer to unauthorized access request.
@@ -42,6 +49,7 @@ class CheckIfAdmin
      */
     private function respondToUnauthorizedRequest($request)
     {
+        //dd($request);
         if ($request->ajax() || $request->wantsJson()) {
             return response(trans('backpack::base.unauthorized'), 401);
         } else {
@@ -61,9 +69,19 @@ class CheckIfAdmin
         if (backpack_auth()->guest()) {
             return $this->respondToUnauthorizedRequest($request);
         }
-
         if (!$this->checkIfUserIsAdmin(backpack_user())) {
-            return $this->respondToUnauthorizedRequest($request);
+            Auth::guard()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            \Alert::error('Wrong email or password')->flash();
+            return redirect()->guest(backpack_url('login'));
+        }
+        if(!$this->checkIfActivated(backpack_user())){
+            Auth::guard()->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            \Alert::error('Account is not activated')->flash();
+            return redirect()->guest(backpack_url('login'));
         }
 
         return $next($request);

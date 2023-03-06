@@ -59,6 +59,7 @@
                                 <th>Hours</th>
                                 <th>Level</th>
                                 <th>Status</th>
+                                <th>Elective</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -78,6 +79,13 @@
                                       <span class="badge badge-warning">Retake</span>
                                     @elseif ($course['state'] == 'must-take')
                                       <span class="badge badge-dark">Must Take</span>
+                                    @endif
+                                  </td>
+                                  <td>
+                                    @if ($course['elective'] == 1)
+                                      <span class="badge badge-success">Yes</span>
+                                    @else
+                                      <span class="badge badge-danger">No</span>
                                     @endif
                                   </td>
                                 </tr>

@@ -64,7 +64,7 @@ class ConstantCrudController extends CrudController
     {
         CRUD::setValidation(ConstantRequest::class);
 
-        CRUD::field('name');
+        CRUD::field('name')->attributes(['readonly' => true]);
         CRUD::field('value');
 
         /**

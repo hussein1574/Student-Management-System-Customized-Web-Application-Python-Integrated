@@ -107,7 +107,6 @@ class RegisterController extends Controller
         if (! config('backpack.base.registration_open')) {
             abort(403, trans('backpack::base.registration_closed'));
         }
-
         $this->validator($request->all())->validate();
 
         $user = $this->create($request->all());

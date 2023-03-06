@@ -112,7 +112,9 @@ trait ResetsPasswords
 
         event(new PasswordReset($user));
 
-        $this->guard()->login($user);
+        //$this->guard()->login($user);
+        //\Alert::success('Password reset successfully. Please login with new password.')->flash();
+        return redirect()->route('backpack.auth.login');
     }
 
     /**
@@ -124,7 +126,8 @@ trait ResetsPasswords
      */
     protected function setUserPassword($user, $password)
     {
-        $user->password = Hash::make($password);
+        //$user->password = Hash::make($password);
+        $user->password = $password;
     }
 
     /**

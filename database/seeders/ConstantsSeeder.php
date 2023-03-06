@@ -13,14 +13,15 @@ class ConstantsSeeder extends Seeder
     public function run()
     {
         $constants = [
-            ['name' => 'maxHoursPerTerm', 'value' => 18],
-            ['name' => 'minHoursPerTerm', 'value' => 12],
-            ['name' => 'minGPA', 'value' => 2],
-            ['name' => 'maxHoursPerTermForMinGPA', 'value' => 14],
-            ['name' => 'minHoursPerTermForMinGPA', 'value' => 10],
-            ['name' => 'graduationHours', 'value' => 180],
-            ['name' => 'maxRetakeGPA', 'value' => 2],
-            ['name' => 'minGraphLength', 'value' => 5],
+            ['name' => 'Max Hours Per Term', 'value' => 18],
+            ['name' => 'Min Hours Per Term', 'value' => 12],
+            ['name' => 'Min GPA', 'value' => 2],
+            ['name' => 'Max Hours Per Term For Min GPA', 'value' => 14],
+            ['name' => 'Min Hours Per Term For Min GPA', 'value' => 10],
+            ['name' => 'Graduation Hours', 'value' => 180],
+            ['name' => 'Max Retake GPA', 'value' => 2],
+            ['name' => 'Min Graph Length', 'value' => 5],
+            ['name' => 'Graduation Project Needed Hours', 'value' => 130]
         ];
 
         foreach ($constants as $constant) {

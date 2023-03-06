@@ -9,11 +9,11 @@
                     <label for="level">Level:</label>
                     <select class="form-control" id="level" name="level">
                         <option value="">All levels</option>
+                        <option value="0">Level 0</option>
                         <option value="1">Level 1</option>
                         <option value="2">Level 2</option>
                         <option value="3">Level 3</option>
                         <option value="4">Level 4</option>
-                        <option value="5">Level 5</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -121,6 +121,7 @@
                             <th>Hours</th>
                             <th>Level</th>
                             <th>Status</th>
+                            <th>Elective</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -144,6 +145,13 @@
                                 <span class="badge badge-warning">Retake</span>
                                 @elseif ($course['state'] == 'must-take')
                                 <span class="badge badge-dark">Must Take</span>
+                                @endif
+                            </td>
+                            <td>
+                                @if ($course['elective'] == 1)
+                                <span class="badge badge-success">Yes</span>
+                                @else
+                                <span class="badge badge-danger">No</span>
                                 @endif
                             </td>
                         </tr>

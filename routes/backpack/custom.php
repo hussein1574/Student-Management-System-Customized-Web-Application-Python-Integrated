@@ -2,6 +2,7 @@
 
 use App\Models\StudentCourse;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UploadProgram;
 use App\Http\Controllers\ExamsTimeTableController;
 use App\Http\Controllers\StudentCoursesController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -29,8 +30,12 @@ Route::group([
 
     Route::delete('/delete-student-course',[StudentCoursesController::class,'deleteStudentCourse'])->name('delete-student-course');
 
+    Route::get('/upload-program', [UploadProgram::class, 'index'])->name('upload-program');
+    Route::post('/upload-program',[UploadProgram::class,'upload'])->name('upload-program');
+
     Route::get('/generate-exams', [ExamsTimeTableController::class, 'index'])->name('generate-exams');
     Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
+
     Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');
     Route::get('/dashboard/registered-students-chart-data', [DashboardController::class, 'registeredStudentChartData'])->name('dashboard.registeredStudentsChartData');
     Route::crud('lectures-time', 'LecturesTimeCrudController');

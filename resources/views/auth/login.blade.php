@@ -52,3 +52,36 @@
         <div class="text-center"><a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('backpack.auth.login') }}">{{ __('Are you Admin? login here') }}</a></div>
     </form>
 </x-guest-layout>
+<script>
+    const form = document.querySelector('form');
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const url = form.getAttribute('action');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // handle successful login
+                console.log(data.message);
+            } else {
+                // handle login error
+                console.log(data.errors.email[0]);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    });
+</script>
