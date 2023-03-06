@@ -20,7 +20,7 @@ class UserFactory extends Factory
     {
         return [
             'email' => fake()->unique()->safeEmail(),
-            'isActivated' => false,
+            'isActivated' => true,
             'isAdmin' => true,
             'password' => '12345678', // password
             'remember_token' => Str::random(10),

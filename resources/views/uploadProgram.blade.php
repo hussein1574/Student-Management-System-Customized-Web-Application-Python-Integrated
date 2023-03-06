@@ -64,24 +64,6 @@
                 });
             });
 
-
-            // $('form').submit(function(event) {
-            //     event.preventDefault();
-            //     $.ajax({
-            //         url: $(this).attr('action'),
-            //         type: $(this).attr('method'),
-            //         data: new FormData(this),
-            //         dataType: 'json',
-            //         processData: false,
-            //         contentType: false,
-            //         success: function(response) {
-            //             Swal.fire('Success', response.responseJSON.message, 'success');
-            //         },
-            //         error: function(response) {
-            //             Swal.fire('Error', response.responseJSON.message, 'error');
-            //         }
-            //     });
-            // });
         });
     </script>
 @endsection

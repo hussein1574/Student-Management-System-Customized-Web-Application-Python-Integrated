@@ -40,8 +40,11 @@ class CoursePreCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('course_id');
-        CRUD::column('coursePre_id')->type('select')->entity('preCourse')->attribute('name');
-        CRUD::column('passed');
+        CRUD::column('coursePre_id')->type('select')->entity('preCourse')->attribute('name')->label('Pre Course Name');
+        CRUD::column('passed')->label('Condition')->type('closure')->function(function ($entry) {
+            return $entry->passed ? "Must pass " : "Only attendance";
+        });
+        // CRUD::column('passed')->label('Condition');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -61,11 +64,11 @@ class CoursePreCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(CoursePreRequest::class);
-        
+
         CRUD::field('course_id');
         CRUD::field('coursePre_id')->type('select')->entity('preCourse')->attribute('name');
         CRUD::field('passed');
-        
+
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

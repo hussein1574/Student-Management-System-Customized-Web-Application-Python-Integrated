@@ -43,9 +43,22 @@ class CourseCrudController extends CrudController
         CRUD::column('code');
         CRUD::column('hours');
         CRUD::column('level');
-        CRUD::column('isElective');
-        CRUD::column('hasLab');
-        CRUD::column('hasSection');
+        CRUD::column('isElective')->label('Elective')->type('closure')->function(function ($entry) {
+            return $entry->isElective ? "Yes " : "No";
+        });
+        // CRUD::column('isElective');
+        CRUD::column('hasLab')->label('Lab')->type('closure')->function(function ($entry) {
+            return $entry->hasLab ? "Yes " : "No";
+        });
+        // CRUD::column('hasLab');
+
+        CRUD::column('hasSection')->label('Section')->type('closure')->function(function ($entry) {
+            return $entry->hasSection ? "Yes " : "No";
+        });
+        // CRUD::column('hasSection');
+        CRUD::column('isClosed')->label('Closed')->type('closure')->function(function ($entry) {
+            return $entry->isClosed ? "Yes " : "No";
+        });
         CRUD::column('isClosed');
         CRUD::column('created_at');
         CRUD::column('updated_at');
@@ -56,6 +69,7 @@ class CourseCrudController extends CrudController
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
     }
+
 
     /**
      * Define what happens when the Create operation is loaded.

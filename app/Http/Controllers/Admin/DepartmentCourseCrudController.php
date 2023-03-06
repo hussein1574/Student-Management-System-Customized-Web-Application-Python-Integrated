@@ -51,6 +51,11 @@ class DepartmentCourseCrudController extends CrudController
          */
     }
 
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
+    }
+
     /**
      * Define what happens when the Create operation is loaded.
      * 

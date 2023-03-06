@@ -20,18 +20,19 @@ class UploadProgram extends Controller
     }
     public function upload(Request $request)
     {
+        // dd(request()->has('mycsv'));
         if (request()->has('mycsv')) {
             $data   =   file(request()->mycsv);
-            
+
             $header = [];
 
             $data = array_map('str_getcsv', $data);
-            
+
             $header = $data[0];
             unset($data[0]);
-   
+
             dispatch(new ProgramCsvProcess($data, $header));
-          
+
             return response()->json([
                 'status' => 'success',
                 'result' => 'The file is being processed in the background.',
@@ -40,6 +41,6 @@ class UploadProgram extends Controller
         return response()->json([
             'status' => 'failed',
             'result' => 'Please upload a CSV file',
-        ]);
+        ], 400);
     }
 }

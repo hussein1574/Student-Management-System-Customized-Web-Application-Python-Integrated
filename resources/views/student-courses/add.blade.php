@@ -1,7 +1,7 @@
 @extends(backpack_view('blank')) @section('content')
 <div class="row" style="display: flex;justify-content: space-between;align-items: center;margin-top: 0px;">
     <div class="card" style="width: 49%; height: 100%">
-        <div class="card-header">Add Course</div>
+        <div class="card-header"><strong>Add Course</strong></div>
         <div class="card-body">
             <form action="{{ route('register-student-course') }}" method="POST">
                 @csrf
@@ -45,7 +45,7 @@
         </div>
     </div>
     <div class="card" style="width: 49%; height: 300px">
-        <div class="card-header">Finished Courses</div>
+        <div class="card-header"><strong>Finished Courses</strong></div>
         <div class="card-body">
             <div style="height: 300px; overflow-y: auto">
                 <table class="table">
@@ -87,14 +87,14 @@
 </div>
 <div class="row" style="display: flex;justify-content: space-between;align-items: center">
     <div class="card" style="width: 49%; height: 100%">
-        <div class="card-header" id ='pre-requiest-title'>Course Prerequisites</div>
+        <div class="card-header" id ='pre-requiest-title'><strong>Course Prerequisites</strong></div>
         <div class="card-body">
             <div style="height: 250px; width: 100%; overflow-y: auto">
                 <table id="prerequisitesTable" class="table">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Pass Condition</th>
+                            <th>Condition</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -104,7 +104,7 @@
         </div>
     </div>
     <div class="card" style="width: 49%; height: 100%">
-        <div class="card-header">Available Courses</div>
+        <div class="card-header"><strong>Available Courses</strong></div>
         <div class="card-body">
             <div style="height: 250px; width: 100%; overflow-y: auto">
                 <table class="table">
@@ -207,7 +207,7 @@
         const courseName = document.getElementById(`course`).options[
             document.getElementById(`course`).selectedIndex
         ].text;
-        document.querySelector("#pre-requiest-title").innerHTML = `${courseName} pre-requisites`;
+        document.querySelector("#pre-requiest-title").innerHTML = `<strong>${courseName} pre-requisites</strong>`;
         
         // Find the course's prerequisites data based on the courseId
         var coursePre = coursePreRequists.filter(function (item) {
@@ -218,7 +218,7 @@
             // Loop through the prerequisite courses and add them to the table
             coursePre.forEach(course => {
                 const prerequisite = course.coursePre;
-                const status = course.passed ? "True" : "False";
+                const status = course.passed ? "<span class='badge badge-success'>Must pass</span>" : "<span class='badge badge-warning'>Only attendance</span>";
                 const row = `
                     <tr>
                         <td>${prerequisite}</td>

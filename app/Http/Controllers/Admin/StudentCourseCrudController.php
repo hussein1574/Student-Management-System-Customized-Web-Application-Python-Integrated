@@ -39,8 +39,18 @@ class StudentCourseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        $id = 1;
         // get the user name using the user id column
-        CRUD::column('student_id')->type('select')->entity('student')->attribute('user_id');
+        CRUD::column('student_id')->type('select')->entity('student')->attribute('name')->label('Student Name');
+        CRUD::column('mail')->type('closure')->label('Email')->function(function ($entry) {
+            // dd($entry->student->user->email);
+            return $entry->student->user->email;
+        });
+        #get the user id from the student id column
+
+
+
+        // CRUD::column('student_id')->type('select')->entity('user')->attribute('email');
         CRUD::column('course_id');
         CRUD::column('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::column('grade');
@@ -55,9 +65,9 @@ class StudentCourseCrudController extends CrudController
     }
     protected function setupShowOperation()
     {
-        $this->setupListOperation();   
+        $this->setupListOperation();
     }
-    
+
     /**
      * Define what happens when the Create operation is loaded.
      * 
@@ -67,9 +77,9 @@ class StudentCourseCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(StudentCourseRequest::class);
-        
+
         //write a crud field that will show the student name instead of the student id while we have only the student id which we can get the user id by it
-        CRUD::field('student_id')->type('select')->entity('student')->attribute('user_id');
+        CRUD::field('student_id')->type('select')->entity('student')->attribute('name');
         CRUD::field('course_id');
         CRUD::field('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::field('grade');

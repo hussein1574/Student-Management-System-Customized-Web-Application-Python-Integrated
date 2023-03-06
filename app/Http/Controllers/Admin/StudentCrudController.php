@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\StudentRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use PhpParser\Node\Stmt\Label;
 
 /**
  * Class StudentCrudController
@@ -40,10 +41,10 @@ class StudentCrudController extends CrudController
     protected function setupListOperation()
     {
         $this->crud->addButtonFromView('line', 'admit', 'moderate', 'beginning');
-        CRUD::column('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+        CRUD::column('name');
+        CRUD::column('user_id')->label('Email')->type('select')->entity('user')->attribute('email')->options(function ($query) {
             return $query->where('isAdmin', false)->get();
         });
-        CRUD::column('name');
         CRUD::column('department_id');
         CRUD::column('grade');
         CRUD::column('batch');
@@ -55,6 +56,11 @@ class StudentCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
+    }
+
+    protected function setupShowOperation()
+    {
+        $this->setupListOperation();
     }
 
     /**

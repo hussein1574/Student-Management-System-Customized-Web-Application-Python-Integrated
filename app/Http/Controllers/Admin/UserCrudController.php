@@ -51,10 +51,10 @@ class UserCrudController extends CrudController
             }
         });
         CRUD::column('isAdmin')->label('Admin')->type('closure')->function(function ($entry) {
-            return $entry->isAdmin ? "Admin": '-';
+            return $entry->isAdmin ? "Admin" : '-';
         });
         CRUD::column('isActivated')->label('Active')->type('closure')->function(function ($entry) {
-            return $entry->isActivated ? "Activated": 'Not activated';
+            return $entry->isActivated ? "Activated" : 'Not activated';
         });
         // CRUD::column('isAdmin')->label('Is Admin')->type('closure')->function(function ($entry) {
         //     $isAdmin = $entry->isAdmin;
@@ -62,8 +62,8 @@ class UserCrudController extends CrudController
         //     $label = $isAdmin ? 'true' : 'false';
         //     return "<span class='badge $class'>$label</span>";
         // });
-        
-        
+
+
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
@@ -85,7 +85,7 @@ class UserCrudController extends CrudController
         CRUD::field('password')->type('password');
         CRUD::field('isAdmin')->label('Admin')->type('checkbox');
         CRUD::field('isActivated')->label('Active')->type('checkbox');
-        
+
         // // This will update the User model before saving
         // CRUD::modifyField('password', [
         //     'processValue' => function ($value) {
@@ -103,8 +103,14 @@ class UserCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        CRUD::setValidation(UserRequest::class);
+        #set validation for email field
+        // CRUD::setValidation(UserRequest::class);
+        // CRUD::field('email');
         CRUD::field('email');
+
+        $this->crud->setValidation([
+            'email' => 'required|email:rfc,dns',
+        ]);
         CRUD::field('isAdmin')->label('Admin')->type('checkbox');
         CRUD::field('isActivated')->label('Active')->type('checkbox');
     }

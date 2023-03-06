@@ -1,6 +1,6 @@
 @if (backpack_auth()->check())
     {{-- Left side column. contains the sidebar --}}
-    <div class="{{ config('backpack.base.sidebar_class') }}" style="height:calc(100vh-55px);position:sticky;top:0;left:0;">
+    <div class="{{ config('backpack.base.sidebar_class') }}" style="height:calc(100vh-55px);top:0;left:0;">
       {{-- sidebar: style can be found in sidebar.less --}}
       <nav class="sidebar-nav overflow-hidden">
         {{-- sidebar menu: : style can be found in sidebar.less --}}
