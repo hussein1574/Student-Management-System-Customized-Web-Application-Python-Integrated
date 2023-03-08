@@ -39,18 +39,13 @@ class StudentCourseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $id = 1;
         // get the user name using the user id column
-        CRUD::column('student_id')->type('select')->entity('student')->attribute('name')->label('Student Name');
+        CRUD::column('student_id')->label('Student name');
         CRUD::column('mail')->type('closure')->label('Email')->function(function ($entry) {
             // dd($entry->student->user->email);
             return $entry->student->user->email;
         });
-        #get the user id from the student id column
 
-
-
-        // CRUD::column('student_id')->type('select')->entity('user')->attribute('email');
         CRUD::column('course_id');
         CRUD::column('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::column('grade');

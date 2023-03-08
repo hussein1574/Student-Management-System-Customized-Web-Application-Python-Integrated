@@ -14,11 +14,11 @@ class DashboardController extends Controller
         $StudentCourses = \App\Models\StudentCourse::whereYear('updated_at', '=', $year)->get();
 
         $courseFailureCount = [];
-        foreach($courses as $course){
+        foreach ($courses as $course) {
             $courseFailureCount[$course->name] = 0;
         }
-        foreach($StudentCourses as $StudentCourse){
-            if($StudentCourse->status_id == 2){
+        foreach ($StudentCourses as $StudentCourse) {
+            if ($StudentCourse->status_id == 2) {
                 $courseFailureCount[$StudentCourse->course->name] += 1;
             }
         }
@@ -28,13 +28,13 @@ class DashboardController extends Controller
                 [
                     'label' => 'Failed Students by Course',
                     'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
-                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    // 'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 1,
                     'data' => array_values($courseFailureCount),
                 ]
             ]
         ];
-    
+
         return response()->json($data);
     }
     public function registeredStudentChartData()
@@ -42,11 +42,11 @@ class DashboardController extends Controller
         $courses = \App\Models\Course::all();
         $StudentCourses = \App\Models\StudentCourse::all();
         $courseRegisterCount = [];
-        foreach($courses as $course){
+        foreach ($courses as $course) {
             $courseRegisterCount[$course->name] = 0;
         }
-        foreach($StudentCourses as $StudentCourse){
-            if($StudentCourse->status_id == 4){
+        foreach ($StudentCourses as $StudentCourse) {
+            if ($StudentCourse->status_id == 3) {
                 $courseRegisterCount[$StudentCourse->course->name] += 1;
             }
         }
@@ -55,17 +55,14 @@ class DashboardController extends Controller
             'datasets' => [
                 [
                     'label' => 'Registered Students by Course',
-                    'backgroundColor' => 'rgba(255, 99, 132, 0.2)',
-                    'borderColor' => 'rgba(255, 99, 132, 1)',
+                    'backgroundColor' => 'rgba(34, 223, 71)',
+                    // 'borderColor' => 'rgba(255, 99, 132, 1)',
                     'borderWidth' => 1,
                     'data' => array_values($courseRegisterCount),
                 ]
             ]
         ];
-    
+
         return response()->json($data);
     }
-    
-
-
 }

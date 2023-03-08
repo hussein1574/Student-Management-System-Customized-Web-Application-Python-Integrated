@@ -5,7 +5,7 @@
   <div class="col-lg-6">
     <div class="card">
       <div class="card-header">
-        <i class="fa fa-bar-chart"></i> Failed Students
+        <i class="fa fa-bar-chart"></i> <b>Failed Students</b>
       </div>
       <div class="card-body">
         <canvas id="myChart" height="100"></canvas>
@@ -13,7 +13,7 @@
     </div>
     <div class="card">
       <div class="card-header">
-        <i class="fa fa-table"></i> Failed Students by Course
+        <i class="fa fa-table"></i> <b>Failed Students by Course</b>
       </div>
       <div class="card-body" style="padding:0;max-height: 300px; overflow-y:scroll;">
         <table class="table">
@@ -32,7 +32,7 @@
   <div class="col-lg-6">
     <div class="card">
       <div class="card-header">
-        <i class="fa fa-bar-chart"></i> Registered Students
+        <i class="fa fa-bar-chart"></i> <b>Registered Students</b>
       </div>
       <div class="card-body">
         <canvas id="myChart2" height="100"></canvas>
@@ -40,7 +40,7 @@
     </div>
     <div class="card">
       <div class="card-header">
-        <i class="fa fa-table"></i> Registered Students by Course
+        <i class="fa fa-table"></i><b> Registered Students by Course</b>
       </div>
       <div class="card-body" style="padding:0;max-height: 300px; overflow-y: scroll;">
         <table class="table">

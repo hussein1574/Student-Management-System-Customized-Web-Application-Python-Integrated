@@ -73,9 +73,17 @@ class StudentCrudController extends CrudController
     {
         CRUD::setValidation(StudentRequest::class);
 
+        // CRUD::field('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+        //     return $query->where('isAdmin', false)->get();
+        // });
+
         CRUD::field('user_id')->type('select')->entity('user')->attribute('email')->options(function ($query) {
-            return $query->where('isAdmin', false)->get();
+            return $query->where('isAdmin', false)->whereNotIn('id', function ($subquery) {
+                $subquery->select('user_id')->from('students');
+            })->get();
         });
+
+
         CRUD::field('name');
         CRUD::field('department_id');
         CRUD::field('grade');
@@ -96,6 +104,19 @@ class StudentCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        $this->setupCreateOperation();
+        $this->crud->setValidation([
+            'name' => 'required|min:5|max:255|regex:/^[a-zA-Z0-9\s]+$/',
+            'email' => 'required|unique:users,email,',
+            'department_id' => 'required',
+
+
+        ]);
+        CRUD::field('name');
+        CRUD::field('email')->type('select')->entity('user')->attribute('email')->options(function ($query) {
+            return $query->where('id', $this->crud->entry->user_id)->get();
+        });
+        CRUD::field('department_id');
+        CRUD::field('grade');
+        CRUD::field('batch');
     }
 }

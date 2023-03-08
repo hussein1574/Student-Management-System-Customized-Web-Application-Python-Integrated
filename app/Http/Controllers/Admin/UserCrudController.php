@@ -40,19 +40,33 @@ class UserCrudController extends CrudController
      */
     protected function setupListOperation()
     {
+        // CRUD::column('name')->label('Name')->type('closure')->function(function ($entry) {
+        //     if ($entry->student) {
+        //         return $entry->student->name;
+        //     } elseif ($entry->professor) {
+        //         return $entry->student->name;
+        //     } else {
+        //         return $entry->name;
+        //     }
+        // });
+
         CRUD::column('email');
+
         CRUD::column('role')->label('Role')->type('closure')->function(function ($entry) {
             if ($entry->student) {
                 return 'Student';
             } elseif ($entry->professor) {
                 return 'Professor';
+            } elseif ($entry->isAdmin == '1') {
+                return 'Admin';
             } else {
-                return '-';
+                return 'User';
             }
         });
-        CRUD::column('isAdmin')->label('Admin')->type('closure')->function(function ($entry) {
-            return $entry->isAdmin ? "Admin" : '-';
-        });
+
+        // CRUD::column('isAdmin')->label('Admin')->type('closure')->function(function ($entry) {
+        //     return $entry->isAdmin ? "Admin" : '-';
+        // });
         CRUD::column('isActivated')->label('Active')->type('closure')->function(function ($entry) {
             return $entry->isActivated ? "Activated" : 'Not activated';
         });
@@ -81,6 +95,7 @@ class UserCrudController extends CrudController
     {
         CRUD::setValidation(UserRequest::class);
 
+        // CRUD::field('name');
         CRUD::field('email');
         CRUD::field('password')->type('password');
         CRUD::field('isAdmin')->label('Admin')->type('checkbox');
@@ -106,6 +121,7 @@ class UserCrudController extends CrudController
         #set validation for email field
         // CRUD::setValidation(UserRequest::class);
         // CRUD::field('email');
+        // CRUD::field('name');
         CRUD::field('email');
 
         $this->crud->setValidation([

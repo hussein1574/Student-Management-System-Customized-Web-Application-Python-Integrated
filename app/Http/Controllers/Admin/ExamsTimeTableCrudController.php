@@ -40,8 +40,8 @@ class ExamsTimeTableCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('day');
-        CRUD::column('hall_id');
         CRUD::column('course_id');
+        CRUD::column('hall_id');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -63,8 +63,9 @@ class ExamsTimeTableCrudController extends CrudController
         CRUD::setValidation(ExamsTimeTableRequest::class);
 
         CRUD::field('day');
-        CRUD::field('hall_id');
         CRUD::field('course_id');
+        CRUD::field('hall_id');
+
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

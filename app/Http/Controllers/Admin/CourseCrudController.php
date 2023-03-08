@@ -59,7 +59,7 @@ class CourseCrudController extends CrudController
         CRUD::column('isClosed')->label('Closed')->type('closure')->function(function ($entry) {
             return $entry->isClosed ? "Yes " : "No";
         });
-        CRUD::column('isClosed');
+        // CRUD::column('isClosed');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 

@@ -40,13 +40,16 @@ class HallCrudController extends CrudController
     protected function setupListOperation()
     {
         CRUD::column('name');
-        CRUD::column('is_active');
+
+        CRUD::column('is_active')->label('Active')->type('closure')->function(function ($entry) {
+            return $entry->is_active ? "Yes " : "No";
+        });
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
+         * - CRUD::column('price')->type('number');c
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
     }
@@ -62,7 +65,7 @@ class HallCrudController extends CrudController
         CRUD::setValidation(HallRequest::class);
 
         CRUD::field('name');
-        CRUD::field('is_active');
+        CRUD::field('is_active')->label('Active')->type('checkbox');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
