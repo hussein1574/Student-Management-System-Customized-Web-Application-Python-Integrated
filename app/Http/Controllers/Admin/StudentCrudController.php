@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\StudentCourse;
+use PhpParser\Node\Stmt\Label;
 use App\Http\Requests\StudentRequest;
+use App\Http\Controllers\CourseRegistrationController;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use PhpParser\Node\Stmt\Label;
 
 /**
  * Class StudentCrudController
@@ -46,8 +48,41 @@ class StudentCrudController extends CrudController
             return $query->where('isAdmin', false)->get();
         });
         CRUD::column('department_id');
-        CRUD::column('grade');
-        CRUD::column('batch');
+        CRUD::column('level')->label('Level')->type('closure')->function(function ($entry) {
+            $courseRegController = new CourseRegistrationController();
+            $level = $courseRegController->getStudentLevel($entry->id);
+            switch($level) {
+                case 0:
+                    return 'Freshman';
+                    break;
+                case 1:
+                    return 'Sophomore';
+                    break;
+                case 2:
+                    return 'Junior';
+                    break;
+                case 3:
+                    return 'Senior-1';
+                    break;
+                case 4:
+                    return 'Senior-2';
+                    break;
+                default:
+                    return 'Unknown';
+                }
+        });
+        CRUD::column('grade')->label('GPA');
+        CRUD::column('finished hours')->label('Finsished hours')->type('closure')->function(function ($entry) {
+            $courses = StudentCourse::where('student_id', $entry->id)
+            ->where('status_id', 1)
+            ->get();
+            $finishedHours = 0;
+            foreach ($courses as $course) {
+                $finishedHours += $course->course->hours;
+            }
+            return $finishedHours != 0 ? $finishedHours : 'Zero';
+
+        });;
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -86,8 +121,7 @@ class StudentCrudController extends CrudController
 
         CRUD::field('name');
         CRUD::field('department_id');
-        CRUD::field('grade');
-        CRUD::field('batch');
+        CRUD::field('grade')->label('GPA');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

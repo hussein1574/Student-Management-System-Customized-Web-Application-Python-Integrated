@@ -46,7 +46,7 @@ class DashboardController extends Controller
             $courseRegisterCount[$course->name] = 0;
         }
         foreach ($StudentCourses as $StudentCourse) {
-            if ($StudentCourse->status_id == 3) {
+            if ($StudentCourse->status_id == 4) {
                 $courseRegisterCount[$StudentCourse->course->name] += 1;
             }
         }

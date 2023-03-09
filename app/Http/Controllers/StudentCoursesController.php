@@ -87,7 +87,7 @@ class StudentCoursesController extends Controller
         }
         
         $courses = StudentCourse::where('student_id', $student->id)
-        ->whereIn('status_id', [1, 2])
+        ->where('status_id', 1)
         ->get();
 
         $finishedHours = 0;
@@ -117,7 +117,7 @@ class StudentCoursesController extends Controller
                 'message' => 'Student not found'], 404);
         }
         $courses = StudentCourse::where('student_id', $student->id)
-        ->whereIn('status_id', [1, 2])
+        ->whereIn('status_id', 1)
         ->get();
 
         $finishedHoursByYear = $this->calculateHoursPerYear($courses);

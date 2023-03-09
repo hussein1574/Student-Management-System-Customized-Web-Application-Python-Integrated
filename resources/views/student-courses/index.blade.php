@@ -98,11 +98,12 @@
         </div>
 
     </div>
+
     <div class = "row" style="padding:0px 15px">
-        <div class="card" style="width: 100%; height: 300px">
+        <div class="card" style="width: 100%; height: 100%">
             <div class="card-header">Finished Courses</div>
             <div class="card-body">
-                <div style="height: 300px; overflow-y: auto">
+                <div style="height: 300px;width:100%; overflow-y: auto;">
                     <table class="table">
                         <thead
                             style="
@@ -137,6 +138,7 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
             </div>
         </div>
     </div>

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Throwable;
 use App\Models\Course;
 use App\Models\Constant;
 use App\Models\CoursePre;
@@ -106,5 +107,11 @@ class ProgramCsvProcess implements ShouldQueue
             }      
         }
         
+    }
+    public function failed(Throwable $exception)
+    {
+        CoursePre::truncate();
+        DepartmentCourse::truncate();
+        Course::truncate();
     }
 }

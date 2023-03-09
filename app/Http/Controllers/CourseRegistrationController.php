@@ -39,18 +39,22 @@ class CourseRegistrationController extends Controller
     public function getStudentCoursesStatus($studentId)
     {   
         $studentDepartment = Student::where('id', $studentId)->first()->department_id;
-        $courses = DepartmentCourse::where('department_id', $studentDepartment)->get();
-        $courses = Course::all();
+        //get all courses that the student department offers
+        $departmentCourses = DepartmentCourse::where('department_id', $studentDepartment)->get();
+        $courses = [];
+        foreach ($departmentCourses as $departmentCourse) {
+            $courses[] = Course::where('id', $departmentCourse->course_id)->first();
+        }
         $studentCourses = StudentCourse::where('student_id', $studentId)->get();
         $data = [];
-        $maxRetakeGrade = Constant::where('name', 'Max Retake GPA')->first()->value;
+        $maxRetakeGrade = Constant::where('name', 'Max GPA to retake a course')->first()->value;
         foreach ($courses as $course) {
              $studentTakenCourse = $studentCourses->where('course_id', $course->id)->first();   
             if ($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade > $maxRetakeGrade) 
                 continue;
             elseif($studentTakenCourse && ($studentTakenCourse->status_id == 3 || $studentTakenCourse->status_id == 4 ))
                 continue;
-            elseif($studentTakenCourse && $studentTakenCourse->grade <= $maxRetakeGrade && !$course->isClosed)
+            elseif($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade <= $maxRetakeGrade && !$course->isClosed)
             {
                 $data[] = [
                     'courseId' => $course->id,
@@ -176,20 +180,6 @@ class CourseRegistrationController extends Controller
 
             dispatch(new RegisterCourseJob($courseId, $student->id,$retakeCourses));
             
-            // if(in_array($courseId, $retakeCourses)){
-            //     $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $courseId)->first();
-            //     $studentCourse->status_id = 3;
-            //     $studentCourse->save();
-            // }
-            // else
-            // {
-            //     $studentCourse = new StudentCourse();
-            //     $studentCourse->student_id = $student->id;
-            //     $studentCourse->course_id = $courseId;
-            //     $studentCourse->grade = 0;
-            //     $studentCourse->status_id = 3;
-            //     $studentCourse->save();
-            // }
 
         }
         return response()->json([
@@ -239,7 +229,7 @@ class CourseRegistrationController extends Controller
     }
     public function isMustTake($courseId)
     {
-        $minGraphLength = Constant::where('name', 'Min Graph Length')->first()->value;
+        $minGraphLength = Constant::where('name', 'no. a course opens to be must')->first()->value;
         $visited = [];
         $queue = [];
         array_push($queue, $courseId);
@@ -271,29 +261,65 @@ class CourseRegistrationController extends Controller
         }
 
         $constants = Constant::all();
-        $minGPA = $constants->where('name', 'Min GPA')->first()->value;
+        $highGPA = $constants->where('name', 'High GPA')->first()->value;
+        $lowGPA = $constants->where('name', 'Low GPA')->first()->value;
         $minHoursPerTerm = $constants->where('name', 'Min Hours Per Term')->first()->value;
-        $maxHoursPerTerm = $constants->where('name', 'Max Hours Per Term')->first()->value;
-        $minHoursPerTermForMinGPA = $constants->where('name', 'Min Hours Per Term For Min GPA')->first()->value;
-        $maxHoursPerTermForMinGPA = $constants->where('name', 'Max Hours Per Term For Min GPA')->first()->value;
+        $maxHoursPerTermForHighGpa = $constants->where('name', 'Max Hours Per Term For High GPA')->first()->value;
+        $maxHoursPerTermForAverageGpa = $constants->where('name', 'Max Hours Per Term For Avg GPA')->first()->value;
+        $maxHoursPerTermForLowGpa = $constants->where('name', 'Max Hours Per Term For Low GPA')->first()->value;
 
-        if ($student->grade >= $minGPA || $student->grade == 0) {
+        $studentLevel = $this->getStudentLevel($student->id);
+        if ($student->grade >= $highGPA ) {
             return response()->json([
                 'status' => 'success',
                 'data' => [
                     'minHoursPerTerm' => $minHoursPerTerm,
-                    'maxHoursPerTerm' => $maxHoursPerTerm
+                    'maxHoursPerTerm' => $maxHoursPerTermForHighGpa
                 ]
             ]);
-        } else {
+        } elseif(($student->grade >= $lowGPA && $student->grade < $highGPA) || $studentLevel == 0) {
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'minHoursPerTerm' => $minHoursPerTermForMinGPA,
-                    'maxHoursPerTerm' => $maxHoursPerTermForMinGPA
+                    'minHoursPerTerm' => $minHoursPerTerm,
+                    'maxHoursPerTerm' => $maxHoursPerTermForAverageGpa
                 ]
             ]);
         }
+        else
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'minHoursPerTerm' => $minHoursPerTerm,
+                    'maxHoursPerTerm' => $maxHoursPerTermForLowGpa
+                ]
+            ]);
+    }
+
+    public function getStudentLevel($studentId)
+    {
+        $studentPassedCourses = StudentCourse::where('student_id', $studentId)
+            ->where('status_id', 1)
+            ->get();
+        $hours = 0;
+        $level = 0;
+        $graduationsHours = Constant::where('name', 'Graduation Hours')->first()->value;
+        foreach($studentPassedCourses as $studentPassedCourse){
+            $course = Course::find($studentPassedCourse->course_id);
+            $hours += $course->hours;
+        }
+        if(0 <= $hours && $hours <=  $graduationsHours * 0.225)
+            $level = 0;
+        elseif($graduationsHours * 0.225 < $hours && $hours <= $graduationsHours * 0.41875)
+            $level = 1;
+        elseif($graduationsHours * 0.41875 < $hours && $hours <= $graduationsHours * 0.6)
+            $level = 2;
+        elseif($graduationsHours * 0.6 < $hours && $hours <= $graduationsHours * 0.8)
+            $level = 3;
+        elseif($graduationsHours * 0.8 < $hours && $hours <= $graduationsHours)
+            $level = 4;
+            
+        return $level;
     }
 
 

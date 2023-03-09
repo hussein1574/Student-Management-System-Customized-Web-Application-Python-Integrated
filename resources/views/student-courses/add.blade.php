@@ -44,7 +44,7 @@
             </form>
         </div>
     </div>
-    <div class="card" style="width: 49%; height: 300px">
+    <div class="card" style="width: 49%; height: 100%">
         <div class="card-header"><strong>Finished Courses</strong></div>
         <div class="card-body">
             <div style="height: 300px; overflow-y: auto">
