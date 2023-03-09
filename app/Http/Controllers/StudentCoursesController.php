@@ -68,7 +68,7 @@ class StudentCoursesController extends Controller
                         'name' => $course->course->name,
                         'hours' => $course->course->hours,
                         'grade' => $course->grade,
-                        'level' => $course->level,
+                        'level' => $course->course->level,
                         'status' => $course->courseStatus->status,
                     ];
                 })
@@ -117,7 +117,7 @@ class StudentCoursesController extends Controller
                 'message' => 'Student not found'], 404);
         }
         $courses = StudentCourse::where('student_id', $student->id)
-        ->whereIn('status_id', 1)
+        ->where('status_id', 1)
         ->get();
 
         $finishedHoursByYear = $this->calculateHoursPerYear($courses);
@@ -163,7 +163,7 @@ class StudentCoursesController extends Controller
                 'name' => $course->course->name,
                 'hours' => $course->course->hours,
                 'grade' => $course->grade,
-                'level' => $course->level,
+                'level' => $course->course->level,
                 'status' => $course->courseStatus->id,
             ];
         });
@@ -212,10 +212,11 @@ class StudentCoursesController extends Controller
                 'name' => $course->course->name,
                 'hours' => $course->course->hours,
                 'grade' => $course->grade,
-                'level' => $course->level,
+                'level' => $course->course->level,
                 'status' => $course->courseStatus->id,
             ];
         });
+        
         $courseRegiserationController = new CourseRegistrationController();
         $studentCoursesStatus = $courseRegiserationController->getStudentCoursesStatus($student->id);
         $coursesPreRequists = CoursePre::all();
@@ -229,7 +230,6 @@ class StudentCoursesController extends Controller
                 'passed' => $course->passed,
             ];
         });
-       // dd($preCourses);
         return view('student-courses.add', compact('finishedCourses','preCourses', 'studentCoursesStatus','studentId'));
     }
 

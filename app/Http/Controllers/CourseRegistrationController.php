@@ -129,7 +129,14 @@ class CourseRegistrationController extends Controller
         if (!is_array($courseIds)) {
             $courseIds = [$courseIds];
         }
-
+        // make sure that the courses exist
+        $courses = Course::whereIn('id', $courseIds)->get();
+        if (count($courses) != count($courseIds)) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Some courses are not found'
+            ], 404);
+        }
         $data = $this->checkCoursesHours($courseIds,$request, $userId);
         if($data == "Exceed"){
             return response()->json([
