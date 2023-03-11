@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\DB;
 
 class CourseRegistrationController extends Controller
 {
-    public function getCoursesStatus(Request $request)
+    public function getCoursesStatus(Request $request, $userId)
     {
-        $userId = $request->user()->id;
+        //$userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -113,9 +113,9 @@ class CourseRegistrationController extends Controller
         return $data;
     }
     
-    public function register(Request $request)
+    public function register(Request $request, $userId)
     {
-        $userId = $request->user()->id;
+        //$userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
