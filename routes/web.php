@@ -32,6 +32,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'guest'])->name('dashboard');
 
+Route::get('/register-courses/{userId}', [CourseRegistrationController::class, 'getCoursesStatus']);
+Route::post('/register-courses/{userId}', [CourseRegistrationController::class, 'register']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -43,9 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/finished-hours-by-year', [StudentCoursesController::class, 'getHoursForFinishedYears']);
     Route::get('/exams', [ExamsTimeTableController::class, 'getExams']);
     Route::get('/time-table', [LectureTimetableController::class, 'getTimetable']);
-    Route::get('/register-courses', [CourseRegistrationController::class, 'getCoursesStatus']);
     Route::get('/hours-per-term', [CourseRegistrationController::class, 'getHoursPerTerm']);
-    Route::post('/register-courses', [CourseRegistrationController::class, 'register']);
 });
 
 
