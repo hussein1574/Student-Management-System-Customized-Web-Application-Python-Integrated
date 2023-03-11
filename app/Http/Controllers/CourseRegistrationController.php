@@ -194,7 +194,7 @@ class CourseRegistrationController extends Controller
             'message' => 'Courses registered successfully'
         ]);
     }
-    public function checkCoursesHours($courseIds,Request $request)
+    public function checkCoursesHours($courseIds,Request $request, $userId)
     {
         $data = "";
         $totalHours = 0;
@@ -202,7 +202,7 @@ class CourseRegistrationController extends Controller
             $course = Course::find($courseId);
             $totalHours += $course->hours;
         }
-        $hoursPerTerm = $this->getHoursPerTerm($request);
+        $hoursPerTerm = $this->getHoursPerTerm($request, $userId);
         $minHoursPerTerm = $hoursPerTerm->getData()->data->minHoursPerTerm;
         $maxHoursPerTerm = $hoursPerTerm->getData()->data->maxHoursPerTerm;
         if($totalHours > $maxHoursPerTerm)
@@ -256,9 +256,9 @@ class CourseRegistrationController extends Controller
         }
         return count($visited) > $minGraphLength;
     }
-    public function getHoursPerTerm(Request $request)
+    public function getHoursPerTerm(Request $request, $userId)
     {
-        $userId = $request->user()->id;
+        //$userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
