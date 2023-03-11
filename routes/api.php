@@ -1,14 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ExamsTimeTableController;
-use App\Http\Controllers\StudentCoursesController;
-use App\Http\Controllers\LectureTimetableController;
-use App\Http\Controllers\CourseRegistrationController;
 
 /*
 |--------------------------------------------------------------------------
