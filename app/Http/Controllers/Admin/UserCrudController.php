@@ -49,7 +49,7 @@ class UserCrudController extends CrudController
         //         return $entry->name;
         //     }
         // });
-
+        CRUD::column('name');
         CRUD::column('email');
 
         CRUD::column('role')->label('Role')->type('closure')->function(function ($entry) {
@@ -95,7 +95,7 @@ class UserCrudController extends CrudController
     {
         CRUD::setValidation(UserRequest::class);
 
-        // CRUD::field('name');
+        CRUD::field('name');
         CRUD::field('email');
         CRUD::field('password')->type('password');
         CRUD::field('isAdmin')->label('Admin')->type('checkbox');

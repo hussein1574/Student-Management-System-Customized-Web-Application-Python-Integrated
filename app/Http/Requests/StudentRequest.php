@@ -25,7 +25,7 @@ class StudentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:5|max:255|regex:/^[a-zA-Z0-9\s]+$/',
+            //'name' => 'required|min:5|max:255|regex:/^[a-zA-Z0-9\s]+$/',
             //'name' => 'required|min:5|max:255',
         ];
     }

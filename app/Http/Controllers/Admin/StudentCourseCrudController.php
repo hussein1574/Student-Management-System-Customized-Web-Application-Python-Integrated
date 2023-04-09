@@ -40,8 +40,14 @@ class StudentCourseCrudController extends CrudController
     protected function setupListOperation()
     {
         // get the user name using the user id column
-        CRUD::column('student_id')->label('Student name');
-        CRUD::column('mail')->type('closure')->label('Email')->function(function ($entry) {
+
+        CRUD::column('student_id')->label('Student ID')->type('closure')->function(function ($entry) {
+            return $entry->student->id;
+        });
+        CRUD::column('name')->label('Name')->type('closure')->function(function ($entry) {
+            return $entry->student->user->name;
+        });
+        CRUD::column('email')->type('closure')->label('Email')->function(function ($entry) {
             // dd($entry->student->user->email);
             return $entry->student->user->email;
         });
@@ -49,8 +55,8 @@ class StudentCourseCrudController extends CrudController
         CRUD::column('course_id');
         CRUD::column('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::column('grade');
-        CRUD::column('created_at');
-        CRUD::column('updated_at');
+        //CRUD::column('created_at');
+        //CRUD::column('updated_at');
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
@@ -73,8 +79,10 @@ class StudentCourseCrudController extends CrudController
     {
         CRUD::setValidation(StudentCourseRequest::class);
 
-        //write a crud field that will show the student name instead of the student id while we have only the student id which we can get the user id by it
-        CRUD::field('student_id')->type('select')->entity('student')->attribute('name');
+        CRUD::field('student_id')->type('select')->entity('student')->attribute('name')->options(function ($query) {
+            return ($query->select('students.id as id', 'users.name')->join('users', 'users.id', '=', 'students.user_id')->get()) ;
+        });
+        // CRUD::field('student_id')->type('select')->entity('student')->attribute('id');
         CRUD::field('course_id');
         CRUD::field('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::field('grade');

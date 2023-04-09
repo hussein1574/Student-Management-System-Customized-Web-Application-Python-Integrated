@@ -32,6 +32,11 @@ class StudentCrudController extends CrudController
         CRUD::setModel(\App\Models\Student::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/student');
         CRUD::setEntityNameStrings('student', 'students');
+        $userId = backpack_user()->id;
+        $professor =  \App\Models\Professor::where('user_id', $userId)->first();
+        if($professor) {
+            $this->crud->denyAccess(['list','show','create', 'update', 'delete']);
+        }
     }
 
     /**
@@ -42,8 +47,14 @@ class StudentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        $this->crud->addButtonFromView('line', 'admit', 'moderate', 'beginning');
-        CRUD::column('name');
+        $userId = backpack_user()->id;
+        $professor =  \App\Models\Professor::where('user_id', $userId)->first();
+        if(!$professor)
+            $this->crud->addButtonFromView('line', 'admit', 'moderate', 'beginning');
+        CRUD::column('id')->label("Student ID");
+        CRUD::column('name')->label('Name')->type('closure')->function(function ($entry) {
+            return $entry->user->name;
+        });
         CRUD::column('user_id')->label('Email')->type('select')->entity('user')->attribute('email')->options(function ($query) {
             return $query->where('isAdmin', false)->get();
         });
@@ -119,7 +130,6 @@ class StudentCrudController extends CrudController
         });
 
 
-        CRUD::field('name');
         CRUD::field('department_id');
         CRUD::field('grade')->label('GPA');
 

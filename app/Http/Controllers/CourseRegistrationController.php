@@ -5,6 +5,7 @@ use App\Models\Course;
 use App\Models\Student;
 use App\Models\Constant;
 use App\Models\CoursePre;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\StudentCourse;
 use App\Jobs\RegisterCourseJob;
@@ -13,9 +14,9 @@ use Illuminate\Support\Facades\DB;
 
 class CourseRegistrationController extends Controller
 {
-    public function getCoursesStatus(Request $request, $userId)
+    public function getCoursesStatus(Request $request)
     {
-        //$userId = $request->user()->id;
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -24,7 +25,7 @@ class CourseRegistrationController extends Controller
             ], 404);
         }
 
-        $data = $this->getStudentCoursesStatus($student->id);
+        $data = $this->getStudentCoursesStatus($request,$student->id);
 
         return response()->json([
             'status' => 'success',
@@ -36,7 +37,7 @@ class CourseRegistrationController extends Controller
 
     }
 
-    public function getStudentCoursesStatus($studentId)
+    public function getStudentCoursesStatus(Request $request,$studentId)
     {   
         $studentDepartment = Student::where('id', $studentId)->first()->department_id;
         //get all courses that the student department offers
@@ -46,8 +47,18 @@ class CourseRegistrationController extends Controller
             $courses[] = Course::where('id', $departmentCourse->course_id)->first();
         }
         $studentCourses = StudentCourse::where('student_id', $studentId)->get();
+
+        $finishedcourses = StudentCourse::where('student_id', $studentId)
+        ->where('status_id', 1)
+        ->get();
+
+        $finishedHours = 0;
+        $mustTake = [];
+        foreach ($finishedcourses as $course) {
+            $finishedHours += $course->hours;
+        }
         $data = [];
-        $maxRetakeGrade = Constant::where('name', 'Max GPA to retake a course')->first()->value;
+        $maxRetakeGrade = Department::where('id', $studentDepartment)->first()->max_gpa_to_retake_a_course;
         foreach ($courses as $course) {
              $studentTakenCourse = $studentCourses->where('course_id', $course->id)->first();   
             if ($studentTakenCourse && $studentTakenCourse->status_id == 1 && $studentTakenCourse->grade > $maxRetakeGrade) 
@@ -66,6 +77,32 @@ class CourseRegistrationController extends Controller
                 ];
                 continue;
             }
+            if ($course->name == "Graduation Project")
+            {
+                if($finishedHours > Department::where('id', $studentDepartment)->first()->graduation_project_needed_hours && $this->getStudentLevel($studentId) == 4)
+                {
+                    $data[] = [
+                        'courseId' => $course->id,
+                        'courseName' => $course->name,
+                        'courseHours' => $course->hours,
+                        'level' => $course->level,
+                        'elective' => $course->isElective,
+                        'state' => 'must-take'
+                    ];
+                }
+                else
+                {
+                    $data[] = [
+                        'courseId' => $course->id,
+                        'courseName' => $course->name,
+                        'courseHours' => $course->hours,
+                        'level' => $course->level,
+                        'elective' => $course->isElective,
+                        'state' => 'need-pre-req'
+                    ];
+                }
+                continue;
+            }
             if ($course->isClosed) {
                 $data[] = [
                     'courseId' => $course->id,
@@ -79,15 +116,18 @@ class CourseRegistrationController extends Controller
                 $isPreReqPassed = $this->checkPreReqs($course, $studentCourses);
 
                 if ($isPreReqPassed) {
-                    if ($this->isMustTake($course->id)) {
-                        $data[] = [
-                            'courseId' => $course->id,
-                            'courseName' => $course->name,
-                            'courseHours' => $course->hours,
-                            'level' => $course->level,
-                            'elective' => $course->isElective,
-                            'state' => 'must-take'
-                        ];
+                    $minGraphLength = Constant::where('name', 'No. a course opens to be must')->first()->value;
+                    $numberOfCoursesThatItCanOpen = $this->getNumberOfCoursesThatItCanOpen($course->id);
+                    if ($numberOfCoursesThatItCanOpen > $minGraphLength) {
+                        array_push($mustTake, 
+                        [
+                                'courseId' => $course->id,
+                                'courseName' => $course->name,
+                                'courseHours' => $course->hours,
+                                'level' => $course->level,
+                                'elective' => $course->isElective,
+                                'numberOfCoursesThatItCanOpen' => $numberOfCoursesThatItCanOpen
+                            ]);
                     } else {
                         $data[] = [
                             'courseId' => $course->id,
@@ -110,12 +150,69 @@ class CourseRegistrationController extends Controller
                 }
             }
         }
+        $hoursPerTerm = $this->getHoursPerTerm($request,$studentId);
+        $maxHoursPerTerm = $hoursPerTerm->getData()->data->maxHoursPerTerm;
+        $noOfHours = 0;
+        foreach($mustTake as $course)
+        {
+            $noOfHours += $course['courseHours'];
+        }
+        $mustTake = $this->sortCourses($mustTake);
+        while($noOfHours > $maxHoursPerTerm)
+        { 
+            $openCourse = array_pop($mustTake);
+            $data[] = [
+                'courseId' => $openCourse['courseId'],
+                'courseName' => $openCourse['courseName'],
+                'courseHours' => $openCourse['courseHours'],
+                'level' => $openCourse['level'],
+                'elective' => $openCourse['elective'],
+                'state' => 'open'
+            ];
+            $noOfHours = 0;
+            foreach($mustTake as $course)
+            {
+                $noOfHours += $course['courseHours'];
+            }
+        }
+        foreach ($mustTake as $course) {
+            $data[] = [
+                'courseId' => $course['courseId'],
+                'courseName' => $course['courseName'],
+                'courseHours' => $course['courseHours'],
+                'level' => $course['level'],
+                'elective' => $course['elective'],
+                'state' => 'must-take'
+            ];
+        }
         return $data;
     }
     
-    public function register(Request $request, $userId)
+    public function sortCourses($courses)
     {
-        //$userId = $request->user()->id;
+        $sortedCourses = [];
+        $noOfCourses = count($courses);
+        for($i = 0; $i < $noOfCourses; $i++)
+        {
+            $max = $courses[$i]['numberOfCoursesThatItCanOpen'];
+            $maxIndex = $i;
+            for($j = $i + 1; $j < $noOfCourses; $j++)
+            {
+                if($courses[$j]['numberOfCoursesThatItCanOpen'] > $max)
+                {
+                    $max = $courses[$j]['numberOfCoursesThatItCanOpen'];
+                    $maxIndex = $j;
+                }
+            }
+            $temp = $courses[$i];
+            $courses[$i] = $courses[$maxIndex];
+            $courses[$maxIndex] = $temp;
+        }
+        return $courses;
+    }
+    public function register(Request $request)
+    {
+        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
@@ -137,7 +234,7 @@ class CourseRegistrationController extends Controller
                 'message' => 'Some courses are not found'
             ], 404);
         }
-        $data = $this->checkCoursesHours($courseIds,$request, $userId);
+        $data = $this->checkCoursesHours($courseIds,$request);
         if($data == "Exceed"){
             return response()->json([
                 'status' => 'fail',
@@ -194,7 +291,7 @@ class CourseRegistrationController extends Controller
             'message' => 'Courses registered successfully'
         ]);
     }
-    public function checkCoursesHours($courseIds,Request $request, $userId)
+    public function checkCoursesHours($courseIds,Request $request)
     {
         $data = "";
         $totalHours = 0;
@@ -202,7 +299,7 @@ class CourseRegistrationController extends Controller
             $course = Course::find($courseId);
             $totalHours += $course->hours;
         }
-        $hoursPerTerm = $this->getHoursPerTerm($request, $userId);
+        $hoursPerTerm = $this->getHoursPerTerm($request);
         $minHoursPerTerm = $hoursPerTerm->getData()->data->minHoursPerTerm;
         $maxHoursPerTerm = $hoursPerTerm->getData()->data->maxHoursPerTerm;
         if($totalHours > $maxHoursPerTerm)
@@ -234,13 +331,12 @@ class CourseRegistrationController extends Controller
                 }
                 return $isPreReqPassed;
     }
-    public function isMustTake($courseId)
+    public function getNumberOfCoursesThatItCanOpen($courseId)
     {
-        $minGraphLength = Constant::where('name', 'no. a course opens to be must')->first()->value;
+        
         $visited = [];
         $queue = [];
         array_push($queue, $courseId);
-
         while (!empty($queue)) {
             $vertex = array_shift($queue);
             $visited[] = $vertex;
@@ -254,26 +350,30 @@ class CourseRegistrationController extends Controller
                 }
             }
         }
-        return count($visited) > $minGraphLength;
+        return count($visited);
     }
-    public function getHoursPerTerm(Request $request, $userId)
+    public function getHoursPerTerm(Request $request, $studentId = null)
     {
-        //$userId = $request->user()->id;
+        if($studentId == null)
+{        $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {
             return response()->json([
                 'status' => 'fail',
                 'message' => 'Student not found'
             ], 404);
+        }}
+        else{
+            $student = Student::where('id', $studentId)->first();
         }
+        $studentDepartment = Student::where('id', $student->id)->first()->department_id;
 
-        $constants = Constant::all();
-        $highGPA = $constants->where('name', 'High GPA')->first()->value;
-        $lowGPA = $constants->where('name', 'Low GPA')->first()->value;
-        $minHoursPerTerm = $constants->where('name', 'Min Hours Per Term')->first()->value;
-        $maxHoursPerTermForHighGpa = $constants->where('name', 'Max Hours Per Term For High GPA')->first()->value;
-        $maxHoursPerTermForAverageGpa = $constants->where('name', 'Max Hours Per Term For Avg GPA')->first()->value;
-        $maxHoursPerTermForLowGpa = $constants->where('name', 'Max Hours Per Term For Low GPA')->first()->value;
+        $highGPA = Department::where('id', $studentDepartment)->first()->high_gpa;
+        $lowGPA = Department::where('id', $studentDepartment)->first()->low_gpa;
+        $minHoursPerTerm = Department::where('id', $studentDepartment)->first()->min_hours_per_term;
+        $maxHoursPerTermForHighGpa = Department::where('id', $studentDepartment)->first()->max_hours_per_term_for_high_gpa;
+        $maxHoursPerTermForAverageGpa = Department::where('id', $studentDepartment)->first()->max_hours_per_term_for_avg_gpa;
+        $maxHoursPerTermForLowGpa = Department::where('id', $studentDepartment)->first()->max_hours_per_term_for_low_gpa;
 
         $studentLevel = $this->getStudentLevel($student->id);
         if ($student->grade >= $highGPA ) {
@@ -310,7 +410,8 @@ class CourseRegistrationController extends Controller
             ->get();
         $hours = 0;
         $level = 0;
-        $graduationsHours = Constant::where('name', 'Graduation Hours')->first()->value;
+        $studentDepartment = Student::where('id', $studentId)->first()->department_id;
+        $graduationsHours = Department::where('id', $studentDepartment)->first()->graduation_hours;
         foreach($studentPassedCourses as $studentPassedCourse){
             $course = Course::find($studentPassedCourse->course_id);
             $hours += $course->hours;

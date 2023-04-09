@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Throwable;
 use App\Models\StudentCourse;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -50,4 +51,5 @@ class RegisterCourseJob implements ShouldQueue
             $studentCourse->save();
         }
     }
+
 }

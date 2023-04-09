@@ -17,7 +17,6 @@ return new class extends Migration
             $table->increments("id");
             $table->integer("user_id")->unsigned();
             $table->timestamps();
-            $table->string("name");
             $table->foreign("user_id")->references("id")->on("users");
         });
     }

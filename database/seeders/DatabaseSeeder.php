@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(CourseStatusesTableSeeder::class);
         $this->call(ConstantsSeeder::class);
-        // $this->call(DaysTableSeeder::class);
-        // $this->call(LecturesTimesSeeder::class);
+        $this->call(DaysTableSeeder::class);
+        $this->call(LecturesTimesSeeder::class);
         \App\Models\User::factory(10)->create();
         //$this->call(CoursesSeeder::class);
         // \App\Models\User::factory()->create([

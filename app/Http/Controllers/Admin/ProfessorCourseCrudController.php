@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Backpack\CRUD\app\Library\Widget;
 use App\Http\Requests\ProfessorCourseRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
@@ -39,7 +40,9 @@ class ProfessorCourseCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('professor_id');
+        CRUD::column('professor_id')->type('closure')->function(function ($entry) {
+            return $entry->professor->user->name;
+        });;
         CRUD::column('course_id');
         CRUD::column('created_at');
         CRUD::column('updated_at');
@@ -60,8 +63,15 @@ class ProfessorCourseCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(ProfessorCourseRequest::class);
+        // Widget::add()->type('script')->content('assets/professor.js');
+        // crud field for the relation to get the professor name from the user table using the user id column
+        // CRUD::field('professor_id')->type('select')->entity('professor')->attribute('id');
+        CRUD::field('professor_id')->type('select')->entity('professor')->attribute('name')->options(function ($query) {
+            return ($query->join('users', 'users.id', '=', 'professors.user_id')->get()) ;
+        });
 
-        CRUD::field('professor_id')->type('select')->entity('professor')->attribute('name');
+        // CRUD::field('Professor Name')->type('text')->attributes(['disabled' => 'disabled']);
+    
         CRUD::field('course_id');
 
         /**

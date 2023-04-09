@@ -39,7 +39,17 @@ class DepartmentCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-        CRUD::column('name');
+        CRUD::column('name')->label('Name');
+        CRUD::column('min_hours_per_term')->label('Min Hours Per Term');
+        CRUD::column('high_gpa')->label('High GPA');
+        CRUD::column('low_gpa')->label('Low GPA');
+        CRUD::column('max_hours_per_term_for_high_gpa')->label('Max Hours Per Term For High GPA');
+        CRUD::column('max_hours_per_term_for_avg_gpa')->label('Max Hours Per Term For Avg GPA');
+        CRUD::column('max_hours_per_term_for_low_gpa')->label('Max Hours Per Term For Low GPA');
+        CRUD::column('graduation_hours')->label('Graduation Hours');
+        CRUD::column('graduation_gpa')->label('Graduation GPA');
+        CRUD::column('max_gpa_to_retake_a_course')->label('Max GPA to retake a course');
+        CRUD::column('graduation_project_needed_hours')->label('Graduation Project Needed Hours');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -60,7 +70,17 @@ class DepartmentCrudController extends CrudController
     {
         CRUD::setValidation(DepartmentRequest::class);
 
-        CRUD::field('name');
+        CRUD::field('name')->label('Name');
+        CRUD::field('min_hours_per_term')->label('Min Hours Per Term');
+        CRUD::field('high_gpa')->label('High GPA');
+        CRUD::field('low_gpa')->label('Low GPA');
+        CRUD::field('max_hours_per_term_for_high_gpa')->label('Max Hours Per Term For High GPA');
+        CRUD::field('max_hours_per_term_for_avg_gpa')->label('Max Hours Per Term For Avg GPA');
+        CRUD::field('max_hours_per_term_for_low_gpa')->label('Max Hours Per Term For Low GPA');
+        CRUD::field('graduation_hours')->label('Graduation Hours');
+        CRUD::field('graduation_gpa')->label('Graduation GPA');
+        CRUD::field('max_gpa_to_retake_a_course')->label('Max GPA to retake a course');
+        CRUD::field('graduation_project_needed_hours')->label('Graduation Project Needed Hours');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

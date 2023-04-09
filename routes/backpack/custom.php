@@ -33,6 +33,14 @@ Route::group([
     Route::get('/upload-program', [UploadProgram::class, 'index'])->name('upload-program');
     Route::post('/upload-program',[UploadProgram::class,'upload'])->name('upload-program');
 
+    Route::get('/upload-students-results', [StudentCoursesController::class, 'uploadStudentsResultsIndex'])->name('upload-students-results');
+    Route::post('/upload-students-results',[StudentCoursesController::class,'uploadStudentsResults'])->name('upload-students-results');
+
+    Route::get('/admit-students-results', [StudentCoursesController::class, 'admitStudentsResultsIndex'])->name('admit-students-results');
+    Route::post('/admit-students-results',[StudentCoursesController::class,'admitStudentsResults'])->name('admit-students-results');
+    Route::delete('/delete-student-results',[StudentCoursesController::class,'deleteStudentResults'])->name('delete-student-results');
+
+
     Route::get('/generate-exams', [ExamsTimeTableController::class, 'index'])->name('generate-exams');
     Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
 
@@ -55,4 +63,5 @@ Route::group([
     Route::crud('course-status', 'CourseStatusCrudController');
     Route::crud('professor', 'ProfessorCrudController');
     Route::crud('constant', 'ConstantCrudController');
+    Route::crud('academic-advisor', 'AcademicAdvisorCrudController');
 }); // this should be the absolute last line of this file

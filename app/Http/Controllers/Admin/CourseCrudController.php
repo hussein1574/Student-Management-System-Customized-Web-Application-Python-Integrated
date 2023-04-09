@@ -42,7 +42,9 @@ class CourseCrudController extends CrudController
         CRUD::column('name');
         CRUD::column('code');
         CRUD::column('hours');
-        CRUD::column('level');
+        CRUD::column('level')->label('Level')->type('closure')->function(function ($entry) {
+            return $entry->level == 0 ? "Zero" : $entry->level;
+        });;
         CRUD::column('isElective')->label('Elective')->type('closure')->function(function ($entry) {
             return $entry->isElective ? "Yes " : "No";
         });

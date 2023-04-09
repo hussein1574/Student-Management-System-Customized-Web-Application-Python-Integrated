@@ -25,7 +25,17 @@ class DepartmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:5|max:255'
+            'name' => 'required|min:5|max:255|regex:/^[a-zA-Z0-9\s]+$/',
+            'min_hours_per_term' => 'required|numeric',
+            'high_gpa' => 'required|numeric',
+            'low_gpa' => 'required|numeric',
+            'max_hours_per_term_for_high_gpa' => 'required|numeric',
+            'max_hours_per_term_for_avg_gpa' => 'required|numeric',
+            'max_hours_per_term_for_low_gpa' => 'required|numeric',
+            'graduation_hours' => 'required|numeric',
+            'graduation_gpa' => 'required|numeric',
+            'max_gpa_to_retake_a_course' => 'required|numeric',
+            'graduation_project_needed_hours' => 'required|numeric',
         ];
     }
 

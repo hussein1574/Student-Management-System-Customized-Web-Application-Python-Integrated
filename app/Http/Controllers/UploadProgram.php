@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
-use App\Models\Constant;
 use App\Models\CoursePre;
 use App\Models\Department;
 use Illuminate\Http\Request;

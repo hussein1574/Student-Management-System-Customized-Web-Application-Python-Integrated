@@ -36,8 +36,10 @@ class ExamTimetableProcess implements ShouldQueue
      */
     public function handle()
     {
+
         $command = "python " . base_path('app/scripts/main.py') . " $this->maxStds $this->maxRooms";
         exec($command);
+        
     }
     public function failed(Throwable $exception)
     {

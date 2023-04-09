@@ -36,7 +36,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                     </div>
                     <div class="row" style="display:flex;justify-content:center;align-items:center; margin-top:30px">
                         <div class="text-right">
                             <form action="{{route('admit-student-courses', $studentId)}}" method="POST" class="d-inline">
