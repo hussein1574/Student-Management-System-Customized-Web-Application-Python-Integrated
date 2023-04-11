@@ -169,11 +169,7 @@ class CourseRegistrationController extends Controller
                 'elective' => $openCourse['elective'],
                 'state' => 'open'
             ];
-            $noOfHours = 0;
-            foreach($mustTake as $course)
-            {
-                $noOfHours += $course['courseHours'];
-            }
+            $noOfHours -= $openCourse['courseHours'];
         }
         foreach ($mustTake as $course) {
             $data[] = [

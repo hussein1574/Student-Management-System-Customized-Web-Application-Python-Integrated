@@ -2,12 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use DateTime;
+use DateInterval;
+use Carbon\Carbon;
+use App\Models\Hall;
+use App\Models\Course;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Models\StudentCourse;
 use App\Jobs\ExamTimetableJob;
 use App\Models\ExamsTimeTable;
 use App\Jobs\ExamTimetableProcess;
+use Illuminate\Support\Facades\DB;
+use Rap2hpoutre\FastExcel\FastExcel;
 use Symfony\Component\Process\Process;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -20,20 +27,17 @@ class ExamsTimeTableController extends Controller
     }
     public function runScript(Request $request)
     {
-        try {
-            $request->validate([
-                'maxStds' => ['required', 'int'],
-                'maxRooms' => ['required', 'int'],
-            ]);
-        } catch (ValidationException $e) {
+        $examsStartDate = $request->input('examsStartDate');
+        if($examsStartDate == null)
+        {
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Validation failed',
-                'errors' => $e->errors(),
+                'errors' => "Empty exams start date",
             ], 422);
         }
         
-        dispatch(new ExamTimetableProcess($request->maxStds,$request->maxRooms));
+        dispatch(new ExamTimetableProcess($examsStartDate));
         
         return response()->json([
         'status' => 'success',

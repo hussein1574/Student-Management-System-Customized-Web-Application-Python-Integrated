@@ -323,10 +323,7 @@ class StudentCoursesController extends Controller
             $data = array_map('str_getcsv', $data);
 
             $header = $data[0];
-            unset($data[0]);
-
-            
-
+            unset($data[0]);  
 
             dispatch(new ResultsCsvProcess($data, $header, $courseId));
 
@@ -391,7 +388,6 @@ class StudentCoursesController extends Controller
             session()->flash('alert', 'warning');
             session()->flash('message', 'You have admited all the results');
         }
-        //dd($pendingCourses);
         return view('admitStudentsResults', compact('pendingCourses'));
     }
     public function admitStudentsResults(Request $request)

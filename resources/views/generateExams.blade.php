@@ -5,40 +5,13 @@
 <form method="post" action="{{ route('run-script') }}">
     @CSRF
     @method('POST')
-    {{-- <input
-        type="hidden"
-        name="_token"
-        value="nZBesZzauQ85WgrrL37JhGuLx1bIj0oWkQ0Q1T6L"
-    /> --}}
 
-    {{-- <input
-        type="hidden"
-        name="_http_referrer"
-        value="http://127.0.0.1:8000/admin/run-script"
-    /> --}}
 
     <div class="card">
         <div class="card-body row">
-            <div
-                class="form-group col-sm-12 required"
-                element="div"
-                bp-field-wrapper="true"
-                bp-field-name="name"
-                bp-field-type="text"
-            >
-                <label>Maximum students per day</label>
-
-                <input type="text" name="maxStds" value="" class="form-control" />
-            </div>
-            <div
-                class="form-group col-sm-12 required"
-                element="div"
-                bp-field-wrapper="true"
-                bp-field-name="grade"
-                bp-field-type="text"
-            >
-                <label>Maximum halls per day</label>
-                <input type="text" name="maxRooms" value="" class="form-control" />
+            <div class="form-group col-sm-12 required">
+                <label>Exams Starting Date</label>
+                <input type="date" name="examsStartDate" value="" class="form-control" />
             </div>
         </div>
     </div>
@@ -65,7 +38,7 @@
 </form>
 @endsection
 @section('after_scripts')
-    <script>
+    {{-- <script>
         $(document).ready(function () {
             $('form').submit(function (event) {
                 event.preventDefault();
@@ -83,6 +56,6 @@
                 });
             });
         });
-    </script>
+    </script> --}}
 @endsection
 

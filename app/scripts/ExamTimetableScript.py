@@ -16,6 +16,9 @@ class ExamTimetableScript :
     maxRooms = 0
     GapDays = 0
     minStds = 0
+    realHalls = 0
+    hallNames = 0
+    hallCapacity = 0
     subjects = []
          
     def find_conflict(self,subject1, Days):
@@ -28,6 +31,9 @@ class ExamTimetableScript :
         filename = os.path.join(self.script_dir, 'conflict_table.xlsx')
         self.conflictData = pd.read_excel(filename)
         self.new_subjects = self.conflictData.columns
+        self.subjects = pd.Index(self.new_subjects)
+        #remove first element in subjects
+        self.subjects = self.subjects[1:]
         Days = []
         #function to calculate the number of non zero elements in each row in conflictData
         fun = lambda x: sum(x!=0)
@@ -59,6 +65,12 @@ class ExamTimetableScript :
         self.minStds = 10
         subjectsIndecies = []
         registeredSubjects = []
+        hallsFilename = os.path.join(self.script_dir, 'halls.xlsx')
+        self.realHalls = pd.read_excel(hallsFilename)
+        self.hallNames = self.realHalls.iloc[:,0].values
+        self.hallCapacity = self.realHalls.iloc[:,1].values
+        self.maxRooms = len(self.realHalls)
+        '''
         # to read the file
         assignedCourses = pd.read_excel(fileName, sheet_name='Registrations')
         #read all the columns names
@@ -97,6 +109,7 @@ class ExamTimetableScript :
                 worksheet.write(
                     index + 1, i + 1, len([1 for z in range(len(sub2)) if sub1[z] == 1 and sub2[z] == 1 ]))
         workbook.close()
+        '''
 
         self.getTheMinNumberOfDays()
 
@@ -107,7 +120,7 @@ class ExamTimetableScript :
         worksheet = workbook.add_worksheet()
         halls  = ["Day-Time"]
         for field in range(0,self.maxRooms,1):
-            halls.append("Hall-" + str(field))
+            halls.append(self.hallNames[field])
         #add the first row (titles)
         for index, room in enumerate(halls):
             worksheet.write(0, index, room)
@@ -131,7 +144,7 @@ class ExamTimetableScript :
         tableCourses = prettytable.PrettyTable()
         halls  = ["Day-Time"]
         for index in range(0,self.maxRooms,1):
-            halls.append("Hall-" + str(index))
+            halls.append(self.hallNames[index])
         tableCourses.field_names =  halls
 
         counter = 0
@@ -229,31 +242,40 @@ class ExamTimetableScript :
                                 end = True
                                 break   
         return countExceed
-
     #soft constraint #2
-    def checkExceedMaxNumberOfStudents(self,timeTable):
-        if(self.maxStds == 0):
-            return 0
-        #For fitness
+    def checkExceedMaxNumberOfStudentsInHall(self,timeTable):
         countExceed = 0
-        numberOfStudentsInDay = 0
-        subjectsInDay = []
-
         for day in timeTable:
-            for subject in day:
+            for hallNumber ,subject in enumerate(day):
                 if(subject):
-                    subjectsInDay.append(subject)
-
-            for subject in subjectsInDay:
-                    numberOfStudentsInDay += self.conflictData[subject][self.subjects.get_loc(subject)]       
-            numberOfStudentsInDay -= self.countCommonStudentsInDay(subjectsInDay)
-
-            if(numberOfStudentsInDay > self.maxStds):
-                countExceed += 5
-            numberOfStudentsInDay = 0
-            subjectsInDay.clear()        
-
+                    if(self.conflictData[subject][self.subjects.get_loc(subject)] > self.hallCapacity[hallNumber-1]):
+                        countExceed += 50
         return countExceed
+                      
+    # #soft constraint #3
+    # def checkExceedMaxNumberOfStudents(self,timeTable):
+    #     if(self.maxStds == 0):
+    #         return 0
+    #     #For fitness
+    #     countExceed = 0
+    #     numberOfStudentsInDay = 0
+    #     subjectsInDay = []
+
+    #     for day in timeTable:
+    #         for subject in day:
+    #             if(subject):
+    #                 subjectsInDay.append(subject)
+
+    #         for subject in subjectsInDay:
+    #                 numberOfStudentsInDay += self.conflictData[subject][self.subjects.get_loc(subject)]       
+    #         numberOfStudentsInDay -= self.countCommonStudentsInDay(subjectsInDay)
+
+    #         if(numberOfStudentsInDay > self.maxStds):
+    #             countExceed += 5
+    #         numberOfStudentsInDay = 0
+    #         subjectsInDay.clear()        
+
+    #     return countExceed
 
     def createTimeTable(self):
         row = []
@@ -285,7 +307,7 @@ class ExamTimetableScript :
         #Count exceed gap
         exceedGap = self.checkExceedGap(timeTable)
         #Count Exceed Max Number Of Students
-        exceedMaxNumberOfStudents = self.checkExceedMaxNumberOfStudents(timeTable)
+        exceedMaxNumberOfStudents = self.checkExceedMaxNumberOfStudentsInHall(timeTable)
 
         soft_value = exceedMaxNumberOfStudents  + exceedGap
         hard_value = countMissingCourses + countClashesExams 

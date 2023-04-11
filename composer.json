@@ -7,10 +7,13 @@
     "require": {
         "php": "^8.0.2",
         "backpack/crud": "^5.4",
+        "box/spout": "^3.3",
         "guzzlehttp/guzzle": "^7.5",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
-        "laravel/tinker": "^2.7"
+        "laravel/tinker": "^2.7",
+        "maatwebsite/excel": "*",
+        "rap2hpoutre/fast-excel": "^5.2"
     },
     "require-dev": {
         "backpack/generators": "^3.3",
