@@ -44,6 +44,9 @@ class ProgramCsvProcess implements ShouldQueue
         foreach($this->data as $course){
             $courseData = array_slice($course, 0, -2);
             $row = array_combine($courseHeader, $courseData);
+            $courseExist = Course::where('code', trim($courseData[0]))->first();
+            if($courseExist)
+                continue;
             Course::create([
                 'code' => trim($courseData[0]),
                 'name' => $row['name'],

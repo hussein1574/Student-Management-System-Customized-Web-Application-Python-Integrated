@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StudentCourseRequest extends FormRequest
@@ -24,8 +25,20 @@ class StudentCourseRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            'student_id' => 'required|exists:students,id',
+            'course_id' => [
+                'required',
+                'exists:courses,id',
+                Rule::unique('student_courses')->where(function ($query) {
+                    return $query->where('student_id', $this->student_id);
+                }),
+            ],
+            'status_id' => 'required',
+            'grade' => 'nullable|numeric|min:0|max:100',
+        ];
     }
+    
 
     /**
      * Get the validation attributes that apply to the request.

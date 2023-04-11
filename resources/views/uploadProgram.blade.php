@@ -6,7 +6,7 @@
 
     <div class="row">
         <div class="col-md-12" style="display:flex;justify-content:space-between;align-items:center;margin-top:30px;">
-            <div class="card" style="width:49%;height:100%">
+            <div class="card" style="width:100%;height:100%">
                 <div class="card-header">Upload the program</div>
                 <div class="card-body">
                     <form action="{{ route('upload-program') }}" method="POST" enctype="multipart/form-data">
@@ -31,10 +31,51 @@
             </div>
         </div>
     </div>
+    <div class="card" style="width:100%;height:100%">
+        <div class="card-header">Clear Regulation Courses</div>
+        <div class="card-body">
+            <form method="post" action="{{ route('clear-regulation-courses') }}">
+                @CSRF
+                @method('DELETE')
+                <div class="form-group">
+                    <label for="course">Regulation:</label>
+                    <select class="form-control" id="regulation" name="regulation_id">
+                        <!-- dynamically populate options based on level selection -->
+                        <option value="">Select a regulation</option>
+                        @foreach ($regulations as $regulation)
+                        <option
+                            value="{{ $regulation['id'] }}"
+                            class="regulation-option"
+                        >
+                            {{ $regulation['name'] }}
+                        </option> 
+                         @endforeach
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" onclick="checkRegulationSelected()" class="btn btn-danger">
+                        <span class="la la-trash" role="presentation" aria-hidden="true"></span>
+                        &nbsp;
+                        <span data-value="clear-table">Clear Courses</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+   
 @endsection
 
 @section('after_scripts')
     <script>
+        function checkRegulationSelected() {
+        var select = document.getElementById("regulation");
+        var course = select.options[select.selectedIndex].value;
+        if (course === "") {
+            Swal.fire("Error", "Please select a regulation", "error");
+            event.preventDefault();
+        } 
+    }
         $(document).ready(function() {
             // Display file name on input change
             $('#file').on('change', function() {

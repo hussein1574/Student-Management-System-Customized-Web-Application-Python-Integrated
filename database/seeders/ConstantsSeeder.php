@@ -14,6 +14,7 @@ class ConstantsSeeder extends Seeder
     {
         $constants = [
             ['name' => 'No. a course opens to be must', 'value' => 5],
+            ['name' => 'Regestration Opened' , 'value' => 1]
         ];
 
         foreach ($constants as $constant) {

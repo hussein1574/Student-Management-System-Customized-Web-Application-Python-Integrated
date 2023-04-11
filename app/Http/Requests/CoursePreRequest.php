@@ -25,9 +25,20 @@ class CoursePreRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'course_id' => 'required|exists:courses,id',
+            'coursePre_id' => [
+                'required',
+                'exists:courses,id',
+                function ($attribute, $value, $fail) {
+                    if ($value == $this->input('course_id')) {
+                        $fail('A course cannot be added as a prerequisite for itself.');
+                    }
+                },
+            ],
+            'passed' => 'required|boolean',
         ];
     }
+    
 
     /**
      * Get the validation attributes that apply to the request.

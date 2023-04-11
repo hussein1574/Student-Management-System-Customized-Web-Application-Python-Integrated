@@ -32,6 +32,7 @@ Route::group([
 
     Route::get('/upload-program', [UploadProgram::class, 'index'])->name('upload-program');
     Route::post('/upload-program',[UploadProgram::class,'upload'])->name('upload-program');
+    Route::delete('/clear-regulation-courses',[UploadProgram::class,'delete'])->name('clear-regulation-courses');
 
     Route::get('/upload-students-results', [StudentCoursesController::class, 'uploadStudentsResultsIndex'])->name('upload-students-results');
     Route::post('/upload-students-results',[StudentCoursesController::class,'uploadStudentsResults'])->name('upload-students-results');
@@ -42,6 +43,7 @@ Route::group([
 
 
     Route::get('/generate-exams', [ExamsTimeTableController::class, 'index'])->name('generate-exams');
+    Route::delete('/clear-exam-timetable', [ExamsTimeTableController::class, 'clearExams'])->name('clear-exam-timetable');
     Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
 
     Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');

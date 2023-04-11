@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProfessorCourse;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ProfessorCourseRequest extends FormRequest
@@ -25,7 +27,14 @@ class ProfessorCourseRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'professor_id' => 'required|exists:professors,id',
+            'course_id' => [
+                'required',
+                'exists:courses,id',
+                Rule::unique((new ProfessorCourse)->getTable())
+                    ->where('professor_id', $this->professor_id)
+                    ->where('course_id', $this->course_id)
+            ],
         ];
     }
 

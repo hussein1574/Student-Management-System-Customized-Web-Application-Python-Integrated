@@ -15,7 +15,14 @@ class UploadProgram extends Controller
 {
     public function index(Request $request)
     {
-        return view('uploadProgram');
+        $departments = Department::all();
+        $regulations = $departments->map(function ($department) {
+            return [
+                'id' => $department->id,
+                'name' => $department->name,
+            ];
+        });
+        return view('uploadProgram', compact('regulations'));
     }
     public function upload(Request $request)
     {
@@ -41,5 +48,17 @@ class UploadProgram extends Controller
             'status' => 'failed',
             'result' => 'Please upload a CSV file',
         ], 400);
+    }
+    public function delete(Request $request)
+    {
+        $departmentCourses = DepartmentCourse::where('department_id', $request->regulation_id)->get();
+        $departmentCourses->each(function ($departmentCourse) {
+            $departmentCourse->delete();
+        });
+        return response()->json([
+            'status' => 'success',
+            'result' => 'The program is deleted successfully.',
+        ]);
+        
     }
 }

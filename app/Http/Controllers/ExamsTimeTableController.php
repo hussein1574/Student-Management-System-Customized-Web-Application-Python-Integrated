@@ -84,4 +84,12 @@ class ExamsTimeTableController extends Controller
         }
         return $exams;
     }
+    public function clearExams(Request $request)
+    {
+        ExamsTimeTable::truncate();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Exams cleared successfully',
+        ]);
+    }
 }
