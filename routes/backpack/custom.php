@@ -48,6 +48,10 @@ Route::group([
 
     Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');
     Route::get('/dashboard/registered-students-chart-data', [DashboardController::class, 'registeredStudentChartData'])->name('dashboard.registeredStudentsChartData');
+
+    Route::delete('/clear-students-registration', [DashboardController::class, 'clearStudentsRegistration'])->name('clear-students-registration');
+    Route::post('/change-registration-state', [DashboardController::class, 'changeRegistrationState'])->name('change-registration-state');
+    
     Route::crud('lectures-time', 'LecturesTimeCrudController');
     Route::crud('user', 'UserCrudController');
     Route::crud('student-course', 'StudentCourseCrudController');

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Constant;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class DashboardController extends Controller
 {
@@ -64,5 +65,21 @@ class DashboardController extends Controller
         ];
 
         return response()->json($data);
+    }
+    public function clearStudentsRegistration()
+    {
+            dispatch(new \App\Jobs\ClearStudentRegistrationProcess());
+            sleep(2);
+            return redirect()->back()->with('success', 'Registration Process Cleared Successfully');
+    }
+    public function changeRegistrationState(){
+        $registrationState = Constant::where('name', 'Regestration Opened')->first();
+        if($registrationState->value == 0){
+            $registrationState->value = 1;
+        }else{
+            $registrationState->value = 0;
+        }
+        $registrationState->save();
+        return redirect()->back();
     }
 }

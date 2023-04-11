@@ -102,6 +102,12 @@ class StudentCourseCrudController extends CrudController
      */
     protected function setupUpdateOperation()
     {
-        $this->setupCreateOperation();
+        CRUD::field('student_id')->type('select')->entity('student')->attribute('name')->options(function ($query) {
+            return ($query->select('students.id as id', 'users.name')->join('users', 'users.id', '=', 'students.user_id')->get()) ;
+        });
+        // CRUD::field('student_id')->type('select')->entity('student')->attribute('id');
+        CRUD::field('course_id');
+        CRUD::field('status_id')->type('select')->entity('courseStatus')->attribute('status');
+        CRUD::field('grade');
     }
 }

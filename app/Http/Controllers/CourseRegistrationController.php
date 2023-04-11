@@ -24,7 +24,13 @@ class CourseRegistrationController extends Controller
                 'message' => 'Student not found'
             ], 404);
         }
-
+        $registrationState = Constant::where('name', 'Regestration Opened')->first();
+        if (!$registrationState) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Registration is closed'
+            ], 404);
+        }
         $data = $this->getStudentCoursesStatus($request,$student->id);
 
         return response()->json([
@@ -216,6 +222,13 @@ class CourseRegistrationController extends Controller
                 'message' => 'Student not found'
             ], 404);
         }
+        $registrationState = Constant::where('name', 'Regestration Opened')->first();
+        if (!$registrationState) {
+            return response()->json([
+                'status' => 'fail',
+                'message' => 'Registration is closed'
+            ], 404);
+        }
         
         $courseIds = $request->input('coursesIds');
         // Make sure that courseIds is an array
@@ -350,15 +363,15 @@ class CourseRegistrationController extends Controller
     }
     public function getHoursPerTerm(Request $request, $studentId = null)
     {
-        if($studentId == null)
-{        $userId = $request->user()->id;
-        $student = Student::where('user_id', $userId)->first();
-        if (!$student) {
-            return response()->json([
-                'status' => 'fail',
-                'message' => 'Student not found'
-            ], 404);
-        }}
+        if($studentId == null) {
+            $userId = $request->user()->id;
+            $student = Student::where('user_id', $userId)->first();
+            if (!$student) {
+                return response()->json([
+                    'status' => 'fail',
+                    'message' => 'Student not found'
+                ], 404);
+            }}
         else{
             $student = Student::where('id', $studentId)->first();
         }
@@ -398,7 +411,6 @@ class CourseRegistrationController extends Controller
                 ]
             ]);
     }
-
     public function getStudentLevel($studentId)
     {
         $studentPassedCourses = StudentCourse::where('student_id', $studentId)

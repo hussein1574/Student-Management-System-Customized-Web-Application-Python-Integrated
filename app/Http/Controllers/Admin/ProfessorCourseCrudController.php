@@ -30,6 +30,8 @@ class ProfessorCourseCrudController extends CrudController
         CRUD::setModel(\App\Models\ProfessorCourse::class);
         CRUD::setRoute(config('backpack.base.route_prefix') . '/professor-course');
         CRUD::setEntityNameStrings('professor course', 'professor courses');
+        //disable edit button
+        $this->crud->denyAccess(['update']);
     }
 
     /**
