@@ -42,6 +42,11 @@
                             <button onclick="checkCourseSelected()" type="submit" class="btn btn-primary">Upload File</button>
                         </div>
                     </div>
+                    <div class="row" style="display:flex;justify-content:center;align-items:center; margin-top:30px">
+
+                        <button type="button" class="btn btn-success" onclick="exportStudentSheet()">Export Student Sheet</button>
+
+                    </div>
                 </form>
             </div>
         </div>
@@ -53,6 +58,26 @@
 
 @section('after_scripts')
 <script>
+    function exportStudentSheet() {
+        const courseSelect = document.getElementById("course");
+        const courseId = courseSelect.options[courseSelect.selectedIndex].value;
+        if (courseId === "") {
+            Swal.fire("Error", "Please select a course", "error");
+            return;
+        }
+
+        // build the URL for the export
+        const exportUrl = "{{ route('export-students-sheet') }}";
+        const params = new URLSearchParams({
+            course_id: courseId
+            , export_type: 'without_marks'
+        });
+        const url = exportUrl + '?' + params.toString();
+
+        // open the export URL in a new window
+        window.open(url, '_blank');
+    }
+
     function checkCourseSelected() {
         var select = document.getElementById("course");
         var course = select.options[select.selectedIndex].value;

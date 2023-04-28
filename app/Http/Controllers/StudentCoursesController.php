@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Course;
+use League\Csv\Writer;
 use App\Models\Student;
 use App\Models\CoursePre;
 use App\Models\Professor;
@@ -12,41 +13,46 @@ use Illuminate\Http\Request;
 use App\Models\StudentCourse;
 use App\Jobs\ResultsCsvProcess;
 use App\Models\ProfessorCourse;
+use Rap2hpoutre\FastExcel\FastExcel;
 use App\Jobs\UpdateStudentsGPAProcess;
+use Illuminate\Support\Facades\Storage;
 use App\Jobs\DeleteStudentResultsProcess;
 use App\Http\Controllers\CourseRegistrationController;
 
 class StudentCoursesController extends Controller
 {
-    public function getCurrentCourses(Request $request)
+    public function exportStudentsSheet(Request $request)
     {
-        $userId = $request->user()->id;
-        $student = Student::where('user_id', $userId)->first();
-        if (!$student) {
-            return response()->json([
-                'status'=> 'fail',
-                'message' => 'Student not found '], 404);
+        $courseId = $request->course_id;
+        $students = StudentCourse::where('course_id', $courseId)->get();
+        $studentsIds = [];
+        foreach ($students as $student) {
+            $studentsIds[] = $student->student_id;
         }
-
-        $courses = StudentCourse::where('student_id', $student->id)
-            ->where('status_id', 3)
-            ->get();
+        $students = Student::whereIn('id', $studentsIds)->get();
+        $students = $students->map(function ($student) {
+            return [
+                'Student ID' => $student->id,
+                'Student Name' => $student->user->name,
+                'GPA' => null,
+                'Status' => null
+            ];});
         
+         $path = storage_path('app/StudentsResults.csv');
+        // Export the data to a CSV file
+        (new FastExcel($students))->export($path);
 
-        return response()->json([
-            'status' => 'success',
-            'results' => $courses->count(),
-            'data' =>[
-                'courses' => $courses->map(function ($course) {
-                    return [
-                        'name' => $course->course->name,
-                        'hours' => $course->course->hours,
-                        'level' => $course->course->level,
-                    ];
-                })
-            ]
+        // Read the CSV file contents
+        $contents = Storage::get('StudentsResults.csv');
 
-        ]);
+        // Delete the CSV file
+        Storage::delete('StudentsResults.csv');
+
+        // Return the file as a downloadable response
+        return response()->streamDownload(function () use ($contents) {
+            echo $contents;
+        }, 'StudentsResults.csv');
+      
     }
     public function getFinishedCourses(Request $request)
     {

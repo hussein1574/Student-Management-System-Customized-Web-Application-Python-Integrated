@@ -36,6 +36,7 @@ Route::group([
 
     Route::get('/upload-students-results', [StudentCoursesController::class, 'uploadStudentsResultsIndex'])->name('upload-students-results');
     Route::post('/upload-students-results',[StudentCoursesController::class,'uploadStudentsResults'])->name('upload-students-results');
+    Route::get('/export-students-sheet', [StudentCoursesController::class,'exportStudentsSheet'])->name('export-students-sheet');
 
     Route::get('/admit-students-results', [StudentCoursesController::class, 'admitStudentsResultsIndex'])->name('admit-students-results');
     Route::post('/admit-students-results',[StudentCoursesController::class,'admitStudentsResults'])->name('admit-students-results');
