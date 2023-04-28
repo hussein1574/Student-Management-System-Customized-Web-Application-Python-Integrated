@@ -41,7 +41,7 @@ class StudentCoursesController extends Controller
                     return [
                         'name' => $course->course->name,
                         'hours' => $course->course->hours,
-                        'level' => $course->level,
+                        'level' => $course->course->level,
                     ];
                 })
             ]

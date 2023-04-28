@@ -24,38 +24,38 @@
 </div>
 
 
-        <form method="post" action="{{ route('clear-exam-timetable') }}">
-            @CSRF
-            @method('DELETE')
-            <div class="form-group">
-                <button type="submit" class="btn btn-danger">
-                    <span class="la la-trash" role="presentation" aria-hidden="true"></span>
-                    &nbsp;
-                    <span data-value="clear-table">Clear Exam Table</span>
-                </button>
-            </div>
-        </form>
+<form method="post" action="{{ route('clear-exam-timetable') }}">
+    @CSRF
+    @method('DELETE')
+    <div class="form-group">
+        <button type="submit" class="btn btn-danger">
+            <span class="la la-trash" role="presentation" aria-hidden="true"></span>
+            &nbsp;
+            <span data-value="clear-table">Clear Exam Table</span>
+        </button>
+    </div>
+</form>
 
 @endsection
 @section('after_scripts')
-    <script>
-        $(document).ready(function () {
-            $('form').submit(function (event) {
-                event.preventDefault();
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: $(this).attr('method'),
-                    data: $(this).serialize(),
-                    dataType: 'json',
-                    success: function (response) {
-                        Swal.fire('Success', response.message, 'success');
-                    },
-                    error: function (response) {
-                        Swal.fire('Error', response.responseJSON.message, 'error');
-                    }
-                });
+<script>
+    $(document).ready(function() {
+        $('form').submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: $(this).attr('action')
+                , type: $(this).attr('method')
+                , data: $(this).serialize()
+                , dataType: 'json'
+                , success: function(response) {
+                    Swal.fire('Success', response.message, 'success');
+                }
+                , error: function(response) {
+                    Swal.fire('Error', response.responseJSON.message, 'error');
+                }
             });
         });
-    </script>
-@endsection
+    });
 
+</script>
+@endsection

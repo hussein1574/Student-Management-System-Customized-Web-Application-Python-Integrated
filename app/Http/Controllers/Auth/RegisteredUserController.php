@@ -43,7 +43,6 @@ class RegisteredUserController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'department' => ['int', 'max:255'],
-                'role' => ['required', 'string', 'max:255'],
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -60,20 +59,12 @@ class RegisteredUserController extends Controller
         
         event(new Registered($user));
 
-        $role = $request->input('role');
+        $student = Student::create([
+            'user_id' => $user->id,
+            'name' => $request->name,
+            'department_id' => $request->department,
+        ]);
         
-        if ($role == "Student") {
-            $student = Student::create([
-                'user_id' => $user->id,
-                'name' => $request->name,
-                'department_id' => $request->department,
-            ]);
-        } else {
-            $proffesor = Professor::create([
-                'user_id' => $user->id,
-                'name' => $request->name,
-            ]);
-        }
 
 
         return response()->json([
