@@ -25,7 +25,7 @@ class CourseRegistrationController extends Controller
             ], 404);
         }
         $registrationState = Constant::where('name', 'Regestration Opened')->first();
-        if (!$registrationState) {
+        if ($registrationState->value == 0) {
             return response()->json([
                 'status' => 'fail',
                 'message' => 'Registration is closed'
@@ -223,7 +223,7 @@ class CourseRegistrationController extends Controller
             ], 404);
         }
         $registrationState = Constant::where('name', 'Regestration Opened')->first();
-        if (!$registrationState) {
+        if ($registrationState->value == 0) {
             return response()->json([
                 'status' => 'fail',
                 'message' => 'Registration is closed'
