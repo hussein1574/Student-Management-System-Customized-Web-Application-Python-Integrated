@@ -39,9 +39,9 @@ class ResultsCsvProcess implements ShouldQueue
     {
         foreach($this->data as $course){
             $row = array_combine($this->header, $course);        
-            $studentCourse = StudentCourse::where('student_id', $row['Student ID'])->where('course_id', $this->courseId)->first();
+            $studentCourse = StudentCourse::where('student_id', $row['﻿Student ID'])->where('course_id', $this->courseId)->first();
             $studentCourse->grade = $row['GPA'];
-            $studentCourse->status_id = $row['Status'] == 'Pass' ? 7 : 8;
+            $studentCourse->status_id = strtolower($row['Status'])  == 'pass' ? 7 : 8;
             $studentCourse->save();
         }
         

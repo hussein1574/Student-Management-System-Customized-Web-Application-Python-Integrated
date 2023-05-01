@@ -331,6 +331,7 @@ class StudentCoursesController extends Controller
             $header = $data[0];
             unset($data[0]);  
 
+          
             dispatch(new ResultsCsvProcess($data, $header, $courseId));
 
             return response()->json([
