@@ -63,11 +63,6 @@
                                         <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
                                         <button type="submit" class="btn btn-xs btn-danger"><i class="la la-trash"></i>Drop</button>
                                     </form>
-                                    <form action="{{route('admit-students-results')}}" method="POST" class="d-inline">
-                                        @csrf
-                                        <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
-                                        <button type="submit" class="btn btn-success ml-2">Admit</button>
-                                    </form>
                                     <form action="{{route('improve-grades')}}" method="POST" class="d-inline">
                                         @csrf
                                         <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
@@ -77,6 +72,11 @@
                                                 <button type="submit" class="btn btn-warning">Add gpa</button>
                                             </div>
                                         </div>
+                                    </form>
+                                    <form action="{{route('admit-students-results')}}" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
+                                        <button type="submit" class="btn btn-success ml-2">Admit</button>
                                     </form>
                                 </td>
                             </tr>
