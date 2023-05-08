@@ -21,6 +21,18 @@
                                 <th>Failure Rate</th>
                                 <th>Success Rate</th>
                                 <th>Average GPA</th>
+                                <th>A+</th>
+                                <th>A</th>
+                                <th>A-</th>
+                                <th>B+</th>
+                                <th>B</th>
+                                <th>B-</th>
+                                <th>C+</th>
+                                <th>C</th>
+                                <th>C-</th>
+                                <th>D+</th>
+                                <th>D</th>
+                                <th>F</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -31,7 +43,20 @@
                                 <td>{{ $pendingCourse['failure_rate'] }}%</td>
                                 <td>{{ $pendingCourse['success_rate'] }}%</td>
                                 <td>{{ $pendingCourse['avg_gpa']}}</td>
-                                <td>
+                                <td>{{ $pendingCourse['a_plus_count']}}</td>
+                                <td>{{ $pendingCourse['a_count']}}</td>
+                                <td>{{ $pendingCourse['a_minus_count']}}</td>
+                                <td>{{ $pendingCourse['b_plus_count']}}</td>
+                                <td>{{ $pendingCourse['b_count']}}</td>
+                                <td>{{ $pendingCourse['b_minus_count']}}</td>
+                                <td>{{ $pendingCourse['c_plus_count']}}</td>
+                                <td>{{ $pendingCourse['c_count']}}</td>
+                                <td>{{ $pendingCourse['c_minus_count']}}</td>
+                                <td>{{ $pendingCourse['d_plus_count']}}</td>
+                                <td>{{ $pendingCourse['d_count']}}</td>
+                                <td>{{ $pendingCourse['f_count']}}</td>
+
+                                <td style="display:flex">
                                     <form action="{{route('delete-student-results')}}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -42,6 +67,16 @@
                                         @csrf
                                         <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
                                         <button type="submit" class="btn btn-success ml-2">Admit</button>
+                                    </form>
+                                    <form action="{{route('improve-grades')}}" method="POST" class="d-inline">
+                                        @csrf
+                                        <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
+                                        <div class="input-group">
+                                            <input style="width:75px" type="number" min=0 max=4 step=0.1 name="grade_value" class="form-control">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-warning">Add gpa</button>
+                                            </div>
+                                        </div>
                                     </form>
                                 </td>
                             </tr>

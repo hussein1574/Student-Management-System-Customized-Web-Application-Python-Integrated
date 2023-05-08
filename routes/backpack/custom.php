@@ -34,10 +34,14 @@ Route::group([
     Route::post('/upload-program',[UploadProgram::class,'upload'])->name('upload-program');
     Route::delete('/clear-regulation-courses',[UploadProgram::class,'delete'])->name('clear-regulation-courses');
 
-    Route::get('/upload-students-results', [StudentCoursesController::class, 'uploadStudentsResultsIndex'])->name('upload-students-results');
-    Route::post('/upload-students-results',[StudentCoursesController::class,'uploadStudentsResults'])->name('upload-students-results');
-    Route::get('/export-students-sheet', [StudentCoursesController::class,'exportStudentsSheet'])->name('export-students-sheet');
+     Route::get('/upload-students-results', [StudentCoursesController::class, 'uploadStudentsResultsIndex'])->name('upload-students-results');
+     Route::post('/get-students-for-course',[StudentCoursesController::class,'getCourseStudents'])->name('get-students-for-course');
+     Route::post('/save-students-results',[StudentCoursesController::class,'saveStudentsResults'])->name('save-students-results');
+     Route::post('/upload-students-results',[StudentCoursesController::class,'uploadStudentsResults'])->name('upload-students-results');
+     Route::post('/improve-grades',[StudentCoursesController::class,'improveGrades'])->name('improve-grades');
 
+
+ 
     Route::get('/admit-students-results', [StudentCoursesController::class, 'admitStudentsResultsIndex'])->name('admit-students-results');
     Route::post('/admit-students-results',[StudentCoursesController::class,'admitStudentsResults'])->name('admit-students-results');
     Route::delete('/delete-student-results',[StudentCoursesController::class,'deleteStudentResults'])->name('delete-student-results');
