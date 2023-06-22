@@ -20,7 +20,6 @@ use App\Jobs\DeleteStudentResultsProcess;
 use App\Http\Controllers\CourseRegistrationController;
 use OpenSpout\Writer\XLSX\MergeCell;
  use Illuminate\Support\Facades\View;
- use PDF;
 
 class StudentCoursesController extends Controller
 {
