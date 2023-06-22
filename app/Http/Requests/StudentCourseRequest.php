@@ -30,9 +30,6 @@ class StudentCourseRequest extends FormRequest
             'course_id' => [
                 'required',
                 'exists:courses,id',
-                Rule::unique('student_courses')->where(function ($query) {
-                    return $query->where('student_id', $this->student_id);
-                }),
             ],
             'status_id' => 'required',
             'grade' => 'nullable|numeric|min:0|max:100',

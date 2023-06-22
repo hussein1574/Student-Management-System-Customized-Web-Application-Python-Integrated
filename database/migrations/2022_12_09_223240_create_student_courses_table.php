@@ -19,11 +19,12 @@ return new class extends Migration
             $table->integer("course_id")->unsigned();
             $table->integer("status_id")->unsigned();
             $table->double("grade")->nullable();
+            $table->double("class_work_grade")->nullable();
+            $table->double("lab_grade")->nullable();
             $table->timestamps();
             $table->foreign("student_id")->references("id")->on("students");
             $table->foreign("course_id")->references("id")->on("courses");
             $table->foreign("status_id")->references("id")->on("course_statuses");
-            $table->unique(['student_id', 'course_id']);
         });
     }
 

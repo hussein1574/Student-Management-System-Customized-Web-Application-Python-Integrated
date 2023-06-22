@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
+use App\Http\Controllers\StudentCoursesController;
 
 class UpdateStudentsGPAProcess implements ShouldQueue
 {
@@ -31,14 +32,14 @@ class UpdateStudentsGPAProcess implements ShouldQueue
      */
     public function handle()
     {
-        $students = Student::all();
-        foreach($students as $student){
+            $students = Student::all();
+            foreach($students as $student){
             $student->grade = 0;
             $totalHours = 0;
             $studentCourses = $student->studentCourses;
             foreach($studentCourses as $studentCourse){
-                $student->grade += $studentCourse->grade * $studentCourse->course->hours;
-                $totalHours += $studentCourse->course->hours;
+                $student->grade += StudentCoursesController::getGPA($studentCourse->grade + $studentCourse->class_work_grade + $studentCourse->lab_grade) * $studentCourse->course->LectureHours + $studentCourse->course->labHours + $studentCourse->course->sectionHours;
+                $totalHours += $studentCourse->course->LectureHours + $studentCourse->course->labHours + $studentCourse->course->sectionHours;
             }
             $student->grade = round($student->grade / $totalHours,2);
             $student->save();

@@ -18,6 +18,7 @@ use Rap2hpoutre\FastExcel\FastExcel;
 use Symfony\Component\Process\Process;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Models\Constant;
 
 class ExamsTimeTableController extends Controller
 {
@@ -70,6 +71,13 @@ class ExamsTimeTableController extends Controller
 
     }
     public function getExamsForStudent($studentCourses){
+        if(Constant::where('name', 'ExamTimetable Published')->first() == 0)
+        {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Exams Timetable not published yet',
+            ], 422);
+        }
         $exams = [];
         foreach ($studentCourses as $studentCourse) {
             $courseExam = ExamsTimeTable::where('course_id', $studentCourse->course_id)->first();

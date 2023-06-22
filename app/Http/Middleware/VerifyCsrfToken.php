@@ -15,6 +15,7 @@ class VerifyCsrfToken extends Middleware
         'login',
         'logout',
         'register',
-        'register-courses'
+        'register-courses',
+        'protected-route'
     ];
 }

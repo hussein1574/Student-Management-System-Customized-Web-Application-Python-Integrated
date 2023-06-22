@@ -57,12 +57,10 @@ class ExamTimetableScript :
 
         self.noOfDays = len(Days)
 
-    def __init__(self, fileName,script_dir, maxStds=600, maxRooms= 10, GapDays= 0):
+    def __init__(self,script_dir, maxStds=600, maxRooms= 10, GapDays= 0):
         self.script_dir = script_dir
         self.maxStds = maxStds
-        self.maxRooms = maxRooms
         self.GapDays = GapDays
-        self.minStds = 10
         subjectsIndecies = []
         registeredSubjects = []
         hallsFilename = os.path.join(self.script_dir, 'halls.xlsx')
@@ -70,47 +68,6 @@ class ExamTimetableScript :
         self.hallNames = self.realHalls.iloc[:,0].values
         self.hallCapacity = self.realHalls.iloc[:,1].values
         self.maxRooms = len(self.realHalls)
-        '''
-        # to read the file
-        assignedCourses = pd.read_excel(fileName, sheet_name='Registrations')
-        #read all the columns names
-        self.subjects = assignedCourses.columns
-        #get the indecies of the columns that have students
-        for count,subject in enumerate(self.subjects):
-            if count < 5 :
-                continue
-            if assignedCourses[subject].notna().sum() > 3:
-                subjectsIndecies.append(count)
-
-        #get the subjects that have students
-        for subject in self.subjects:
-            if subject in self.subjects[subjectsIndecies]:
-                registeredSubjects.append(subject)
-
-        registeredSubjects.remove(registeredSubjects[len(registeredSubjects)-1])
-        subjectsIndecies.remove(subjectsIndecies[len(subjectsIndecies)-1])
-
-        self.subjects = pd.Index(registeredSubjects)
-        fileName = os.path.join(self.script_dir, 'conflict_table.xlsx')
-        workbook = xlsxwriter.Workbook(fileName)
-        # The workbook object is then used to add new
-        worksheet = workbook.add_worksheet()
-
-        # filling subjects in sheet
-        for index, subject in enumerate(self.subjects):
-            worksheet.write(0, index+1, subject)
-            worksheet.write(index+1, 0, subject)
-
-        # filling the conflict table
-        for index in range(len(self.subjects)):
-            sub1 = assignedCourses[self.subjects[index]]
-            for i in range(len(self.subjects)):
-                sub2 = assignedCourses[self.subjects[i]]
-                worksheet.write(
-                    index + 1, i + 1, len([1 for z in range(len(sub2)) if sub1[z] == 1 and sub2[z] == 1 ]))
-        workbook.close()
-        '''
-
         self.getTheMinNumberOfDays()
 
     def writeTimeTableToExcelSheet(self,timetable):
@@ -160,6 +117,7 @@ class ExamTimetableScript :
             counter += 1
             
         print(tableCourses)
+
 
     def countCommonStudentsInDay(self,daySubjects):
         countedSubjects = []
@@ -252,31 +210,6 @@ class ExamTimetableScript :
                         countExceed += 50
         return countExceed
                       
-    # #soft constraint #3
-    # def checkExceedMaxNumberOfStudents(self,timeTable):
-    #     if(self.maxStds == 0):
-    #         return 0
-    #     #For fitness
-    #     countExceed = 0
-    #     numberOfStudentsInDay = 0
-    #     subjectsInDay = []
-
-    #     for day in timeTable:
-    #         for subject in day:
-    #             if(subject):
-    #                 subjectsInDay.append(subject)
-
-    #         for subject in subjectsInDay:
-    #                 numberOfStudentsInDay += self.conflictData[subject][self.subjects.get_loc(subject)]       
-    #         numberOfStudentsInDay -= self.countCommonStudentsInDay(subjectsInDay)
-
-    #         if(numberOfStudentsInDay > self.maxStds):
-    #             countExceed += 5
-    #         numberOfStudentsInDay = 0
-    #         subjectsInDay.clear()        
-
-    #     return countExceed
-
     def createTimeTable(self):
         row = []
         timeTable = []

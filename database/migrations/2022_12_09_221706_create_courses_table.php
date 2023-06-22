@@ -17,11 +17,11 @@ return new class extends Migration
             $table->increments("id");
             $table->string('code')->unique();
             $table->string('name');
-            $table->integer("hours");
+            $table->integer("LectureHours");
+            $table->integer("sectionHours")->nullable();
+            $table->integer("labHours")->nullable();
             $table->integer('level');
             $table->boolean("isElective");
-            $table->boolean("hasLab");
-            $table->boolean("hasSection");
             $table->boolean("isClosed")->default(false);
             $table->timestamps();
         });

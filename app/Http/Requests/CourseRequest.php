@@ -27,7 +27,7 @@ class CourseRequest extends FormRequest
         return [
             'name' => 'required|min:5|max:255|regex:/^[a-zA-Z0-9\s]+$/',
             'code' => 'required|max:255',
-            'hours' => 'required|numeric|min:1|max:100',
+            'LectureHours' => 'required|numeric|min:1|max:100',
             'level' => 'required|numeric|min:1|max:5'
         ];
     }

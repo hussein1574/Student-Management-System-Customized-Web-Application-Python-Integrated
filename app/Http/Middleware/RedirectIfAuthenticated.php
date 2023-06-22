@@ -6,6 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Passport;
 
 class RedirectIfAuthenticated
 {
@@ -26,7 +27,7 @@ class RedirectIfAuthenticated
                 //return redirect(RouteServiceProvider::HOME);
                 if(Auth::guard($guard)->user()->isActivated == 0){
                             
-                    Auth::guard('web')->logout();
+                    Auth::guard('api')->logout();
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
                     // Auth::guard($guard)->logout();
@@ -41,7 +42,7 @@ class RedirectIfAuthenticated
                 else{
                     return response()->json([
                         'status' => 'failed',
-                        'message' => 'Already logged in'
+                        'message' => 'Method not allowed'
                     ], 405);
                 }
                 

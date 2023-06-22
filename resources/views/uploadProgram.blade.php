@@ -1,8 +1,6 @@
 @extends(backpack_view('blank'))
 
 @section('content')
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/sweetalert2@11.0.10/dist/sweetalert2.min.css">
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11.0.10/dist/sweetalert2.min.js"></script>
 
 <div class="row">
     <div class="col-md-12" style="display:flex;justify-content:space-between;align-items:center;margin-top:30px;">
@@ -69,7 +67,7 @@
         var select = document.getElementById("regulation");
         var course = select.options[select.selectedIndex].value;
         if (course === "") {
-            Swal.fire("Error", "Please select a regulation", "error");
+            swal("Error", "Please select a regulation", "error");
             event.preventDefault();
         }
     }
@@ -95,10 +93,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    Swal.fire('The file is being processed in the background.', data.message, 'success');
+                    swal('Success', 'The file is being processed in the background.', 'success');
                 })
                 .catch(error => {
-                    Swal.fire('Error', error.message, 'error');
+                    swal('Error', 'Uploading file failed please check the file validty', 'error');
                 });
         });
 

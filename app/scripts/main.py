@@ -9,10 +9,7 @@ import numpy as np
 import xlsxwriter
 import string
 import os
-#maxStds=600, maxRooms= 10, GapDays= 0
-# maxStds = int(sys.argv[1])
-# maxRooms = int(sys.argv[2])
-# #gapDays = int(sys.argv[3])
+
 
 
 # Get the absolute path of the script file
@@ -21,11 +18,9 @@ script_path = os.path.abspath(__file__)
 # Get the directory of the script file
 script_dir = os.path.dirname(script_path)
 
-# Join the script directory with the filename
-filename = os.path.join(script_dir, 'RealData.xlsx')
 
 # Create an instance of ExamTimetableScript with the file
-geneticAlgorithm = ets.ExamTimetableScript(filename,script_dir)
+geneticAlgorithm = ets.ExamTimetableScript(script_dir)
 timeTable = geneticAlgorithm.createTimeTable()
 while(True):
     newTimeTable = geneticAlgorithm.generate(timeTable)

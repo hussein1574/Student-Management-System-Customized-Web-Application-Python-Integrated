@@ -48,10 +48,10 @@
                 , data: $(this).serialize()
                 , dataType: 'json'
                 , success: function(response) {
-                    Swal.fire('Success', response.message, 'success');
+                    swal('Success', response.message, 'success');
                 }
                 , error: function(response) {
-                    Swal.fire('Error', response.responseJSON.message, 'error');
+                    swal('Error', response.responseJSON.message, 'error');
                 }
             });
         });

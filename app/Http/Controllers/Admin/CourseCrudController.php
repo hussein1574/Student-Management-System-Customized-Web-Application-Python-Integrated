@@ -41,21 +41,14 @@ class CourseCrudController extends CrudController
     {
         CRUD::column('name');
         CRUD::column('code');
-        CRUD::column('hours');
+        CRUD::column('LectureHours')->label('Lecture Hours');
+        CRUD::column('sectionHours')->label('Section Hours');
+        CRUD::column('labHours')->label('Lab Hours');
         CRUD::column('level')->label('Level')->type('closure')->function(function ($entry) {
             return $entry->level == 0 ? "Zero" : $entry->level;
         });;
         CRUD::column('isElective')->label('Elective')->type('closure')->function(function ($entry) {
             return $entry->isElective ? "Yes " : "No";
-        });
-        // CRUD::column('isElective');
-        CRUD::column('hasLab')->label('Lab')->type('closure')->function(function ($entry) {
-            return $entry->hasLab ? "Yes " : "No";
-        });
-        // CRUD::column('hasLab');
-
-        CRUD::column('hasSection')->label('Section')->type('closure')->function(function ($entry) {
-            return $entry->hasSection ? "Yes " : "No";
         });
         // CRUD::column('hasSection');
         CRUD::column('isClosed')->label('Closed')->type('closure')->function(function ($entry) {
@@ -85,11 +78,11 @@ class CourseCrudController extends CrudController
 
         CRUD::field('name');
         CRUD::field('code');
-        CRUD::field('hours');
+        CRUD::field('LectureHours')->label('Lecture Hours');
+        CRUD::field('sectionHours')->label('Section Hours');
+        CRUD::field('labHours')->label('Lab Hours');
         CRUD::field('level');
         CRUD::field('isElective');
-        CRUD::field('hasLab');
-        CRUD::field('hasSection');
         CRUD::field('isClosed');
 
         /**

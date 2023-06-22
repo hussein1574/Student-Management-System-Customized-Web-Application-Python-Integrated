@@ -1,8 +1,8 @@
 @extends(backpack_view('blank'))
 
+
 @section('content')
-<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/sweetalert2@11.0.10/dist/sweetalert2.min.css">
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11.0.10/dist/sweetalert2.min.js"></script>
+
 @if(Session::has('alert'))
 <div class="alert alert-{{ Session::get('alert') }}">
     {{ Session::get('message') }}
@@ -49,7 +49,9 @@
                             <tr>
                                 <th>Student ID</th>
                                 <th>Student Name</th>
-                                <th>GPA</th>
+                                <th>Exam grade</th>
+                                <th>ClassWork grade</th>
+                                <th>Lab grade</th>
                             </tr>
                         </thead>
                         <tbody id="students-table-body">
@@ -102,9 +104,13 @@
                     var idCell = row.insertCell();
                     var nameCell = row.insertCell();
                     var gpaCell = row.insertCell();
+                    var classWorkCell = row.insertCell();
+                    var labCell = row.insertCell();
                     nameCell.innerHTML = student.name;
                     idCell.innerHTML = student.id;
-                    gpaCell.innerHTML = '<input type="number" name="gpa[' + student.id + ']" value="' + student.gpa + '" step="0.01" min="0" max="4" required>';
+                    gpaCell.innerHTML = '<input type="number" name="gpa[' + student.id + ']" value="' + student.gpa + '" step="1" min="0" max="50" required>';
+                    classWorkCell.innerHTML = '<input type="number" name="class_work[' + student.id + ']" value="' + student.class_work + '" step="1" min="0" max="30" required>';
+                    labCell.innerHTML = '<input type="number" name="lab[' + student.id + ']" value="' + student.lab + '" step="1" min="0" max="20" required>';
                 });
             }
         });
@@ -128,12 +134,16 @@
                 , type: "POST"
                 , data: formData
                 , success: function() {
-                    Swal.fire("Success", message, "success");
-                    window.location.href = "{{ backpack_url('dashboard') }}";
+                     swal("Success", message, "success");
+                     //wait 2 seconds, then reload the page
+                        setTimeout(function() {
+                            window.location.href = "{{ backpack_url('dashboard') }}";
+                        }, 2000);
+                     
 
                 }
                 , error: function() {
-                    Swal.fire("Error", "Could not save Grades", "error");
+                    swal("Error", "Could not save Grades", "error");
                 }
             });
         });

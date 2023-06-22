@@ -43,7 +43,7 @@ class CourseRegistrationController extends Controller
 
     }
 
-    public function getStudentCoursesStatus(Request $request,$studentId)
+    public function getStudentCoursesStatus($request,$studentId)
     {   
         $studentDepartment = Student::where('id', $studentId)->first()->department_id;
         //get all courses that the student department offers
@@ -61,7 +61,7 @@ class CourseRegistrationController extends Controller
         $finishedHours = 0;
         $mustTake = [];
         foreach ($finishedcourses as $course) {
-            $finishedHours += $course->hours;
+            $finishedHours += $course->LectureHours + $course->labHours + $course->sectionHours;
         }
         $data = [];
         $maxRetakeGrade = Department::where('id', $studentDepartment)->first()->max_gpa_to_retake_a_course;
@@ -76,7 +76,7 @@ class CourseRegistrationController extends Controller
                 $data[] = [
                     'courseId' => $course->id,
                     'courseName' => $course->name,
-                    'courseHours' => $course->hours,
+                    'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                     'level' => $course->level,
                     'elective' => $course->isElective,
                     'state' => 'retake'
@@ -90,7 +90,7 @@ class CourseRegistrationController extends Controller
                     $data[] = [
                         'courseId' => $course->id,
                         'courseName' => $course->name,
-                        'courseHours' => $course->hours,
+                        'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                         'level' => $course->level,
                         'elective' => $course->isElective,
                         'state' => 'must-take'
@@ -101,7 +101,7 @@ class CourseRegistrationController extends Controller
                     $data[] = [
                         'courseId' => $course->id,
                         'courseName' => $course->name,
-                        'courseHours' => $course->hours,
+                        'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                         'level' => $course->level,
                         'elective' => $course->isElective,
                         'state' => 'need-pre-req'
@@ -113,7 +113,7 @@ class CourseRegistrationController extends Controller
                 $data[] = [
                     'courseId' => $course->id,
                     'courseName' => $course->name,
-                    'courseHours' => $course->hours,
+                    'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                     'level' => $course->level,
                     'elective' => $course->isElective,
                     'state' => 'closed'
@@ -129,7 +129,7 @@ class CourseRegistrationController extends Controller
                         [
                                 'courseId' => $course->id,
                                 'courseName' => $course->name,
-                                'courseHours' => $course->hours,
+                                'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                                 'level' => $course->level,
                                 'elective' => $course->isElective,
                                 'numberOfCoursesThatItCanOpen' => $numberOfCoursesThatItCanOpen
@@ -138,7 +138,7 @@ class CourseRegistrationController extends Controller
                         $data[] = [
                             'courseId' => $course->id,
                             'courseName' => $course->name,
-                            'courseHours' => $course->hours,
+                            'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                             'level' => $course->level,
                             'elective' => $course->isElective,
                             'state' => 'open'
@@ -148,7 +148,7 @@ class CourseRegistrationController extends Controller
                     $data[] = [
                         'courseId' => $course->id,
                         'courseName' => $course->name,
-                        'courseHours' => $course->hours,
+                        'courseHours' => $course->LectureHours + $course->labHours + $course->sectionHours,
                         'level' => $course->level,
                         'elective' => $course->isElective,
                         'state' => 'need-pre-req'
@@ -306,7 +306,7 @@ class CourseRegistrationController extends Controller
         $totalHours = 0;
         foreach ($courseIds as $courseId) {
             $course = Course::find($courseId);
-            $totalHours += $course->hours;
+            $totalHours += $course->LectureHours + $course->labHours + $course->sectionHours;
         }
         $hoursPerTerm = $this->getHoursPerTerm($request);
         $minHoursPerTerm = $hoursPerTerm->getData()->data->minHoursPerTerm;
@@ -422,7 +422,7 @@ class CourseRegistrationController extends Controller
         $graduationsHours = Department::where('id', $studentDepartment)->first()->graduation_hours;
         foreach($studentPassedCourses as $studentPassedCourse){
             $course = Course::find($studentPassedCourse->course_id);
-            $hours += $course->hours;
+            $hours += $course->LectureHours + $course->labHours + $course->sectionHours;
         }
         if(0 <= $hours && $hours <=  $graduationsHours * 0.225)
             $level = 0;

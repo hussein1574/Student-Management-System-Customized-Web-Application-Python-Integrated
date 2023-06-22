@@ -19,9 +19,129 @@ use Illuminate\Support\Facades\Storage;
 use App\Jobs\DeleteStudentResultsProcess;
 use App\Http\Controllers\CourseRegistrationController;
 use OpenSpout\Writer\XLSX\MergeCell;
+ use Illuminate\Support\Facades\View;
+ use PDF;
 
 class StudentCoursesController extends Controller
 {
+    public function transscriptShow(Request $request, $studentId){
+    
+
+
+        $studentdata = Student::where('id', $studentId)->first();
+        if($studentdata->grade == 4.0)
+        {
+            $grade = 'A+';
+        }
+        elseif($studentdata->grade >= 3.7)
+        {
+            $grade = 'A-';
+        }
+        elseif($studentdata->grade >= 3.3)
+        {
+            $grade = 'B+';
+        }
+        elseif($studentdata->grade >= 3.0)
+        {
+            $grade = 'B';
+        }
+        elseif($studentdata->grade >= 2.7)
+        {
+            $grade = 'B-';
+        }
+        elseif($studentdata->grade >= 2.3)
+        {
+            $grade = 'C+';
+        }
+        elseif($studentdata->grade >= 2)
+        {
+            $grade = 'C';
+        }
+        elseif($studentdata->grade >= 1.7)
+        {
+            $grade = 'C-';
+        }
+        elseif($studentdata->grade >= 1.3)
+        {
+            $grade = 'D+';
+        }
+        elseif($studentdata->grade >= 1.0)
+        {
+            $grade = 'D';
+        }
+        elseif($studentdata->grade >= 0.0)
+        {
+            $grade = 'F';
+        }
+        $courseRegController = new CourseRegistrationController();
+            $level = $courseRegController->getStudentLevel($studentId);
+            switch($level) {
+                case 0:
+                    $year = 'Freshman';
+                    break;
+                case 1:
+                    $year = 'Sophomore';
+                    break;
+                case 2:
+                    $year = 'Junior';
+                    break;
+                case 3:
+                    $year = 'Senior-1';
+                    break;
+                case 4:
+                    $year = 'Senior-2';
+                    break;
+                default:
+                    $year = 'Unknown';
+                }
+
+        $student = [
+            'name' => $studentdata->user->name,
+            'department' => $studentdata->department->name,
+            'year' => $year,
+            'gpa' => $studentdata->grade,
+            'grade' => $grade,
+        ];
+            $courses = StudentCourse::where('student_id', $studentId)
+                ->whereIN('status_id', [1, 2])->get();
+            $years = [];
+            $earliestYear = null; // Initialize earliest year to null
+            $latestYear = null;
+            foreach ($courses as $course) {
+                $year = $course->created_at->format('Y');
+                if (!in_array($year, $years)) {
+                    $years[] = $year;
+                    if ($earliestYear === null || $year < $earliestYear) {
+                        $earliestYear = $year; // Update earliest year if a new earliest year is found
+                    }
+                    if ($latestYear === null || $year > $latestYear) {
+                        $latestYear = $year; // Update latest year if a new latest year is found
+                    }
+                }
+            }
+            $years = [];
+            if ($earliestYear !== null) {
+                while($earliestYear <= $latestYear) {
+                $startDate = $earliestYear . '-08-01';
+                $endDate = ($earliestYear + 1) . '-08-01';
+                $courses = StudentCourse::where('student_id', $studentId)
+                    ->whereIN('status_id', [1, 2])
+                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->get();
+                $years[] = [
+                    'year' => $earliestYear . '/' . ($earliestYear + 1),
+                    'courses' => $courses
+                ];
+                $earliestYear++;
+                }        
+            } 
+
+      
+        return view('transcript', compact('student', 'years'));
+
+
+    }
+    
     public function getCurrentCourses(Request $request)
     {
         $userId = $request->user()->id;
@@ -44,7 +164,7 @@ class StudentCoursesController extends Controller
                 'courses' => $courses->map(function ($course) {
                     return [
                         'name' => $course->course->name,
-                        'hours' => $course->course->hours,
+                        'hours' => $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours,
                         'level' => $course->course->level,
                     ];
                 })
@@ -74,7 +194,7 @@ class StudentCoursesController extends Controller
                 'courses' => $courses->map(function ($course) {
                     return [
                         'name' => $course->course->name,
-                        'hours' => $course->course->hours,
+                        'hours' => $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours,
                         'grade' => $course->grade,
                         'level' => $course->course->level,
                         'status' => $course->courseStatus->status,
@@ -100,7 +220,7 @@ class StudentCoursesController extends Controller
 
         $finishedHours = 0;
         foreach ($courses as $course) {
-            $finishedHours += $course->course->hours;
+            $finishedHours += $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours;
         }
         $department = $student->department;
         $graduationHours = $department->graduation_hours;
@@ -146,7 +266,7 @@ class StudentCoursesController extends Controller
             if (!isset($finishedHoursByYear[$year])) {
                 $finishedHoursByYear[$year] = 0;
             }
-            $finishedHoursByYear[$year] += $course->course->hours;
+            $finishedHoursByYear[$year] += $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours;
         }
         return $finishedHoursByYear;
     }
@@ -169,7 +289,7 @@ class StudentCoursesController extends Controller
         $finishedCourses = $finishedCoursesObject->map(function ($course) {
             return [
                 'name' => $course->course->name,
-                'hours' => $course->course->hours,
+                'hours' => $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours,
                 'grade' => $course->grade,
                 'level' => $course->course->level,
                 'status' => $course->courseStatus->id,
@@ -218,7 +338,7 @@ class StudentCoursesController extends Controller
         $finishedCourses = $finishedCoursesObject->map(function ($course) {
             return [
                 'name' => $course->course->name,
-                'hours' => $course->course->hours,
+                'hours' => $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours,
                 'grade' => $course->grade,
                 'level' => $course->course->level,
                 'status' => $course->courseStatus->id,
@@ -226,7 +346,7 @@ class StudentCoursesController extends Controller
         });
         
         $courseRegiserationController = new CourseRegistrationController();
-        $studentCoursesStatus = $courseRegiserationController->getStudentCoursesStatus($student->id);
+        $studentCoursesStatus = $courseRegiserationController->getStudentCoursesStatus($request,$student->id);
         $coursesPreRequists = CoursePre::all();
         usort($studentCoursesStatus, function($a, $b) {
             return $a['level'] <=> $b['level'];
@@ -283,100 +403,6 @@ class StudentCoursesController extends Controller
         }
         return false;
     }
-    #region uploadResults
-    // public function uploadStudentsResultsIndex(Request $request)
-    // { 
-    //     $userId = backpack_user()->id;
-    //     $professor = Professor::where('user_id', $userId)->first();
-    //     $professorCourses = ProfessorCourse::where('professor_id', $professor->id)->get();
-    //     $professorCourses = $professorCourses->map(function ($course) {
-    //         $courseId = $course['id'];
-    //         $coursesStatus = StudentCourse::where('course_id', $courseId)->get()->map(function ($course) {
-    //             return $course->status_id;
-    //         });
-    //         $uploaded = true;
-    //         foreach ($coursesStatus as $status) {
-    //             if ($status == 3) {
-    //                 $uploaded = false;
-    //                 break;
-    //             }
-    //         }
-    //         return [
-    //             'name' => $course->course->name,
-    //             'id' => $course->course->id,
-    //             'uploaded' => $uploaded,
-    //         ];
-    //     });
-    //     $professorCourses = $professorCourses->where('uploaded', false)->toArray();
-    //     if(empty($professorCourses))
-    //     {
-    //         session()->flash('alert', 'warning');
-    //         session()->flash('message', 'You have uploaded the results for all your courses');
-    //     }
-
-    //     return view('uploadStudentsResults', compact('professorCourses'));
-    // }
-
-    // public function uploadStudentsResults(Request $request)
-    // {
-    //     $courseId = $request->course_id;
-    //     if (request()->has('mycsv')) {
-    //         $data   =   file(request()->mycsv);
-
-    //         $header = [];
-
-    //         $data = array_map('str_getcsv', $data);
-
-    //         $header = $data[0];
-    //         unset($data[0]);  
-
-          
-    //         dispatch(new ResultsCsvProcess($data, $header, $courseId));
-
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'result' => 'The file is being processed in the background.',
-    //         ]);
-    //     }
-    //     return response()->json([
-    //         'status' => 'failed',
-    //         'result' => 'Please upload a CSV file',
-    //     ], 400);
-    // }
-    //     public function exportStudentsSheet(Request $request)
-    // {
-    //     $courseId = $request->course_id;
-    //     $students = StudentCourse::where('course_id', $courseId)->get();
-    //     $studentsIds = [];
-    //     foreach ($students as $student) {
-    //         $studentsIds[] = $student->student_id;
-    //     }
-    //     $students = Student::whereIn('id', $studentsIds)->get();
-    //     $students = $students->map(function ($student) {
-    //         return [
-    //             'Student ID' => $student->id,
-    //             'Student Name' => $student->user->name,
-    //             'GPA' => null,
-    //             'Status' => null
-    //         ];});
-        
-    //      $path = storage_path('app/StudentsResults.csv');
-    //     // Export the data to a CSV file
-    //     (new FastExcel($students))->export($path);
-
-    //     // Read the CSV file contents
-    //     $contents = Storage::get('StudentsResults.csv');
-
-    //     // Delete the CSV file
-    //     Storage::delete('StudentsResults.csv');
-
-    //     // Return the file as a downloadable response
-    //     return response()->streamDownload(function () use ($contents) {
-    //         echo $contents;
-    //     }, 'StudentsResults.csv');
-      
-    // }
-    #endregion
     
  
 public function uploadStudentsResultsIndex(Request $request)
@@ -428,7 +454,9 @@ public function getCourseStudents(Request $request)
         return [
             'id' => $student->id,
             'name' => $student->user->name,
-            'gpa' => $studentCourse->grade
+            'gpa' => $studentCourse->grade,
+            'class_work' => $studentCourse->class_work_grade,
+            'lab' => $studentCourse->lab_grade,
         ];
     });
     return $students;
@@ -457,21 +485,29 @@ public function getCourseStudents(Request $request)
     {
         $courseId = $request->input('course_id');
         foreach ($request->gpa as $id => $gpa) {
+            $classWork = $request->class_work[$id];
+            $lab = $request->lab[$id];
             $results[] = [
                 'id' => $id,
                 'gpa' => $gpa,
+                'class_work' => $classWork,
+                'lab' => $lab,
             ];
-        
         }
+
 
         foreach ($results as $result) {
             $studentId = $result['id'];
             $gpa = $result['gpa'];
+            $classWork = $result['class_work'];
+            $lab = $result['lab'];
             
             $studentCourse = StudentCourse::where('course_id', $courseId)
                                         ->where('student_id', $studentId)
                                         ->first();
             $studentCourse->grade = $gpa;
+            $studentCourse->class_work_grade = $classWork;
+            $studentCourse->lab_grade = $lab;
             $studentCourse->save();
         }
         
@@ -482,21 +518,33 @@ public function getCourseStudents(Request $request)
     {
         $courseId = $request->input('course_id');
         foreach ($request->gpa as $id => $gpa) {
+            $classWork = $request->class_work[$id];
+            $lab = $request->lab[$id];
             $results[] = [
                 'id' => $id,
                 'gpa' => $gpa,
+                'class_work' => $classWork,
+                'lab' => $lab,
             ];
-        
         }
 
         foreach ($results as $result) {
             $studentId = $result['id'];
             $gpa = $result['gpa'];
+            $classWork = $result['class_work'];
+            $lab = $result['lab'];
             
             $studentCourse = StudentCourse::where('course_id', $courseId)
                                         ->where('student_id', $studentId)
                                         ->first();
             $studentCourse->grade = $gpa;
+            $studentCourse->class_work_grade = $classWork;
+            $studentCourse->lab_grade = $lab;
+
+            $fullDegree = $gpa + $classWork + $lab;
+            
+            $gpa = $this->getGPA($fullDegree);
+        
             if($gpa > 2)
                 $studentCourse->status_id = 7;
             else
@@ -508,13 +556,48 @@ public function getCourseStudents(Request $request)
         'result' => 'The grades are sent successfully.']);
     }
 
+    public static function getGPA($fullDegree)
+    {
+            if($fullDegree >= 97) {
+                return 4.0;
+            } elseif($fullDegree >= 93 && $fullDegree < 97) {
+                return 4.0;
+            } elseif($fullDegree >= 89 && $fullDegree < 93) {
+                return 3.7;
+            } elseif($fullDegree >= 84 && $fullDegree < 89) {
+                return 3.3;
+            } elseif($fullDegree >= 80 && $fullDegree < 84) {
+                return 3.0;
+            } elseif($fullDegree >= 76 && $fullDegree < 80)
+            {
+                return 2.7;
+            } elseif($fullDegree >= 73 && $fullDegree < 76)
+            {
+                return 2.3;
+            } elseif($fullDegree >= 70 && $fullDegree < 73)
+            {
+                return 2.0;
+            } elseif($fullDegree >= 67 && $fullDegree < 70)
+            {
+                return 1.7;
+            } elseif($fullDegree >= 64 && $fullDegree < 67)
+            {
+                return 1.3;
+            } elseif($fullDegree >= 60 && $fullDegree < 64)
+            {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+    }
+
     public function improveGrades(Request $request)
     {
         $studentCourses = StudentCourse::where('course_id', $request->course_id)->whereIn('status_id', [7, 8])->get();
         $studentCourses->each(function ($studentCourse) use ($request) {
-            if($studentCourse->grade + $request->grade_value <= 4)
+            if($studentCourse->grade + $request->grade_value <= 50)
                 $studentCourse->grade += $request->grade_value;
-            if($studentCourse->grade >= 2)
+            if($this->getGPA($studentCourse->grade + $studentCourse->class_work_grade + $studentCourse->lab_grade) >= 60)
                 $studentCourse->status_id = 7;
             else
                 $studentCourse->status_id = 8;
@@ -545,6 +628,9 @@ public function getCourseStudents(Request $request)
 
             // Calculate the sum of the grades for the course
             $gradeSum = $students->sum('grade');
+            $gradeSum += $students->sum('class_work_grade');
+            $gradeSum += $students->sum('lab_grade');
+
 
             $aPlusCount = 0;
             $aCount = 0;
@@ -561,27 +647,28 @@ public function getCourseStudents(Request $request)
 
             // calculate number of each grade as following (A+: 4, A:3.9, A- : 3.7, B+:3.3, B:3, B-:2.7, C+:2.3, C:2, C-:1.7, D+:1.3, D:1, F:0)
             $students->sum(function ($student) use(&$aPlusCount, &$aCount, &$aMinusCount, &$bPlusCount, &$bCount, &$bMinusCount, &$cPlusCount, &$cCount, &$cMinusCount, &$dPlusCount, &$dCount, &$fCount) {
-                if($student->grade == 4)
+                $gpa = $this->getGPA($student->grade + $student->class_work_grade + $student->lab_grade);
+                if($gpa == 4)
                     $aPlusCount++;
-                else if($student->grade >= 3.9)
+                else if($gpa >= 3.9)
                     $aCount++;
-                else if($student->grade >= 3.7)
+                else if($gpa >= 3.7)
                     $aMinusCount++;
-                else if($student->grade >= 3.3)
+                else if($gpa >= 3.3)
                     $bPlusCount++;
-                else if($student->grade >= 3)
+                else if($gpa >= 3)
                     $bCount++;
-                else if($student->grade >= 2.7)
+                else if($gpa >= 2.7)
                     $bMinusCount++;
-                else if($student->grade >= 2.3)
+                else if($gpa >= 2.3)
                     $cPlusCount++;
-                else if($student->grade >= 2)
+                else if($gpa >= 2)
                     $cCount++;
-                else if($student->grade >= 1.7)
+                else if($gpa >= 1.7)
                     $cMinusCount++;
-                else if($student->grade >= 1.3)
+                else if($gpa >= 1.3)
                     $dPlusCount++;
-                else if($student->grade >= 1)
+                else if($gpa >= 1)
                     $dCount++;
                 else
                     $fCount++;
@@ -639,7 +726,7 @@ public function getCourseStudents(Request $request)
         $passedCourses->update(['status_id' => 1]);
         $failedCourses->update(['status_id' => 2]);
 
-        dispatch(new UpdateStudentsGPAProcess());
+         dispatch(new UpdateStudentsGPAProcess());
         
         return $this->admitStudentsResultsIndex($request);
     }

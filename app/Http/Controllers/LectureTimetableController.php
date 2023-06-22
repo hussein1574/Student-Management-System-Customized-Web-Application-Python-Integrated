@@ -6,11 +6,20 @@ use App\Models\LecturesTimeTable;
 use App\Models\Student;
 use App\Models\StudentCourse;
 use Illuminate\Http\Request;
+use App\Models\Constant;
 
 class LectureTimetableController extends Controller
 {
+    
     public function getTimetable(Request $request)
     {
+        if(Constant::where('name', 'Timetable Published')->first() == 0)
+        {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Timetable not published yet',
+            ], 422);
+        }
         $userId = $request->user()->id;
         $student = Student::where('user_id', $userId)->first();
         if (!$student) {

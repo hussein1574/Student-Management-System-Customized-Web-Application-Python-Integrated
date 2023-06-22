@@ -43,6 +43,7 @@ class RegisteredUserController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'department' => ['int', 'max:255'],
+                // 'profilePicture' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -51,17 +52,38 @@ class RegisteredUserController extends Controller
                 'errors' => $e->errors(),
             ], 422);
         }
+        if(Department::find($request->department) == null){
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Department not found',
+            ], 404);
+        }
 
-        $user = User::create([
-            'email' => $request->email,
-            'password' => $request->password,
-        ]);
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->isActivated = false;
+        $user->isAdmin = false;
+        $user->save();
+
+        // Get the uploaded file
+        $profilePicture = $request->file('profilePicture');
+
+        // Rename the file with the user id
+        $newFileName = $user->id . '.' . $profilePicture->getClientOriginalExtension();
+
+        // Store the file in the public folder
+        $profilePicture->storeAs('images/', $newFileName, 'public');
+
+        // Save the path in the database
+        $user->profilePicture = $newFileName;
+        $user->save();
         
         event(new Registered($user));
 
         $student = Student::create([
             'user_id' => $user->id,
-            'name' => $request->name,
             'department_id' => $request->department,
         ]);
         

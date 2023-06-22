@@ -50,11 +50,11 @@ class ProgramCsvProcess implements ShouldQueue
             Course::create([
                 'code' => trim($courseData[0]),
                 'name' => $row['name'],
-                'hours' => $row['hours'],
+                'LectureHours' => $row['LectureHours'],
                 'isElective' => $row['isElective'],
                 'level' => $row['level'],
-                'hasLab' => $row['hasLab'],
-                'hasSection' => $row['hasSection'],
+                'labHours' => $row['labHours'],
+                'sectionHours' => $row['sectionHours'],
             ]);
         }
 
@@ -70,6 +70,11 @@ class ProgramCsvProcess implements ShouldQueue
             foreach($departmentsArray as $departmentName){
                 $departmentName = trim($departmentName);
                 $department = Department::where('name', $departmentName)->first();
+                if($course[1] == "Graduation Project")
+                {
+                    $department->graduation_project_needed_hours = $course[count($course) - 1];
+                    $department->save();
+                }
                 DepartmentCourse::create([
                     'course_id' => $course->id,
                     'department_id' => $department->id
@@ -83,9 +88,6 @@ class ProgramCsvProcess implements ShouldQueue
             $coursePreNames = $course[count($course) - 1];
             if($course[1] == "Graduation Project")
             {
-                $hours = Constant::where('name', 'Graduation Project Needed Hours')->first();
-                $hours->value = $coursePreNames;
-                $hours->save();
                 continue;
             }
             if($coursePreNames == null || $coursePreNames == "")

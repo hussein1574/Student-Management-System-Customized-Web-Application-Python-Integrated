@@ -20,7 +20,7 @@
                                 <th>Course Name</th>
                                 <th>Failure Rate</th>
                                 <th>Success Rate</th>
-                                <th>Average GPA</th>
+                                <th>Average Grade</th>
                                 <th>A+</th>
                                 <th>A</th>
                                 <th>A-</th>
@@ -42,7 +42,7 @@
                                 <td>{{ $pendingCourse['course_name'] }}</td>
                                 <td>{{ $pendingCourse['failure_rate'] }}%</td>
                                 <td>{{ $pendingCourse['success_rate'] }}%</td>
-                                <td>{{ $pendingCourse['avg_gpa']}}</td>
+                                <td>{{ $pendingCourse['avg_gpa']}}%</td>
                                 <td>{{ $pendingCourse['a_plus_count']}}</td>
                                 <td>{{ $pendingCourse['a_count']}}</td>
                                 <td>{{ $pendingCourse['a_minus_count']}}</td>
@@ -67,9 +67,9 @@
                                         @csrf
                                         <input type="hidden" name="course_id" value="{{ $pendingCourse['course_id'] }}">
                                         <div class="input-group">
-                                            <input style="width:75px" type="number" min=0 max=4 step=0.1 name="grade_value" class="form-control">
+                                            <input style="width:75px" type="number" min=0 max=100 step=1 name="grade_value" class="form-control">
                                             <div class="input-group-append">
-                                                <button type="submit" class="btn btn-warning">Add gpa</button>
+                                                <button type="submit" class="btn btn-warning">Add grades</button>
                                             </div>
                                         </div>
                                     </form>

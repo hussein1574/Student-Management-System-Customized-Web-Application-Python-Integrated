@@ -51,6 +51,7 @@ class StudentCrudController extends CrudController
         $professor =  \App\Models\Professor::where('user_id', $userId)->first();
         if(!$professor)
             $this->crud->addButtonFromView('line', 'admit', 'moderate', 'beginning');
+        $this->crud->addButtonFromView('line', 'print', 'moderate', 'beginning');
         CRUD::column('id')->label("Student ID");
         CRUD::column('name')->label('Name')->type('closure')->function(function ($entry) {
             return $entry->user->name;
@@ -89,7 +90,7 @@ class StudentCrudController extends CrudController
             ->get();
             $finishedHours = 0;
             foreach ($courses as $course) {
-                $finishedHours += $course->course->hours;
+                $finishedHours += $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours;
             }
             return $finishedHours != 0 ? $finishedHours : 'Zero';
 
@@ -155,7 +156,6 @@ class StudentCrudController extends CrudController
 
 
         ]);
-        CRUD::field('name');
         CRUD::field('email')->type('select')->entity('user')->attribute('email')->options(function ($query) {
             return $query->where('id', $this->crud->entry->user_id)->get();
         });

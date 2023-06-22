@@ -23,6 +23,7 @@ Route::group([
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
     Route::get('/admit-student-courses/{studentId}',[StudentCoursesController::class,'getStudentCourses'])->name('get-student-courses');
+    Route::get('/transcript/{studentId}', [StudentCoursesController::class,'transscriptShow'])->name('transcript.show');
     Route::post('/admit-student-courses/{studentId}',[StudentCoursesController::class,'admitStudentCourses'])->name('admit-student-courses');
 
     Route::get('/register-student-course/{studentId}',[StudentCoursesController::class,'showStudentCourse'])->name('show-student-course');
@@ -56,6 +57,8 @@ Route::group([
 
     Route::delete('/clear-students-registration', [DashboardController::class, 'clearStudentsRegistration'])->name('clear-students-registration');
     Route::post('/change-registration-state', [DashboardController::class, 'changeRegistrationState'])->name('change-registration-state');
+
+    
     
     Route::crud('lectures-time', 'LecturesTimeCrudController');
     Route::crud('user', 'UserCrudController');

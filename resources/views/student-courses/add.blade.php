@@ -193,7 +193,7 @@
         var select = document.getElementById("course");
         var course = select.options[select.selectedIndex].value;
         if (course === "") {
-            Swal.fire("Error", "Please select a course", "error");
+            swal("Error", "Please select a course", "error");
             event.preventDefault();
         } 
     }

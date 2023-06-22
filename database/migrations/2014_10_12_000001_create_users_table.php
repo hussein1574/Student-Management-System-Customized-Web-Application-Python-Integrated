@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->string("profilePicture")->nullable();
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('isActivated')->default(0);

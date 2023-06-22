@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Termwind\Components\Dd;
+use Laravel\Passport\RefreshToken;
+use Laravel\Passport\Token;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -37,11 +39,6 @@ class AuthenticatedSessionController extends Controller
   
         return $response;
         
-        // return response()->json([
-        //     'status' => 'success',
-        //     'message' => 'Logged in successfully'
-        // ]);
-      //  return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**
@@ -49,15 +46,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
+        // remove the token
+        $user = Auth::user()->token();
+        $user->revoke();
         
-        Auth::guard('web')->logout();
-
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Logged out successfully']);
+            'message' => 'Logged out successfully'
+        ]);
     }
 }

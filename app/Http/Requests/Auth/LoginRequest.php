@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
+use Laravel\Passport\Passport;
 
 class LoginRequest extends FormRequest
 {
@@ -39,11 +40,13 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-        public function authenticate(Request $request): JsonResponse
+ public function authenticate(Request $request): JsonResponse
     {
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = $this->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
             RateLimiter::hit($this->throttleKey());
 
             return response()->json([
@@ -52,42 +55,23 @@ class LoginRequest extends FormRequest
             ], 401);
         }
 
-        if(Auth::user()->isActivated == false)
-        {
-                    
-            Auth::guard('web')->logout();
+        if (Auth::user()->isActivated == false) {
+            Auth::guard('api')->logout();
 
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
             return response()->json([
                 'status' => 'failed',
                 'message' => 'Your account is not activated',
             ], 401);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        $user = Auth::user();
+        $accessToken = $user->createToken('AuthToken')->accessToken;
+        $user['token'] = $accessToken;  
+        $response =  array('success' => true,'message' => "Login success",'token' => $accessToken);
+        return response()->json($response);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Logged in successfully',
-        ]);
     }
 
-    // public function authenticate(): void
-    // {
-    //     $this->ensureIsNotRateLimited();
-
-    //     if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-    //         RateLimiter::hit($this->throttleKey());
-
-    //         throw ValidationException::withMessages([
-    //             'email' => trans('auth.failed'),
-    //         ]);
-    //     }
-
-    //     RateLimiter::clear($this->throttleKey());
-    // }
 
     /**
      * Ensure the login request is not rate limited.

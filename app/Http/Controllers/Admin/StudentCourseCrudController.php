@@ -51,10 +51,82 @@ class StudentCourseCrudController extends CrudController
             // dd($entry->student->user->email);
             return $entry->student->user->email;
         });
-
         CRUD::column('course_id');
-        CRUD::column('status_id')->type('select')->entity('courseStatus')->attribute('status');
+        //CRUD::column('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::column('grade');
+        CRUD::column('class_work_grade');
+        CRUD::column('lab_grade');
+        CRUD::column('gpa_score')->label('GPA Score')->type('closure')->function(function ($entry) {
+            $fullDegree = $entry->grade + $entry->class_work_grade + $entry->lab_grade;
+            if($fullDegree >= 97) {
+                return 4.0;
+            } elseif($fullDegree >= 93 && $fullDegree < 97) {
+                return 4.0;
+            } elseif($fullDegree >= 89 && $fullDegree < 93) {
+                return 3.7;
+            } elseif($fullDegree >= 84 && $fullDegree < 89) {
+                return 3.3;
+            } elseif($fullDegree >= 80 && $fullDegree < 84) {
+                return 3.0;
+            } elseif($fullDegree >= 76 && $fullDegree < 80)
+            {
+                return 2.7;
+            } elseif($fullDegree >= 73 && $fullDegree < 76)
+            {
+                return 2.3;
+            } elseif($fullDegree >= 70 && $fullDegree < 73)
+            {
+                return 2.0;
+            } elseif($fullDegree >= 67 && $fullDegree < 70)
+            {
+                return 1.7;
+            } elseif($fullDegree >= 64 && $fullDegree < 67)
+            {
+                return 1.3;
+            } elseif($fullDegree >= 60 && $fullDegree < 64)
+            {
+                return 1.0;
+            } else {
+                return 0.0;
+            }
+        });
+        CRUD::column('gpa_grade')->label('GPA Grade')->type('closure')->function(function ($entry) {
+            $fullDegree = $entry->grade + $entry->class_work_grade + $entry->lab_grade;
+             if($fullDegree >= 97) {
+                return 'A+';
+            } elseif($fullDegree >= 93 && $fullDegree < 97) {
+                return 'A';
+            } elseif($fullDegree >= 89 && $fullDegree < 93) {
+                return 'A-';
+            } elseif($fullDegree >= 84 && $fullDegree < 89) {
+                return 'B+';
+            } elseif($fullDegree >= 80 && $fullDegree < 84) {
+                return 'B';
+            } elseif($fullDegree >= 76 && $fullDegree < 80)
+            {
+                return 'B-';
+            } elseif($fullDegree >= 73 && $fullDegree < 76)
+            {
+                return 'C+';
+            } elseif($fullDegree >= 70 && $fullDegree < 73)
+            {
+                return 'C';
+            } elseif($fullDegree >= 67 && $fullDegree < 70)
+            {
+                return 'C-';
+            } elseif($fullDegree >= 64 && $fullDegree < 67)
+            {
+                return 'D+';
+            } elseif($fullDegree >= 60 && $fullDegree < 64)
+            {
+                return 'D';
+            } else {
+                return 'F';
+            }
+
+        });
+        
+        
         //CRUD::column('created_at');
         //CRUD::column('updated_at');
 
@@ -86,6 +158,8 @@ class StudentCourseCrudController extends CrudController
         CRUD::field('course_id');
         CRUD::field('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::field('grade');
+        CRUD::field('class_work_grade');
+        CRUD::field('lab_grade');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
@@ -109,5 +183,7 @@ class StudentCourseCrudController extends CrudController
         CRUD::field('course_id');
         CRUD::field('status_id')->type('select')->entity('courseStatus')->attribute('status');
         CRUD::field('grade');
+        CRUD::field('class_work_grade');
+        CRUD::field('lab_grade');
     }
 }
