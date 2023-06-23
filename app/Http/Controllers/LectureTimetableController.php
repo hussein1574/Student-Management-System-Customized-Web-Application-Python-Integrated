@@ -13,7 +13,7 @@ class LectureTimetableController extends Controller
     
     public function getTimetable(Request $request)
     {
-        if(Constant::where('name', 'Timetable Published')->first() == 0)
+        if(Constant::where('name', 'Timetable Published')->first()->value == 0)
         {
             return response()->json([
                 'status' => 'failed',

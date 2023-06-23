@@ -24,9 +24,6 @@ use OpenSpout\Writer\XLSX\MergeCell;
 class StudentCoursesController extends Controller
 {
     public function transscriptShow(Request $request, $studentId){
-    
-
-
         $studentdata = Student::where('id', $studentId)->first();
         if($studentdata->grade == 4.0)
         {
@@ -184,24 +181,101 @@ class StudentCoursesController extends Controller
         $courses = StudentCourse::where('student_id', $student->id)
         ->whereIn('status_id', [1, 2])
         ->get();
-        
-
-        return response()->json([
-            'status' => 'success',
-            'results' => $courses->count(),
-            'data' =>[
+        // get the courses for the current year
+        $years = [];
+        $earliestYear = null; // Initialize earliest year to null
+        $latestYear = null;
+        foreach ($courses as $course) {
+            $year = $course->created_at->format('Y');
+            if (!in_array($year, $years)) {
+                $years[] = $year;
+                if ($earliestYear === null || $year < $earliestYear) {
+                    $earliestYear = $year; // Update earliest year if a new earliest year is found
+                }
+                if ($latestYear === null || $year > $latestYear) {
+                    $latestYear = $year; // Update latest year if a new latest year is found
+                }
+            }
+        }
+        $years = [];
+        if ($earliestYear !== null) {
+            while($earliestYear <= $latestYear) {
+            $startDate = $earliestYear . '-08-01';
+            $endDate = ($earliestYear + 1) . '-08-01';
+            $courses = StudentCourse::where('student_id', $student->id)
+                ->whereIn('status_id', [1, 2])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->get();
+            $years[] = [
+                'year' => $earliestYear . '/' . ($earliestYear + 1),
                 'courses' => $courses->map(function ($course) {
+                    $gpa = $this->getGPA($course->grade + $course->class_work_grade + $course->lab_grade);
+                    $grade = '';
+                    if($gpa == 4.0)
+                    {
+                        $grade = 'A+';
+                    }
+                    elseif($gpa >= 3.7)
+                    {
+                        $grade = 'A-';
+                    }
+                    elseif($gpa >= 3.3)
+                    {
+                        $grade = 'B+';
+                    }
+                    elseif($gpa >= 3.0)
+                    {
+                        $grade = 'B';
+                    }
+                    elseif($gpa >= 2.7)
+                    {
+                        $grade = 'B-';
+                    }
+                    elseif($gpa >= 2.3)
+                    {
+                        $grade = 'C+';
+                    }
+                    elseif($gpa >= 2)
+                    {
+                        $grade = 'C';
+                    }
+                    elseif($gpa >= 1.7)
+                    {
+                        $grade = 'C-';
+                    }
+                    elseif($gpa >= 1.3)
+                    {
+                        $grade = 'D+';
+                    }
+                    elseif($gpa >= 1.0)
+                    {
+                        $grade = 'D';
+                    }
+                    elseif($gpa >= 0.0)
+                    {
+                        $grade = 'F';
+                    }
                     return [
                         'name' => $course->course->name,
                         'hours' => $course->course->LectureHours + $course->course->labHours + $course->course->sectionHours,
-                        'grade' => $course->grade,
+                        'grade' => $gpa,
                         'level' => $course->course->level,
-                        'status' => $course->courseStatus->status,
+                        'status' => $grade,
                     ];
                 })
+            ];
+            $earliestYear++;
+            }        
+        }
+        return response()->json([
+            'status' => 'success',
+            'results' => count($years),
+            'data' =>[
+                'courses' => $years
             ]
 
         ]);
+
     }
     public function getGraduationHours(Request $request)
     {

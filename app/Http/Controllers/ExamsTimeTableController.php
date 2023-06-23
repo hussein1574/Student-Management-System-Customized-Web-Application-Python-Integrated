@@ -54,12 +54,21 @@ class ExamsTimeTableController extends Controller
                 'status'=> 'fail',
                 'message' => 'Student not found'], 404);
         }
+        if(Constant::where('name', 'ExamTimetable Published')->first()->value == 0)
+        {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Exams Timetable not published yet',
+            ], 422);
+        }
         
         $studentCourses = StudentCourse::where('student_id', $student->id)
         ->where('status_id', 3)
         ->get();
 
         $exams = $this->getExamsForStudent($studentCourses);
+
+        dd($exams);
 
         return response()->json([
             'status' => 'success',
@@ -71,13 +80,6 @@ class ExamsTimeTableController extends Controller
 
     }
     public function getExamsForStudent($studentCourses){
-        if(Constant::where('name', 'ExamTimetable Published')->first() == 0)
-        {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Exams Timetable not published yet',
-            ], 422);
-        }
         $exams = [];
         foreach ($studentCourses as $studentCourse) {
             $courseExam = ExamsTimeTable::where('course_id', $studentCourse->course_id)->first();

@@ -8,10 +8,12 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Termwind\Components\Dd;
 use Laravel\Passport\RefreshToken;
 use Laravel\Passport\Token;
+use PgSql\Lob;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -32,6 +34,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+        
         //$request->authenticate();
         $response =  $request->authenticate($request);
         if($response->getStatusCode() != 401)
