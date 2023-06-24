@@ -17,9 +17,11 @@ return new class extends Migration
             $table->increments("id");
             $table->integer("professor_id")->unsigned();
             $table->integer("day_id")->unsigned();
+            $table->integer("period_id")->unsigned();
             $table->timestamps();
             $table->foreign("professor_id")->references("id")->on("professors");
             $table->foreign("day_id")->references("id")->on("days");
+            $table->foreign("period_id")->references("id")->on("lectures_times");
         });
     }
 

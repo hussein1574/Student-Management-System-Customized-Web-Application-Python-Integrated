@@ -99,6 +99,8 @@
             }
             , success: function(data) {
                 // Add the student rows to the table
+                console.log(course)
+                console.log(data);
                 data.forEach(function(student) {
                     var row = tableBody.insertRow();
                     var idCell = row.insertCell();
@@ -116,7 +118,7 @@
         });
     }
 
-    // Handle form submit
+    //Handle form submit
     $(document).ready(function() {
         $('form').submit(function(e) {
             e.preventDefault();

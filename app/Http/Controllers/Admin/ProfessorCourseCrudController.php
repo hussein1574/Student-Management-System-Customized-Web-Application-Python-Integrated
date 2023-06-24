@@ -68,9 +68,9 @@ class ProfessorCourseCrudController extends CrudController
         // Widget::add()->type('script')->content('assets/professor.js');
         // crud field for the relation to get the professor name from the user table using the user id column
         // CRUD::field('professor_id')->type('select')->entity('professor')->attribute('id');
-        CRUD::field('professor_id')->type('select')->entity('professor')->attribute('name')->options(function ($query) {
-            return ($query->join('users', 'users.id', '=', 'professors.user_id')->get()) ;
-        });
+         CRUD::field('professor_id')->type('select')->entity('professor')->attribute('name')->options(function ($query) {
+             return ($query->join('users', 'professors.user_id', '=', 'users.id')->select('professors.id', 'users.name')->get()) ;
+         });
 
         // CRUD::field('Professor Name')->type('text')->attributes(['disabled' => 'disabled']);
     

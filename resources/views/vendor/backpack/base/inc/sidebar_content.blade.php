@@ -83,5 +83,6 @@
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('constant') }}"><i class="nav-icon la la-cog"></i> Settings</a></li>
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('academic-advisor') }}"><i class="nav-icon la la-question"></i> Academic advisors</a></li>
-
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('halls-department') }}"><i class="nav-icon la la-question"></i> Halls departments</a></li>
 @endif
+

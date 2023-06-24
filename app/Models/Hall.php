@@ -18,4 +18,8 @@ class Hall extends Model
     {
         return $this->hasOne(LecturesTimeTable::class);
     }
+    public function hallsDepartments()
+    {
+        return $this->hasMany(HallsDepartment::class);
+    }
 }

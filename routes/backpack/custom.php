@@ -6,6 +6,8 @@ use App\Http\Controllers\UploadProgram;
 use App\Http\Controllers\ExamsTimeTableController;
 use App\Http\Controllers\StudentCoursesController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\LectureTimetableController;
+use App\Models\LecturesTimeTable;
 
 // --------------------------
 // Custom Backpack Routes
@@ -52,6 +54,8 @@ Route::group([
     Route::delete('/clear-exam-timetable', [ExamsTimeTableController::class, 'clearExams'])->name('clear-exam-timetable');
     Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
 
+    Route::post('/run-timetable-script', [LectureTimetableController::class , 'runScript'])->name('run-timetable-script');
+
     Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');
     Route::get('/dashboard/registered-students-chart-data', [DashboardController::class, 'registeredStudentChartData'])->name('dashboard.registeredStudentsChartData');
 
@@ -78,4 +82,5 @@ Route::group([
     Route::crud('professor', 'ProfessorCrudController');
     Route::crud('constant', 'ConstantCrudController');
     Route::crud('academic-advisor', 'AcademicAdvisorCrudController');
+    Route::crud('halls-department', 'HallsDepartmentCrudController');
 }); // this should be the absolute last line of this file

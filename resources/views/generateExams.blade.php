@@ -24,9 +24,10 @@
 </div>
 
 
-<form method="post" action="{{ route('clear-exam-timetable') }}">
+{{-- <form method="post" action="{{ route('clear-exam-timetable') }}"> --}}
+    <form method="post" action="{{ route('run-timetable-script') }}">
     @CSRF
-    @method('DELETE')
+    {{-- @method('DELETE') --}}
     <div class="form-group">
         <button type="submit" class="btn btn-danger">
             <span class="la la-trash" role="presentation" aria-hidden="true"></span>
@@ -38,7 +39,7 @@
 
 @endsection
 @section('after_scripts')
-<script>
+{{-- <script>
     $(document).ready(function() {
         $('form').submit(function(event) {
             event.preventDefault();
@@ -57,5 +58,5 @@
         });
     });
 
-</script>
+</script> --}}
 @endsection

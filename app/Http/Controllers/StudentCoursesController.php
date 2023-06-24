@@ -484,7 +484,8 @@ public function uploadStudentsResultsIndex(Request $request)
     $professor = Professor::where('user_id', $userId)->first();
     $professorCourses = ProfessorCourse::where('professor_id', $professor->id)->get();
     $professorCourses = $professorCourses->map(function ($course) {
-        $courseId = $course['id'];
+
+        $courseId = $course->course->id;
         $coursesStatus = StudentCourse::where('course_id', $courseId)->get()->map(function ($course) {
             return $course->status_id;
         });
@@ -522,8 +523,8 @@ public function getCourseStudents(Request $request)
         $studentsIds[] = $student->student_id;
     }
     $students = Student::whereIn('id', $studentsIds)->get();
-    $students = $students->map(function ($student) use ($students) {
-        $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $students[0]->id)->first();
+    $students = $students->map(function ($student) use ($students , $courseId) {
+        $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $courseId)->first();
         return [
             'id' => $student->id,
             'name' => $student->user->name,

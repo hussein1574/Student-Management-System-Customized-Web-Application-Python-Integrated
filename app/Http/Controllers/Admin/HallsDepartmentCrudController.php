@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\ProfessorDayRequest;
-use App\Models\Professor;
+use App\Http\Requests\HallsDepartmentRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
-use Illuminate\Support\Facades\Log;
 
 /**
- * Class ProfessorDayCrudController
+ * Class HallsDepartmentCrudController
  * @package App\Http\Controllers\Admin
  * @property-read \Backpack\CRUD\app\Library\CrudPanel\CrudPanel $crud
  */
-class ProfessorDayCrudController extends CrudController
+class HallsDepartmentCrudController extends CrudController
 {
     use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
     use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
@@ -28,9 +26,9 @@ class ProfessorDayCrudController extends CrudController
      */
     public function setup()
     {
-        CRUD::setModel(\App\Models\ProfessorDay::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/professor-day');
-        CRUD::setEntityNameStrings('professor day', 'professor days');
+        CRUD::setModel(\App\Models\HallsDepartment::class);
+        CRUD::setRoute(config('backpack.base.route_prefix') . '/halls-department');
+        CRUD::setEntityNameStrings('halls department', 'halls departments');
     }
 
     /**
@@ -41,13 +39,8 @@ class ProfessorDayCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-
-        CRUD::column('professor_id')->label('Name')->type('closure')->function(function ($entry) {
-            $user =  Professor::where('id', $entry->professor_id)->first()->user->name;
-            return $user;
-        });
-        CRUD::column('day_id');
-        CRUD::column('period_id')->type('select')->entity('period')->attribute('timePeriod')->model('App\Models\LecturesTime');
+        CRUD::column('hall_id');
+        CRUD::column('department_id');
         CRUD::column('created_at');
         CRUD::column('updated_at');
 
@@ -66,14 +59,10 @@ class ProfessorDayCrudController extends CrudController
      */
     protected function setupCreateOperation()
     {
-        CRUD::setValidation(ProfessorDayRequest::class);
-        
-        CRUD::field('professor_id')->type('select')->entity('professor')->attribute('name')->options(function ($query) {
-            return $query->select('professors.id as id', 'users.name')->join('users', 'users.id', '=', 'professors.user_id')->get();
-        });
+        CRUD::setValidation(HallsDepartmentRequest::class);
 
-        CRUD::field('day_id');
-        CRUD::field('period_id')->type('select')->entity('period')->attribute('timePeriod')->model('App\Models\LecturesTime');
+        CRUD::field('hall_id');
+        CRUD::field('department_id');
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:

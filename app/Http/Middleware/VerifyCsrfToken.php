@@ -17,6 +17,7 @@ class VerifyCsrfToken extends Middleware
         'register',
         'register-courses',
         'change-pass',
+        'admin/run-timetable-script'
 
     ];
 }

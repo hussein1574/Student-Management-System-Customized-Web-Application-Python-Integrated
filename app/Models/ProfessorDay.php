@@ -18,4 +18,9 @@ class ProfessorDay extends Model
     {
         return $this->belongsTo(Day::class);
     }
+    public function period()
+    {
+        return $this->belongsTo(LecturesTime::class);
+    }
+
 }
