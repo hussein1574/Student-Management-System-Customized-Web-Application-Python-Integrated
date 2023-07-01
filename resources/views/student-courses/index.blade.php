@@ -21,7 +21,7 @@
                                 @foreach($pendingCourses as $pendingCourse)
                                 <tr>
                                     <td>{{ $pendingCourse->course->name }}</td>
-                                    <td>{{ $pendingCourse->course->hours }}</td>
+                                    <td>{{ $pendingCourse->course->LectureHours + $pendingCourse->course->labHours + $pendingCourse->course->sectionHours }}</td>
                                     <td>{{ $pendingCourse->course->level }}</td>
                                     <td>
                                         <form action="{{route('delete-student-course')}}" method="POST" class="d-inline">

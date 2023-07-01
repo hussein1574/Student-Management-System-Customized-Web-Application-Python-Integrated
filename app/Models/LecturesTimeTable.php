@@ -9,7 +9,7 @@ class LecturesTimeTable extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
     public function course()
     {
@@ -21,12 +21,16 @@ class LecturesTimeTable extends Model
     }
     public function lecturesTime()
     {
-        return $this->belongsTo(LecturesTime::class, 'lectureTime_id', 'id');
+        return $this->belongsTo(LecturesTime::class, "lectureTime_id", "id");
     }
     public function day()
     {
         return $this->belongsTo(Day::class);
     }
+    public function professor()
+    {
+        return $this->belongsTo(Professor::class);
+    }
 
-    protected $table = 'lectures_time_table';
+    protected $table = "lectures_time_table";
 }

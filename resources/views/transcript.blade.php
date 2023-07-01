@@ -45,14 +45,14 @@ use App\Http\Controllers\StudentCoursesController;
         justify-content: center;
       }
       table {
-        width: 80%;
+        width: 90%;
         border-collapse: collapse;
         border: 1px solid black;
       }
 
-      th:first-child {
+      /* th:first-child {
         width: 50%;
-      }
+      } */
 
       th,
       td {
@@ -63,6 +63,10 @@ use App\Http\Controllers\StudentCoursesController;
         border-top: 1px solid black;
         text-align: start;
         font-weight: bold;
+      }
+      .term {
+        border-top: 0.1px dotted #464646;
+        text-align: center;
       }
       .summary {
         grid-column: 3 / 4;
@@ -103,26 +107,42 @@ use App\Http\Controllers\StudentCoursesController;
       <table>
         <thead>
           <tr>
+            <th>Acadmic Year</th>
+            <th>Term</th>
             <th>Course Name</th>
             <th>Course Hours</th>
             <th>Course GPA</th>
           </tr>
         </thead>
-        @foreach($years as $year)
-        <tbody>
-          <tr class="year">
-            <td>{{$year['year']}}</td>
-            <td>&nbsp;</td>
-            <td>&nbsp;</td>
-          </tr>
-          @foreach($year['courses'] as $course)
-          <tr>
-            <td>{{$course->course->name}}</td>
-            <td>{{$course->course->LectureHours + $course->course->classworkHours + $course->course->labHours}}</td>
-            <td>{{StudentCoursesController::getGPA($course->grade + $course->class_work_grade + $course->lab_grade)}}</td>
-          </tr>
+       
+        @foreach($years as $yearName => $year)
+          <tbody>
+            <tr class="year">
+              <td>{{$yearName}}</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            @foreach($year as $termName => $term)
+            <tr class="term">
+              <td>&nbsp;</td>
+              <td>{{$termName}}</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+            </tr>
+            @foreach($term as $course)
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>{{$course->course->name}}</td>
+              <td>{{$course->course->LectureHours + $course->course->classworkHours + $course->course->labHours}}</td>
+              <td>{{StudentCoursesController::getGPA($course->grade + $course->class_work_grade + $course->lab_grade)}}</td>
+            </tr>
+            @endforeach
+          </tbody>
           @endforeach
-        </tbody>
         @endforeach
       </table>
     </div>
@@ -172,17 +192,16 @@ use App\Http\Controllers\StudentCoursesController;
       x: 15,
       y: 15,
       width: 170,
-      windowWidth: 650
-
+      windowWidth: 850
     });
   }
   print();
   //wait till the pdf is downloaded
   setTimeout(function(){
-    //close the tab
+    // return to the previous page
     window.history.back();
   }, 1000);
-  // return to the previous page
+  
   
 
 </script>

@@ -50,6 +50,7 @@
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-group"></i>Professors</a>
     <ul class="nav-dropdown-items">
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('academic-advisor') }}"><i class="nav-icon la la-question"></i> Academic advisors</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor') }}"><i class="nav-icon la la-user"></i> Professors</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor-course') }}"><i class="nav-icon la la-book"></i> Professor courses</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor-day') }}"><i class="nav-icon la la-newspaper-o"></i> Professor days</a></li>
@@ -76,13 +77,13 @@
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('exams-time-table') }}"><i class="nav-icon la la-newspaper-o"></i> Exams time tables</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('lectures-time') }}"><i class="nav-icon la la-question"></i> Time periods</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('hall') }}"><i class="nav-icon la la-question"></i> Halls</a></li>
-
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('halls-department') }}"><i class="nav-icon la la-question"></i> Halls departments</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('day') }}"><i class="nav-icon la la-question"></i> Days</a></li>
     </ul>
 </li>
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('constant') }}"><i class="nav-icon la la-cog"></i> Settings</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('academic-advisor') }}"><i class="nav-icon la la-question"></i> Academic advisors</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('halls-department') }}"><i class="nav-icon la la-question"></i> Halls departments</a></li>
+
+
 @endif
 

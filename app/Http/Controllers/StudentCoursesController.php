@@ -24,48 +24,48 @@ use OpenSpout\Writer\XLSX\MergeCell;
 class StudentCoursesController extends Controller
 {
     public function transscriptShow(Request $request, $studentId){
-        $studentdata = Student::where('id', $studentId)->first();
-        if($studentdata->grade == 4.0)
+        $studentData = Student::where('id', $studentId)->first();
+        if($studentData->grade == 4.0)
         {
             $grade = 'A+';
         }
-        elseif($studentdata->grade >= 3.7)
+        elseif($studentData->grade >= 3.7)
         {
             $grade = 'A-';
         }
-        elseif($studentdata->grade >= 3.3)
+        elseif($studentData->grade >= 3.3)
         {
             $grade = 'B+';
         }
-        elseif($studentdata->grade >= 3.0)
+        elseif($studentData->grade >= 3.0)
         {
             $grade = 'B';
         }
-        elseif($studentdata->grade >= 2.7)
+        elseif($studentData->grade >= 2.7)
         {
             $grade = 'B-';
         }
-        elseif($studentdata->grade >= 2.3)
+        elseif($studentData->grade >= 2.3)
         {
             $grade = 'C+';
         }
-        elseif($studentdata->grade >= 2)
+        elseif($studentData->grade >= 2)
         {
             $grade = 'C';
         }
-        elseif($studentdata->grade >= 1.7)
+        elseif($studentData->grade >= 1.7)
         {
             $grade = 'C-';
         }
-        elseif($studentdata->grade >= 1.3)
+        elseif($studentData->grade >= 1.3)
         {
             $grade = 'D+';
         }
-        elseif($studentdata->grade >= 1.0)
+        elseif($studentData->grade >= 1.0)
         {
             $grade = 'D';
         }
-        elseif($studentdata->grade >= 0.0)
+        elseif($studentData->grade >= 0.0)
         {
             $grade = 'F';
         }
@@ -92,10 +92,10 @@ class StudentCoursesController extends Controller
                 }
 
         $student = [
-            'name' => $studentdata->user->name,
-            'department' => $studentdata->department->name,
+            'name' => $studentData->user->name,
+            'department' => $studentData->department->name,
             'year' => $year,
-            'gpa' => $studentdata->grade,
+            'gpa' => $studentData->grade,
             'grade' => $grade,
         ];
             $courses = StudentCourse::where('student_id', $studentId)
@@ -116,23 +116,33 @@ class StudentCoursesController extends Controller
                 }
             }
             $years = [];
+            $earliestYear--;
             if ($earliestYear !== null) {
                 while($earliestYear <= $latestYear) {
-                $startDate = $earliestYear . '-08-01';
-                $endDate = ($earliestYear + 1) . '-08-01';
-                $courses = StudentCourse::where('student_id', $studentId)
+                $FirstTermDate = $earliestYear . '-09-01';
+                $SecondTermDate = ($earliestYear + 1) . '-02-01';
+                $SummerTermDate = ($earliestYear + 1) . '-06-01';
+                $endDate = ($earliestYear + 1) . '-09-01';
+                $FirstTermcourses = StudentCourse::where('student_id', $studentId)
                     ->whereIN('status_id', [1, 2])
-                    ->whereBetween('created_at', [$startDate, $endDate])
+                    ->whereBetween('created_at', [$FirstTermDate, $SecondTermDate])
                     ->get();
-                $years[] = [
-                    'year' => $earliestYear . '/' . ($earliestYear + 1),
-                    'courses' => $courses
+                $SecondTermcourses = StudentCourse::where('student_id', $studentId)
+                    ->whereIN('status_id', [1, 2])
+                    ->whereBetween('created_at', [$SecondTermDate, $SummerTermDate])
+                    ->get();
+                $SummerTermcourses = StudentCourse::where('student_id', $studentId)
+                    ->whereIN('status_id', [1, 2])
+                    ->whereBetween('created_at', [$SummerTermDate, $endDate])
+                    ->get();
+                $years[$earliestYear . '/' . ($earliestYear + 1)] = [
+                        'First term' => $FirstTermcourses,
+                        'Second term' => $SecondTermcourses,
+                        'Summer term' => $SummerTermcourses,
                 ];
                 $earliestYear++;
                 }        
             } 
-
-      
         return view('transcript', compact('student', 'years'));
 
 
@@ -478,63 +488,84 @@ class StudentCoursesController extends Controller
     }
     
  
-public function uploadStudentsResultsIndex(Request $request)
-{ 
-    $userId = backpack_user()->id;
-    $professor = Professor::where('user_id', $userId)->first();
-    $professorCourses = ProfessorCourse::where('professor_id', $professor->id)->get();
-    $professorCourses = $professorCourses->map(function ($course) {
+    public function uploadStudentsResultsIndex(Request $request)
+    { 
+        $userId = backpack_user()->id;
+        $professor = Professor::where('user_id', $userId)->first();
+        $professorCourses = ProfessorCourse::where('professor_id', $professor->id)->get();
+        $professorCourses = $professorCourses->map(function ($course) {
 
-        $courseId = $course->course->id;
-        $coursesStatus = StudentCourse::where('course_id', $courseId)->get()->map(function ($course) {
-            return $course->status_id;
-        });
-        $uploaded = true;
-        foreach ($coursesStatus as $status) {
-            if ($status == 3) {
-                $uploaded = false;
-                break;
+            $courseId = $course->course->id;
+            $coursesStatus = StudentCourse::where('course_id', $courseId)->get()->map(function ($course) {
+                return $course->status_id;
+            });
+            $uploaded = true;
+            foreach ($coursesStatus as $status) {
+                if ($status == 3) {
+                    $uploaded = false;
+                    break;
+                }
             }
+            return [
+                'name' => $course->course->name,
+                'id' => $course->course->id,
+                'hasLab' => $course->course->labHours > 0,
+                'hasSection' => $course->course->sectionHours > 0,
+                'uploaded' => $uploaded,
+            ];
+        });
+        $professorCourses = $professorCourses->where('uploaded', false)->toArray();
+        if(empty($professorCourses))
+        {
+            session()->flash('alert', 'warning');
+            session()->flash('message', 'You have uploaded the results for all your courses');
         }
-        return [
-            'name' => $course->course->name,
-            'id' => $course->course->id,
-            'uploaded' => $uploaded,
-        ];
-    });
-    $professorCourses = $professorCourses->where('uploaded', false)->toArray();
-    if(empty($professorCourses))
+
+        return view('uploadStudentsResults', compact('professorCourses'));
+    }
+
+    public function getCourseStudents(Request $request)
     {
-        session()->flash('alert', 'warning');
-        session()->flash('message', 'You have uploaded the results for all your courses');
+        $courseId = $request->input('course_id');
+        $students = StudentCourse::where('course_id', $courseId)->with(['student' => function($query){
+            $query->with('user');
+        }])->get();
+        $studentsIds = [];
+        foreach ($students as $student) {
+            $studentsIds[] = $student->student_id;
+        }
+        $students = Student::whereIn('id', $studentsIds)->get();
+        $students = $students->map(function ($student) use ($students , $courseId) {
+            $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $courseId)->first();
+            $course = Course::where('id', $courseId)->first();
+            if($course->labHours == 0 && $course->sectionHours == 0)
+            {
+               return [
+                'id' => $student->id,
+                'name' => $student->user->name,
+                'gpa' => $studentCourse->grade,
+            ];
+            } elseif($course->labHours == 0)
+            {
+                return [
+                'id' => $student->id,
+                'name' => $student->user->name,
+                'gpa' => $studentCourse->grade,
+                'class_work' => $studentCourse->class_work_grade,
+            ];
+            } else {
+                return [
+                'id' => $student->id,
+                'name' => $student->user->name,
+                'gpa' => $studentCourse->grade,
+                'class_work' => $studentCourse->class_work_grade,
+                'lab' => $studentCourse->lab_grade,
+            ];
+            }
+            
+        });
+        return $students;
     }
-
-    return view('uploadStudentsResults', compact('professorCourses'));
-}
-
-public function getCourseStudents(Request $request)
-{
-    $courseId = $request->input('course_id');
-    $students = StudentCourse::where('course_id', $courseId)->with(['student' => function($query){
-        $query->with('user');
-    }])->get();
-    $studentsIds = [];
-    foreach ($students as $student) {
-        $studentsIds[] = $student->student_id;
-    }
-    $students = Student::whereIn('id', $studentsIds)->get();
-    $students = $students->map(function ($student) use ($students , $courseId) {
-        $studentCourse = StudentCourse::where('student_id', $student->id)->where('course_id', $courseId)->first();
-        return [
-            'id' => $student->id,
-            'name' => $student->user->name,
-            'gpa' => $studentCourse->grade,
-            'class_work' => $studentCourse->class_work_grade,
-            'lab' => $studentCourse->lab_grade,
-        ];
-    });
-    return $students;
-}
 
     public function uploadStudentsResults(Request $request)
     {

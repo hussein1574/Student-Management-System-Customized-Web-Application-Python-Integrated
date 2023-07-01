@@ -75,7 +75,7 @@
         var select = document.getElementById("course");
         var course = select.options[select.selectedIndex].value;
         if (course === "") {
-            Swal.fire("Error", "Please select a course", "error");
+            swal("Error", "Please select a course", "error");
             return;
         }
 
@@ -99,8 +99,9 @@
             }
             , success: function(data) {
                 // Add the student rows to the table
-                console.log(course)
-                console.log(data);
+                console.log(data[0]);
+                console.log(data[0].class_work === undefined);
+                console.log(data[0].lab === undefined);
                 data.forEach(function(student) {
                     var row = tableBody.insertRow();
                     var idCell = row.insertCell();
@@ -110,9 +111,33 @@
                     var labCell = row.insertCell();
                     nameCell.innerHTML = student.name;
                     idCell.innerHTML = student.id;
+                    if(student.class_work === null)
+                    {
+                        student.class_work = 0;
+                    }
+                    if(student.lab === null)
+                    {
+                        student.lab = 0;
+                    }
+
+                    if(student.class_work === undefined && student.lab === undefined)
+                    {
+                    gpaCell.innerHTML = '<input type="number" name="gpa[' + student.id + ']" value="' + student.gpa + '" step="1" min="0" max="100" required>';
+                    classWorkCell.innerHTML = '<input type="number" name="class_work[' + student.id + ']" value="0" disabled>';
+                    labCell.innerHTML = '<input type="number" name="lab[' + student.id + ']" value="0" disabled>';
+                    }
+                    else if(student.lab === undefined)
+                    {
+                    gpaCell.innerHTML = '<input type="number" name="gpa[' + student.id + ']" value="' + student.gpa + '" step="1" min="0" max="50" required>';
+                    classWorkCell.innerHTML = '<input type="number" name="class_work[' + student.id + ']" value="' + student.class_work + '" step="1" min="0" max="50" required>';
+                    labCell.innerHTML = '<input type="number" name="lab[' + student.id + ']" value="0" disabled>';
+                    }
+                    else {
                     gpaCell.innerHTML = '<input type="number" name="gpa[' + student.id + ']" value="' + student.gpa + '" step="1" min="0" max="50" required>';
                     classWorkCell.innerHTML = '<input type="number" name="class_work[' + student.id + ']" value="' + student.class_work + '" step="1" min="0" max="30" required>';
                     labCell.innerHTML = '<input type="number" name="lab[' + student.id + ']" value="' + student.lab + '" step="1" min="0" max="20" required>';
+                    }
+                        
                 });
             }
         });

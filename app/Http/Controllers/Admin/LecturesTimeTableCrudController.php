@@ -21,41 +21,58 @@ class LecturesTimeTableCrudController extends CrudController
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
-     * 
+     *
      * @return void
      */
     public function setup()
     {
         CRUD::setModel(\App\Models\LecturesTimeTable::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/lectures-time-table');
-        CRUD::setEntityNameStrings('lectures time table', 'lectures time tables');
+        CRUD::setRoute(
+            config("backpack.base.route_prefix") . "/lectures-time-table"
+        );
+        CRUD::setEntityNameStrings(
+            "lectures time table",
+            "lectures time tables"
+        );
     }
 
     /**
      * Define what happens when the List operation is loaded.
-     * 
+     *
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
      * @return void
      */
     protected function setupListOperation()
     {
-        CRUD::column('day_id');
-        CRUD::column('lectureTime_id')->type('select')->entity('lecturesTime')->attribute('timePeriod');
-        CRUD::column('hall_id');
-        CRUD::column('course_id');
-        CRUD::column('created_at');
-        CRUD::column('updated_at');
+        CRUD::column("day_id");
+        CRUD::column("lectureTime_id")
+            ->type("select")
+            ->entity("lecturesTime")
+            ->attribute("timePeriod");
+        CRUD::column("hall_id");
+        CRUD::column("course_id");
+        CRUD::column("professor_id")
+            ->type("closure")
+            ->function(function ($entry) {
+                if ($entry->professor) {
+                    return $entry->professor->user->name;
+                }
+            });
+        CRUD::column("isLab")->type("boolean");
+        CRUD::column("isSection")->type("boolean");
+        CRUD::column("created_at");
+        CRUD::column("updated_at");
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
+         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
     }
 
     /**
      * Define what happens when the Create operation is loaded.
-     * 
+     *
      * @see https://backpackforlaravel.com/docs/crud-operation-create
      * @return void
      */
@@ -63,21 +80,36 @@ class LecturesTimeTableCrudController extends CrudController
     {
         CRUD::setValidation(LecturesTimeTableRequest::class);
 
-        CRUD::field('day_id');
-        CRUD::field('lectureTime_id')->type('select')->entity('lecturesTime')->attribute('timePeriod');
-        CRUD::field('hall_id');
-        CRUD::field('course_id');
+        CRUD::field("day_id");
+        CRUD::field("lectureTime_id")
+            ->type("select")
+            ->entity("lecturesTime")
+            ->attribute("timePeriod");
+        CRUD::field("professor_id")
+            ->type("select")
+            ->entity("professor")
+            ->attribute("name")
+            ->options(function ($query) {
+                return $query
+                    ->join("users", "professors.user_id", "=", "users.id")
+                    ->select("professors.id", "users.name")
+                    ->get();
+            });
+        CRUD::field("hall_id");
+        CRUD::field("course_id");
+        CRUD::field("isLab");
+        CRUD::field("isSection");
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number'])); 
+         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
          */
     }
 
     /**
      * Define what happens when the Update operation is loaded.
-     * 
+     *
      * @see https://backpackforlaravel.com/docs/crud-operation-update
      * @return void
      */

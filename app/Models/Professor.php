@@ -9,7 +9,7 @@ class Professor extends Model
 {
     use \Backpack\CRUD\app\Models\Traits\CrudTrait;
     use HasFactory;
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
     public function user()
     {
@@ -22,5 +22,9 @@ class Professor extends Model
     public function professorDays()
     {
         return $this->hasMany(ProfessorDay::class);
+    }
+    public function lecturesTimeTable()
+    {
+        return $this->hasMany(LecturesTimeTable::class);
     }
 }

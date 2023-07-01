@@ -16,7 +16,9 @@
         "vite": "^3.0.0"
     },
     "dependencies": {
+        "@prettier/plugin-php": "^0.19.6",
         "chart.js": "^4.2.1",
+        "prettier": "^2.8.8",
         "sweetalert2": "^11.7.12"
     }
 }

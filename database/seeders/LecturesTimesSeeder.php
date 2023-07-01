@@ -13,16 +13,16 @@ class LecturesTimesSeeder extends Seeder
     public function run()
     {
         $times = [
-            '9:00AM-10:30AM',
-            '10:30AM-12:00PM',
-            '12:30PM-2:00PM',
-            '2:00PM-3:30PM',
-            '3:30PM-5:00PM',
+            "9:00AM:10:30AM",
+            "10:30AM:12:00PM",
+            "12:30PM:2:00PM",
+            "2:00PM:3:30PM",
+            "3:30PM:5:00PM",
         ];
 
         foreach ($times as $time) {
             LecturesTime::create([
-                'timePeriod' => $time,
+                "timePeriod" => $time,
             ]);
         }
     }

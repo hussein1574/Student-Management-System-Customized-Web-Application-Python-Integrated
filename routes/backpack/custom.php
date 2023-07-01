@@ -54,7 +54,7 @@ Route::group([
     Route::delete('/clear-exam-timetable', [ExamsTimeTableController::class, 'clearExams'])->name('clear-exam-timetable');
     Route::post('/run-script', [ExamsTimeTableController::class, 'runScript'])->name('run-script');
 
-    Route::post('/run-timetable-script', [LecturgeTimetableController::class , 'runScript'])->name('run-timetable-script');
+    Route::post('/run-timetable-script', [LectureTimetableController::class , 'runScript'])->name('run-timetable-script');
 
     Route::get('/dashboard/failed-students-chart-data', [DashboardController::class, 'failedStudentChartData'])->name('dashboard.failedStudentsChartData');
     Route::get('/dashboard/registered-students-chart-data', [DashboardController::class, 'registeredStudentChartData'])->name('dashboard.registeredStudentsChartData');

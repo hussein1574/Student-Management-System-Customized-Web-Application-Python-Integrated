@@ -70,8 +70,8 @@ class RegisteredUserController extends Controller
         // Get the uploaded file
         $profilePicture = $request->file('profilePicture');
 
-        // Rename the file with the user id
-        $newFileName = $user->id . '.' . $profilePicture->getClientOriginalExtension();
+        // Rename the file with the unique id     
+        $newFileName = uniqid() . '.' . $profilePicture->getClientOriginalExtension();
 
         // Store the file in the public folder
         $profilePicture->storeAs('images/', $newFileName, 'public');
