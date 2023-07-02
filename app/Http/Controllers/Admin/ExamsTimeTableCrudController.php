@@ -21,40 +21,42 @@ class ExamsTimeTableCrudController extends CrudController
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
-     * 
+     *
      * @return void
      */
     public function setup()
     {
         CRUD::setModel(\App\Models\ExamsTimeTable::class);
-        CRUD::setRoute(config('backpack.base.route_prefix') . '/exams-time-table');
-        CRUD::setEntityNameStrings('exams time table', 'exams time tables');
+        CRUD::setRoute(
+            config("backpack.base.route_prefix") . "/exams-time-table"
+        );
+        CRUD::setEntityNameStrings("exam", "exams");
     }
 
     /**
      * Define what happens when the List operation is loaded.
-     * 
+     *
      * @see  https://backpackforlaravel.com/docs/crud-operation-list-entries
      * @return void
      */
     protected function setupListOperation()
     {
-        CRUD::column('day');
-        CRUD::column('course_id');
-        CRUD::column('hall_id');
-        CRUD::column('created_at');
-        CRUD::column('updated_at');
+        CRUD::column("day");
+        CRUD::column("course_id");
+        CRUD::column("hall_id");
+        CRUD::column("created_at");
+        CRUD::column("updated_at");
 
         /**
          * Columns can be defined using the fluent syntax or array syntax:
          * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
+         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']);
          */
     }
 
     /**
      * Define what happens when the Create operation is loaded.
-     * 
+     *
      * @see https://backpackforlaravel.com/docs/crud-operation-create
      * @return void
      */
@@ -62,21 +64,20 @@ class ExamsTimeTableCrudController extends CrudController
     {
         CRUD::setValidation(ExamsTimeTableRequest::class);
 
-        CRUD::field('day');
-        CRUD::field('course_id');
-        CRUD::field('hall_id');
-
+        CRUD::field("day");
+        CRUD::field("course_id");
+        CRUD::field("hall_id");
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
          * - CRUD::field('price')->type('number');
-         * - CRUD::addField(['name' => 'price', 'type' => 'number'])); 
+         * - CRUD::addField(['name' => 'price', 'type' => 'number']));
          */
     }
 
     /**
      * Define what happens when the Update operation is loaded.
-     * 
+     *
      * @see https://backpackforlaravel.com/docs/crud-operation-update
      * @return void
      */

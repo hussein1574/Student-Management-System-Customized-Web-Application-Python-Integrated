@@ -30,10 +30,7 @@ class LecturesTimeTableCrudController extends CrudController
         CRUD::setRoute(
             config("backpack.base.route_prefix") . "/lectures-time-table"
         );
-        CRUD::setEntityNameStrings(
-            "lectures time table",
-            "lectures time tables"
-        );
+        CRUD::setEntityNameStrings("lecture", "lectures");
     }
 
     /**

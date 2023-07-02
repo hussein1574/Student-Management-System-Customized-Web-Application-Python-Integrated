@@ -1,9 +1,12 @@
 {{-- This file is used to store sidebar items, inside the Backpack admin panel --}}
 <?php
-        $userId = backpack_user()->id;
-        $professor =  App\Models\Professor::where('user_id', $userId)->first();
-        $acadmicAdvisor =  App\Models\AcademicAdvisor::where('user_id', $userId)->first();
- ?>
+$userId = backpack_user()->id;
+$professor = App\Models\Professor::where("user_id", $userId)->first();
+$acadmicAdvisor = App\Models\AcademicAdvisor::where(
+    "user_id",
+    $userId
+)->first();
+?>
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('dashboard') }}"><i class="la la-home nav-icon"></i> {{ trans('backpack::base.dashboard') }}</a></li>
 @if($acadmicAdvisor)
 <li class="nav-item nav-dropdown">
@@ -29,12 +32,13 @@
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-students-results') }}"><i class="nav-icon la la-newspaper-o"></i>Students results</a></li>
 @else
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('admit-students-results') }}"><i class="nav-icon la la-newspaper-o"></i>Students results</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-program') }}"><i class="nav-icon la la-newspaper-o"></i>Upload program</a></li>
-
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-program') }}"><i class="nav-icon la la-newspaper-o"></i>Upload program courses</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('time-table-admition') }}"><i class="nav-icon la la-newspaper-o"></i>Timetables admition</a></li>
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-cog"></i>Generate</a>
     <ul class="nav-dropdown-items">
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('generate-exams') }}"><i class="nav-icon la la-newspaper-o"></i>Exams</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('generate-timetable') }}"><i class="nav-icon la la-newspaper-o"></i>Lectures</a></li>
     </ul>
 </li>
 

@@ -24,73 +24,86 @@ class ExamsTimeTableController extends Controller
 {
     public function index(Request $request)
     {
-        return view('generateExams');
+        return view("generateExams");
     }
     public function runScript(Request $request)
     {
-        $examsStartDate = $request->input('examsStartDate');
-        if($examsStartDate == null)
-        {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Validation failed',
-                'errors' => "Empty exams start date",
-            ], 422);
+        $examsStartDate = $request->input("examsStartDate");
+        if ($examsStartDate == null) {
+            return response()->json(
+                [
+                    "status" => "failed",
+                    "message" => "Validation failed",
+                    "errors" => "Empty exams start date",
+                ],
+                422
+            );
         }
-        
+
         dispatch(new ExamTimetableProcess($examsStartDate));
-        
+
         return response()->json([
-        'status' => 'success',
-        'result' => 'The script is running in the background.',
-    ]);
+            "status" => "success",
+            "result" => "The script is running in the background.",
+        ]);
     }
     public function getExams(Request $request)
     {
         $userId = $request->user()->id;
-        $student = Student::where('user_id', $userId)->first();
+        $student = Student::where("user_id", $userId)->first();
         if (!$student) {
-            return response()->json([
-                'status'=> 'fail',
-                'message' => 'Student not found'], 404);
+            return response()->json(
+                [
+                    "status" => "fail",
+                    "message" => "Student not found",
+                ],
+                404
+            );
         }
-        if(Constant::where('name', 'ExamTimetable Published')->first()->value == 0)
-        {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Exams Timetable not published yet',
-            ], 422);
+        if (
+            Constant::where("name", "ExamTimetable Published")->first()
+                ->value == 0
+        ) {
+            return response()->json(
+                [
+                    "status" => "failed",
+                    "message" => "Exams Timetable not published yet",
+                ],
+                422
+            );
         }
-        
-        $studentCourses = StudentCourse::where('student_id', $student->id)
-        ->where('status_id', 3)
-        ->get();
+
+        $studentCourses = StudentCourse::where("student_id", $student->id)
+            ->where("status_id", 3)
+            ->get();
 
         $exams = $this->getExamsForStudent($studentCourses);
 
         dd($exams);
 
         return response()->json([
-            'status' => 'success',
-            'results' => count($exams),
-            'data' => [ 
-                'exams' => $exams
-                ]
+            "status" => "success",
+            "results" => count($exams),
+            "data" => [
+                "exams" => $exams,
+            ],
         ]);
-
     }
-    public function getExamsForStudent($studentCourses){
+    public function getExamsForStudent($studentCourses)
+    {
         $exams = [];
         foreach ($studentCourses as $studentCourse) {
-            $courseExam = ExamsTimeTable::where('course_id', $studentCourse->course_id)->first();
-            if ($courseExam)
-            {
+            $courseExam = ExamsTimeTable::where(
+                "course_id",
+                $studentCourse->course_id
+            )->first();
+            if ($courseExam) {
                 $exams[] = [
-                    'hallName' => $courseExam->hall->name,
-                    'courseName' => $studentCourse->course->name,
-                    'day' => $courseExam->day,
+                    "hallName" => $courseExam->hall->name,
+                    "courseName" => $studentCourse->course->name,
+                    "day" => $courseExam->day,
                 ];
-            }            
+            }
         }
         return $exams;
     }
@@ -98,8 +111,18 @@ class ExamsTimeTableController extends Controller
     {
         ExamsTimeTable::truncate();
         return response()->json([
-            'status' => 'success',
-            'message' => 'Exams cleared successfully',
+            "status" => "success",
+            "message" => "Exams cleared successfully",
+        ]);
+    }
+    public function admitExams(Request $request)
+    {
+        Constant::where("name", "ExamTimetable Published")->update([
+            "value" => true,
+        ]);
+        return response()->json([
+            "status" => "success",
+            "message" => "Exams admitted successfully",
         ]);
     }
 }

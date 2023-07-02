@@ -98,4 +98,22 @@ class LectureTimetableController extends Controller
         }
         return $timetable;
     }
+    public function clearTimetable(Request $request)
+    {
+        LecturesTimeTable::truncate();
+        return response()->json([
+            "status" => "success",
+            "message" => "Exams cleared successfully",
+        ]);
+    }
+    public function admitTimetable(Request $request)
+    {
+        Constant::where("name", "Timetable Published")->update([
+            "value" => true,
+        ]);
+        return response()->json([
+            "status" => "success",
+            "message" => "Timetable published successfully",
+        ]);
+    }
 }

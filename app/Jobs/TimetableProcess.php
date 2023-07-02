@@ -9,6 +9,7 @@ use App\Models\Day;
 use App\Models\Hall;
 use App\Models\User;
 use App\Models\Course;
+use App\Models\Constant;
 use App\Models\Professor;
 use App\Models\Department;
 use App\Models\LecturesTime;
@@ -46,6 +47,15 @@ class TimetableProcess implements ShouldQueue
      */
     public function handle()
     {
+        $lecturesSheet = base_path("app\scripts\lectures\Lecture_Table.xlsx");
+        // if the file exists delete it
+        if (file_exists($lecturesSheet)) {
+            unlink($lecturesSheet);
+        }
+        Constant::where("name", "Timetable Published")->update([
+            "value" => false,
+        ]);
+        LecturesTimeTable::truncate();
         $this->createConflictTable();
         $this->createHallsFile();
         $this->createProffFile();
@@ -55,11 +65,11 @@ class TimetableProcess implements ShouldQueue
         $this->createDaysFile();
         $command = "python " . base_path("app/scripts/lectures/main.py");
         exec($command);
-        $this->uploadExamTimeTable();
+        $this->uploadTimeTable();
     }
     public function failed(Throwable $exception)
     {
-        // Send user notification of failure, etc...
+        LecturesTimeTable::truncate();
     }
     public function createConflictTable()
     {
@@ -379,13 +389,13 @@ class TimetableProcess implements ShouldQueue
             base_path("app\scripts\lectures\days.xlsx")
         );
     }
-    public function uploadExamTimeTable()
+    public function uploadTimeTable()
     {
-        $examsSheet = base_path("app\scripts\lectures\Lecture_Table.xlsx");
+        $lecturesSheet = base_path("app\scripts\lectures\Lecture_Table.xlsx");
         // Get the list of halls from the first row of the sheet
         $periods = (new FastExcel())
             ->configureCsv("\t")
-            ->import($examsSheet, function ($line) {
+            ->import($lecturesSheet, function ($line) {
                 return array_slice($line, 1);
             })
             ->first();
@@ -401,7 +411,7 @@ class TimetableProcess implements ShouldQueue
         $lectures = [];
         (new FastExcel())
             ->configureCsv("\t")
-            ->import($examsSheet, function ($line) use (
+            ->import($lecturesSheet, function ($line) use (
                 $periods,
                 &$lectures,
                 $days,
