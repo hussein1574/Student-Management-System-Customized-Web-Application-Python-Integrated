@@ -345,7 +345,7 @@ class CourseRegistrationController extends Controller
             );
         }
 
-        $coursesData = $this->getCoursesStatus($request, $userId);
+        $coursesData = $this->getCoursesStatus($request);
         $coursesData = $coursesData->getData()->data->courses;
         $mustTakeCourses = [];
         $openCourses = [];
