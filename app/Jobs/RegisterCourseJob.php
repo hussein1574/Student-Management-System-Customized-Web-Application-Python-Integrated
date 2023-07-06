@@ -22,7 +22,7 @@ class RegisterCourseJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($courseId, $studentId,$retakeCourses)
+    public function __construct($courseId, $studentId, $retakeCourses)
     {
         $this->courseId = $courseId;
         $this->studentId = $studentId;
@@ -36,20 +36,11 @@ class RegisterCourseJob implements ShouldQueue
      */
     public function handle()
     {
-        if(in_array($this->courseId, $this->retakeCourses)){
-            $studentCourse = StudentCourse::where('student_id', $this->studentId)->where('course_id', $this->courseId)->first();
-            $studentCourse->status_id = 4;
-            $studentCourse->save();
-        }
-        else
-        {
-            $studentCourse = new StudentCourse();
-            $studentCourse->student_id = $this->studentId;
-            $studentCourse->course_id = $this->courseId;
-            $studentCourse->grade = 0;
-            $studentCourse->status_id = 4;
-            $studentCourse->save();
-        }
+        $studentCourse = new StudentCourse();
+        $studentCourse->student_id = $this->studentId;
+        $studentCourse->course_id = $this->courseId;
+        $studentCourse->grade = 0;
+        $studentCourse->status_id = 4;
+        $studentCourse->save();
     }
-
 }
