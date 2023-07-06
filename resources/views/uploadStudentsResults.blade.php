@@ -99,9 +99,6 @@
             }
             , success: function(data) {
                 // Add the student rows to the table
-                console.log(data[0]);
-                console.log(data[0].class_work === undefined);
-                console.log(data[0].lab === undefined);
                 data.forEach(function(student) {
                     var row = tableBody.insertRow();
                     var idCell = row.insertCell();

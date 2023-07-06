@@ -114,7 +114,6 @@
         <p class="problems">
             {!! html_entity_decode($timeTableProblems) !!}
         </p>
-        @endif
         <form method="post" action="{{ route('admit-timetable') }}">
             @CSRF
             @method('POST')
@@ -126,6 +125,7 @@
                 </button>
             </div>
         </form>
+        @endif
         @endif
         <form method="post" action="{{ route('clear-timetable') }}">
             @CSRF
@@ -176,7 +176,7 @@
             {!! html_entity_decode($examProblems) !!}
         </p>
         @endif
-        @if($examsTableAdmited == 0)
+        @if($examsTableAdmited == 0 && $examProblems != "")
       <form method="post" action="{{ route('admit-exams') }}">
             @CSRF
             @method('POST')

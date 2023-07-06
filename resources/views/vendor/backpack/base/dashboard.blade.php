@@ -1,12 +1,17 @@
 @extends(backpack_view('blank'))
 
 @section('content')
-<?php 
-        $userId = backpack_user()->id;
-        $professor =  App\Models\Professor::where('user_id', $userId)->first();
-        $acadmicAdvisor =  App\Models\AcademicAdvisor::where('user_id', $userId)->first();
-        $registrationStatus = DB::table('constants')->where('name', 'Regestration Opened')->first()->value;
-  ?>
+<?php
+$userId = backpack_user()->id;
+$professor = App\Models\Professor::where("user_id", $userId)->first();
+$acadmicAdvisor = App\Models\AcademicAdvisor::where(
+    "user_id",
+    $userId
+)->first();
+$registrationStatus = DB::table("constants")
+    ->where("name", "Regestration Opened")
+    ->first()->value;
+?>
 @if($registrationStatus == 1)
 <div class="alert alert-success">
     <strong>Registration is Opened</strong>
@@ -28,7 +33,7 @@
                 <i class="fa fa-bar-chart"></i> <b>Failed Students</b>
             </div>
             <div class="card-body">
-                <canvas id="myChart" height="100"></canvas>
+                <canvas id="myChart" height="175"></canvas>
             </div>
         </div>
         <div class="card">
@@ -76,7 +81,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <canvas id="myChart2" height="100"></canvas>
+                <canvas id="myChart2" height="175"></canvas>
             </div>
         </div>
         <div class="card">
@@ -122,7 +127,7 @@
                             yAxes: [{
                                 ticks: {
                                     beginAtZero: true
-                                    , stepSize: 1
+                                    , stepSize: 5
                                 }
                             }]
                         }
@@ -154,7 +159,7 @@
                             yAxes: [{
                                 ticks: {
                                     beginAtZero: true
-                                    , stepSize: 1
+                                    , stepSize: 5
                                 }
                             }]
                         }

@@ -160,6 +160,7 @@ Route::group(
         ])->name("change-registration-state");
 
         Route::get("/time-table-admition", function () {
+            // check if the time table is admited
             $lecturesTableAdmited = Constant::where(
                 "name",
                 "Timetable Published"
@@ -168,8 +169,10 @@ Route::group(
                 "name",
                 "ExamTimetable Published"
             )->first()->value;
+
             $lectures = LecturesTimeTable::all();
             $exams = ExamsTimeTable::all();
+
             $lecturesSheet = base_path(
                 "app\scripts\lectures\Lecture_Table.xlsx"
             );
@@ -187,16 +190,19 @@ Route::group(
                     $halls[] = $hall->name;
                 }
             }
+
             $daysData = Day::all();
             $days = [];
             foreach ($daysData as $day) {
                 $days[] = $day->name;
             }
+
             $timeperiodsData = LecturesTime::all();
             $timeperiods = [];
             foreach ($timeperiodsData as $timeperiod) {
                 $timeperiods[] = $timeperiod->timePeriod;
             }
+
             //check if there job table is empty
             if (DB::table("jobs")->count() == 0) {
                 if (!file_exists($lecturesSheet)) {
@@ -213,6 +219,7 @@ Route::group(
                         "Failed to generate exams timetable"
                     );
                 }
+
                 if (!file_exists($lecturesSheet) && !file_exists($examsSheet)) {
                     return view("timetablesPage");
                 } elseif (
@@ -232,6 +239,7 @@ Route::group(
                         } else {
                             $profName = "Section";
                         }
+
                         $lecturesData[] = [
                             "hall_name" => Hall::find($lecture->hall_id)->name,
                             "day_name" => Day::find($lecture->day_id)->name,
@@ -243,6 +251,7 @@ Route::group(
                                 ->name,
                         ];
                     }
+
                     // Restructure the data to organize exams by time period
                     $lectureTableData = [];
                     foreach ($timeperiods as $period) {

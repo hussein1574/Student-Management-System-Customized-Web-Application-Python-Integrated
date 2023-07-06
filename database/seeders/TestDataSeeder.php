@@ -789,6 +789,100 @@ class TestDataSeeder extends Seeder
     // }
     public function run()
     {
-        dispatch(new UpdateStudentsGPAProcess());
+        $faker = Faker::create();
+        //First Year students
+        for ($i = 0; $i < 50; $i++) {
+            $user = User::create([
+                "name" => $faker->name,
+                "email" => $faker->unique()->safeEmail(),
+                "isActivated" => true,
+                "isAdmin" => false,
+                "password" => "12345678",
+                "remember_token" => Str::random(10),
+            ]);
+            $student = Student::create([
+                "user_id" => $user->id,
+                "department_id" => 1,
+                "batch" => 0,
+                "grade" => 0,
+            ]);
+            // First Year - First Semester Courses Must Be Added
+            StudentCourse::create([
+                "student_id" => $student->id,
+                "course_id" => 67 + 128,
+                "status_id" => 4,
+                "grade" => 0,
+                "class_work_grade" => 0,
+                "lab_grade" => 0,
+                "created_at" => "2021-09-01 00:00:01",
+            ]);
+            StudentCourse::create([
+                "student_id" => $student->id,
+                "course_id" => 71 + 128,
+                "status_id" => 4,
+                "grade" => 0,
+                "class_work_grade" => 0,
+                "lab_grade" => 0,
+                "created_at" => "2021-09-01 00:00:01",
+            ]);
+            StudentCourse::create([
+                "student_id" => $student->id,
+                "course_id" => 72 + 128,
+                "status_id" => 4,
+                "grade" => 0,
+                "class_work_grade" => 0,
+                "lab_grade" => 0,
+                "created_at" => "2021-09-01 00:00:01",
+            ]);
+            StudentCourse::create([
+                "student_id" => $student->id,
+                "course_id" => 66 + 128,
+                "status_id" => 4,
+                "grade" => 0,
+                "class_work_grade" => 0,
+                "lab_grade" => 0,
+                "created_at" => "2021-09-01 00:00:01",
+            ]);
+            // First Year - First Semester Optional Courses
+            if ($i % 2 == 0) {
+                StudentCourse::create([
+                    "student_id" => $student->id,
+                    "course_id" => 128 + 128,
+                    "status_id" => 4,
+                    "grade" => 0,
+                    "class_work_grade" => 0,
+                    "lab_grade" => 0,
+                    "created_at" => "2021-09-01 00:00:01",
+                ]);
+                StudentCourse::create([
+                    "student_id" => $student->id,
+                    "course_id" => 74 + 128,
+                    "status_id" => 4,
+                    "grade" => 0,
+                    "class_work_grade" => 0,
+                    "lab_grade" => 0,
+                    "created_at" => "2021-09-01 00:00:01",
+                ]);
+            } else {
+                StudentCourse::create([
+                    "student_id" => $student->id,
+                    "course_id" => 97 + 128,
+                    "status_id" => 4,
+                    "grade" => 0,
+                    "class_work_grade" => 0,
+                    "lab_grade" => 0,
+                    "created_at" => "2021-09-01 00:00:01",
+                ]);
+                StudentCourse::create([
+                    "student_id" => $student->id,
+                    "course_id" => 81 + 128,
+                    "status_id" => 4,
+                    "grade" => 0,
+                    "class_work_grade" => 0,
+                    "lab_grade" => 0,
+                    "created_at" => "2021-09-01 00:00:01",
+                ]);
+            }
+        }
     }
 }

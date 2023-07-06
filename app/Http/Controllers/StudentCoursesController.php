@@ -683,6 +683,7 @@ class StudentCoursesController extends Controller
             "professor_id",
             $professor->id
         )->get();
+
         $professorCourses = $professorCourses->map(function ($course) {
             $courseId = $course->course->id;
             $coursesStatus = StudentCourse::where("course_id", $courseId)
@@ -791,8 +792,16 @@ class StudentCoursesController extends Controller
     {
         $courseId = $request->input("course_id");
         foreach ($request->gpa as $id => $gpa) {
-            $classWork = $request->class_work[$id];
-            $lab = $request->lab[$id];
+            if ($request->class_work) {
+                $classWork = $request->class_work[$id];
+            } else {
+                $classWork = 0;
+            }
+            if ($request->lab) {
+                $lab = $request->lab[$id];
+            } else {
+                $lab = 0;
+            }
             $results[] = [
                 "id" => $id,
                 "gpa" => $gpa,
@@ -825,8 +834,16 @@ class StudentCoursesController extends Controller
     {
         $courseId = $request->input("course_id");
         foreach ($request->gpa as $id => $gpa) {
-            $classWork = $request->class_work[$id];
-            $lab = $request->lab[$id];
+            if ($request->class_work) {
+                $classWork = $request->class_work[$id];
+            } else {
+                $classWork = 0;
+            }
+            if ($request->lab) {
+                $lab = $request->lab[$id];
+            } else {
+                $lab = 0;
+            }
             $results[] = [
                 "id" => $id,
                 "gpa" => $gpa,
@@ -852,7 +869,7 @@ class StudentCoursesController extends Controller
 
             $gpa = $this->getGPA($fullDegree);
 
-            if ($gpa > 2) {
+            if ($gpa > 1) {
                 $studentCourse->status_id = 7;
             } else {
                 $studentCourse->status_id = 8;

@@ -245,10 +245,18 @@
                 , success: function(data) {
                     // Add the student rows to the table
                     data.forEach(function(student) {
-                        console.log(student.gpa + student.class_work + student.lab);
+                        if(student.lab === null || student.lab === undefined)
+                        {
+                            student.lab = 0;
+                        }
+                        if(student.class_work === null || student.class_work === undefined)
+                        {
+                            student.class_work = 0;
+                        }
                         if(student.gpa + student.class_work + student.lab === 56)
                         {
                             var row = table4Body.insertRow();
+                            row.classList.add("table-danger"); // add table-danger class to the row
                             var idCell = row.insertCell();
                             var nameCell = row.insertCell();
                             var gpaCell = row.insertCell();
@@ -256,36 +264,14 @@
                             var labCell = row.insertCell();
                             nameCell.innerHTML = student.name;
                             idCell.innerHTML = student.id;
-                            if(student.class_work === null)
-                            {
-                                student.class_work = 0;
-                            }
-                            if(student.lab === null)
-                            {
-                                student.lab = 0;
-                            }
-
-                            if(student.class_work === undefined && student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = '0';
-                            labCell.innerHTML = '0';
-                            }
-                            else if(student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = student.class_work;
-                            labCell.innerHTML = '0';
-                            }
-                            else {
                             gpaCell.innerHTML = student.gpa;
                             classWorkCell.innerHTML = student.class_work;
                             labCell.innerHTML = student.lab;
-                            }
                         }
                         if(student.gpa + student.class_work + student.lab === 57)
                         {
                             var row = table3Body.insertRow();
+                            row.classList.add("table-danger"); // add table-danger class to the row
                             var idCell = row.insertCell();
                             var nameCell = row.insertCell();
                             var gpaCell = row.insertCell();
@@ -293,36 +279,14 @@
                             var labCell = row.insertCell();
                             nameCell.innerHTML = student.name;
                             idCell.innerHTML = student.id;
-                            if(student.class_work === null)
-                            {
-                                student.class_work = 0;
-                            }
-                            if(student.lab === null)
-                            {
-                                student.lab = 0;
-                            }
-
-                            if(student.class_work === undefined && student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = '0';
-                            labCell.innerHTML = '0';
-                            }
-                            else if(student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = student.class_work;
-                            labCell.innerHTML = '0';
-                            }
-                            else {
                             gpaCell.innerHTML = student.gpa;
                             classWorkCell.innerHTML = student.class_work;
                             labCell.innerHTML = student.lab;
-                            }
                         }
                         if(student.gpa + student.class_work + student.lab === 58)
                         {
                             var row = table2Body.insertRow();
+                            row.classList.add("table-danger"); // add table-danger class to the row
                             var idCell = row.insertCell();
                             var nameCell = row.insertCell();
                             var gpaCell = row.insertCell();
@@ -330,36 +294,14 @@
                             var labCell = row.insertCell();
                             nameCell.innerHTML = student.name;
                             idCell.innerHTML = student.id;
-                            if(student.class_work === null)
-                            {
-                                student.class_work = 0;
-                            }
-                            if(student.lab === null)
-                            {
-                                student.lab = 0;
-                            }
-
-                            if(student.class_work === undefined && student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = '0';
-                            labCell.innerHTML = '0';
-                            }
-                            else if(student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = student.class_work;
-                            labCell.innerHTML = '0';
-                            }
-                            else {
                             gpaCell.innerHTML = student.gpa;
                             classWorkCell.innerHTML = student.class_work;
                             labCell.innerHTML = student.lab;
-                            }
                         }
                         if(student.gpa + student.class_work + student.lab === 59)
                         {
                             var row = table1Body.insertRow();
+                            row.classList.add("table-danger"); // add table-danger class to the row
                             var idCell = row.insertCell();
                             var nameCell = row.insertCell();
                             var gpaCell = row.insertCell();
@@ -367,32 +309,9 @@
                             var labCell = row.insertCell();
                             nameCell.innerHTML = student.name;
                             idCell.innerHTML = student.id;
-                            if(student.class_work === null)
-                            {
-                                student.class_work = 0;
-                            }
-                            if(student.lab === null)
-                            {
-                                student.lab = 0;
-                            }
-
-                            if(student.class_work === undefined && student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = '0';
-                            labCell.innerHTML = '0';
-                            }
-                            else if(student.lab === undefined)
-                            {
-                            gpaCell.innerHTML = student.gpa;
-                            classWorkCell.innerHTML = student.class_work;
-                            labCell.innerHTML = '0';
-                            }
-                            else {
                             gpaCell.innerHTML = student.gpa;
                             classWorkCell.innerHTML = student.class_work;
                             labCell.innerHTML = student.lab;
-                            } 
                         }               
                     });
                     if(table1Body.innerHTML === "")
