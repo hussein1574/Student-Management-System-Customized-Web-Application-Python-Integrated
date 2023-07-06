@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Department;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -65,6 +66,11 @@ class UserController extends Controller
             $profilePic = asset("storage/images/$profilePicFileName");
         }
         $user->profilePicture = $profilePic;
+        $user->grade = $request->user()->student->grade;
+        $user->department = Department::where(
+            "id",
+            $request->user()->student->department_id
+        )->first()->name;
         return response()->json(
             [
                 "status" => "success",
