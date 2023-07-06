@@ -234,16 +234,16 @@ class ExamTimetableScript :
 
     def calculateFitness(self,timeTable):    
         #Count missing courses
-        countMissingCourses = self.checkMissingSubjects(timeTable)
+        self.countMissingCourses = self.checkMissingSubjects(timeTable)
         #Count exam clashes
-        countClashesExams = self.checkExamClash(timeTable)
+        self.countClashesExams = self.checkExamClash(timeTable)
         #Count exceed gap
-        exceedGap = self.checkExceedGap(timeTable)
+        self.exceedGap = self.checkExceedGap(timeTable)
         #Count Exceed Max Number Of Students
-        exceedMaxNumberOfStudents = self.checkExceedMaxNumberOfStudentsInHall(timeTable)
+        self.exceedMaxNumberOfStudents = self.checkExceedMaxNumberOfStudentsInHall(timeTable)
 
-        soft_value = exceedMaxNumberOfStudents  + exceedGap
-        hard_value = countMissingCourses + countClashesExams 
+        soft_value = self.exceedMaxNumberOfStudents  + self.exceedGap
+        hard_value = self.countMissingCourses + self.countClashesExams 
         
         return soft_value, hard_value
     

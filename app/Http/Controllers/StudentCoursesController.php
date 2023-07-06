@@ -138,6 +138,16 @@ class StudentCoursesController extends Controller
                 $earliestYear++;
             }
         }
+        // if there is a year with no courses, remove it
+        foreach ($years as $year => $terms) {
+            if (
+                count($terms["First term"]) == 0 &&
+                count($terms["Second term"]) == 0 &&
+                count($terms["Summer term"]) == 0
+            ) {
+                unset($years[$year]);
+            }
+        }
         return view("transcript", compact("student", "years"));
     }
 
@@ -166,10 +176,11 @@ class StudentCoursesController extends Controller
                 "courses" => $courses->map(function ($course) {
                     return [
                         "name" => $course->course->name,
-                        "hours" =>
+                        "hours" => floor(
                             $course->course->LectureHours +
-                            $course->course->labHours +
-                            $course->course->sectionHours,
+                                $course->course->labHours / 2 +
+                                $course->course->sectionHours / 2
+                        ),
                         "level" => $course->course->level,
                     ];
                 }),
@@ -281,10 +292,11 @@ class StudentCoursesController extends Controller
                             }
                             return [
                                 "name" => $course->course->name,
-                                "hours" =>
+                                "hours" => floor(
                                     $course->course->LectureHours +
-                                    $course->course->labHours +
-                                    $course->course->sectionHours,
+                                        $course->course->labHours / 2 +
+                                        $course->course->sectionHours / 2
+                                ),
                                 "grade" => $gpa,
                                 "level" => $course->course->level,
                                 "status" => $grade,
@@ -324,10 +336,11 @@ class StudentCoursesController extends Controller
                             }
                             return [
                                 "name" => $course->course->name,
-                                "hours" =>
+                                "hours" => floor(
                                     $course->course->LectureHours +
-                                    $course->course->labHours +
-                                    $course->course->sectionHours,
+                                        $course->course->labHours / 2 +
+                                        $course->course->sectionHours / 2
+                                ),
                                 "grade" => $gpa,
                                 "level" => $course->course->level,
                                 "status" => $grade,
@@ -367,10 +380,11 @@ class StudentCoursesController extends Controller
                             }
                             return [
                                 "name" => $course->course->name,
-                                "hours" =>
+                                "hours" => floor(
                                     $course->course->LectureHours +
-                                    $course->course->labHours +
-                                    $course->course->sectionHours,
+                                        $course->course->labHours / 2 +
+                                        $course->course->sectionHours / 2
+                                ),
                                 "grade" => $gpa,
                                 "level" => $course->course->level,
                                 "status" => $grade,
@@ -409,10 +423,11 @@ class StudentCoursesController extends Controller
 
         $finishedHours = 0;
         foreach ($courses as $course) {
-            $finishedHours +=
+            $finishedHours += floor(
                 $course->course->LectureHours +
-                $course->course->labHours +
-                $course->course->sectionHours;
+                    $course->course->labHours / 2 +
+                    $course->course->sectionHours / 2
+            );
         }
         $department = $student->department;
         $graduationHours = $department->graduation_hours;
@@ -461,10 +476,11 @@ class StudentCoursesController extends Controller
             if (!isset($finishedHoursByYear[$year])) {
                 $finishedHoursByYear[$year] = 0;
             }
-            $finishedHoursByYear[$year] +=
+            $finishedHoursByYear[$year] += floor(
                 $course->course->LectureHours +
-                $course->course->labHours +
-                $course->course->sectionHours;
+                    $course->course->labHours / 2 +
+                    $course->course->sectionHours / 2
+            );
         }
         return $finishedHoursByYear;
     }
@@ -494,10 +510,11 @@ class StudentCoursesController extends Controller
         $finishedCourses = $finishedCoursesObject->map(function ($course) {
             return [
                 "name" => $course->course->name,
-                "hours" =>
+                "hours" => floor(
                     $course->course->LectureHours +
-                    $course->course->labHours +
-                    $course->course->sectionHours,
+                        $course->course->labHours / 2 +
+                        $course->course->sectionHours / 2
+                ),
                 "grade" => $course->grade,
                 "level" => $course->course->level,
                 "status" => $course->courseStatus->id,
@@ -568,10 +585,11 @@ class StudentCoursesController extends Controller
         $finishedCourses = $finishedCoursesObject->map(function ($course) {
             return [
                 "name" => $course->course->name,
-                "hours" =>
+                "hours" => floor(
                     $course->course->LectureHours +
-                    $course->course->labHours +
-                    $course->course->sectionHours,
+                        $course->course->labHours / 2 +
+                        $course->course->sectionHours / 2
+                ),
                 "grade" => $course->grade,
                 "level" => $course->course->level,
                 "status" => $course->courseStatus->id,

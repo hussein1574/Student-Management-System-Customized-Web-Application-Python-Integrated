@@ -32,16 +32,34 @@ class UpdateStudentsGPAProcess implements ShouldQueue
      */
     public function handle()
     {
-            $students = Student::all();
-            foreach($students as $student){
+        $students = Student::all();
+        foreach ($students as $student) {
             $student->grade = 0;
             $totalHours = 0;
             $studentCourses = $student->studentCourses;
-            foreach($studentCourses as $studentCourse){
-                $student->grade += StudentCoursesController::getGPA($studentCourse->grade + $studentCourse->class_work_grade + $studentCourse->lab_grade) * $studentCourse->course->LectureHours + $studentCourse->course->labHours + $studentCourse->course->sectionHours;
-                $totalHours += $studentCourse->course->LectureHours + $studentCourse->course->labHours + $studentCourse->course->sectionHours;
+            foreach ($studentCourses as $studentCourse) {
+                $student->grade +=
+                    StudentCoursesController::getGPA(
+                        $studentCourse->grade +
+                            $studentCourse->class_work_grade +
+                            $studentCourse->lab_grade
+                    ) *
+                    floor(
+                        $studentCourse->course->LectureHours +
+                            $studentCourse->course->labHours / 2 +
+                            $studentCourse->course->sectionHours / 2
+                    );
+                $totalHours += floor(
+                    $studentCourse->course->LectureHours +
+                        $studentCourse->course->labHours / 2 +
+                        $studentCourse->course->sectionHours / 2
+                );
             }
-            $student->grade = round($student->grade / $totalHours,2);
+            if ($totalHours != 0) {
+                $student->grade = round($student->grade / $totalHours, 2);
+            } else {
+                $student->grade = 0;
+            }
             $student->save();
         }
     }

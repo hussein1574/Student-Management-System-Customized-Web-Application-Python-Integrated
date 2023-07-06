@@ -73,61 +73,84 @@ class TimetableProcess implements ShouldQueue
     }
     public function createConflictTable()
     {
-        // Build the query to retrieve the conflicts
-        $conflicts = DB::table("student_courses as sc1")
-            ->join("student_courses as sc2", function ($join) {
-                $join
-                    ->on("sc1.student_id", "=", "sc2.student_id")
-                    ->on("sc1.course_id", "<=", "sc2.course_id");
-            })
-            ->join("courses as c1", "sc1.course_id", "=", "c1.id")
-            ->join("courses as c2", "sc2.course_id", "=", "c2.id")
-            ->selectRaw(
-                'CASE WHEN c1.id < c2.id THEN c1.code ELSE c2.code END AS course1, 
-                                     CASE WHEN c1.id < c2.id THEN c2.code ELSE c1.code END AS course2, 
-                                     COUNT(sc1.student_id) AS count'
-            )
-            ->where("sc1.status_id", "=", 3)
-            ->where("sc2.status_id", "=", 3)
-            ->groupBy("course1", "course2")
-            ->get();
+        $conflictData = [];
+        $studentCourses = StudentCourse::where("status_id", 3)->get();
+        $courses = Course::whereIn(
+            "id",
+            $studentCourses->pluck("course_id")
+        )->get();
+        $coursesCodes = $courses->pluck("code")->toArray();
 
-        // Convert the conflicts data to an array format suitable for FastExcel
-        $data = [];
-        $columnHeaders = [""];
+        // Add courses codes as the first row
+        array_unshift($coursesCodes, "Courses Codes");
+        $conflictData[] = $coursesCodes;
 
-        // Add the course names to the column headers
-        foreach ($conflicts as $conflict) {
-            $course1 = $conflict->course1;
-            $course2 = $conflict->course2;
-            $count = $conflict->count;
-
-            if (!in_array($course1, $columnHeaders)) {
-                $columnHeaders[] = $course1;
+        foreach ($coursesCodes as $courseCode) {
+            if ($courseCode == "Courses Codes") {
+                continue;
             }
-            if (!in_array($course2, $columnHeaders)) {
-                $columnHeaders[] = $course2;
+            $row = [$courseCode];
+            foreach ($coursesCodes as $otherCourseCode) {
+                // Count the number of students taking the two courses
+                $count = 0;
+                if (
+                    $courseCode == "Courses Codes" ||
+                    $otherCourseCode == "Courses Codes"
+                ) {
+                    continue;
+                }
+                if ($courseCode == $otherCourseCode) {
+                    $count = StudentCourse::where(
+                        "course_id",
+                        Course::where("code", $courseCode)->first()->id
+                    )
+                        ->where("status_id", 3)
+                        ->count();
+                } else {
+                    $count = StudentCourse::where(
+                        "course_id",
+                        Course::where("code", $courseCode)->first()->id
+                    )
+                        ->where("status_id", 3)
+                        ->when($otherCourseCode, function ($query) use (
+                            $otherCourseCode
+                        ) {
+                            $query->whereIn(
+                                "student_id",
+                                StudentCourse::where(
+                                    "course_id",
+                                    Course::where(
+                                        "code",
+                                        $otherCourseCode
+                                    )->first()->id
+                                )
+                                    ->where("status_id", 3)
+                                    ->pluck("student_id")
+                            );
+                        })
+                        ->count();
+                }
+                $row[] = $count;
             }
-
-            // Add the conflict count to the data array
-            if (!isset($data[$course1])) {
-                $data[$course1] = ["" => $course1];
-            }
-            $data[$course1][$course2] = $count;
-            if (!isset($data[$course2])) {
-                $data[$course2] = ["" => $course2];
-            }
-            $data[$course2][$course1] = $count;
+            $conflictData[] = $row;
         }
+        // Extract the first array as keys
+        $keys = $conflictData[0];
 
-        // Insert the column headers at the start of the data array
-        array_unshift($data, $columnHeaders);
-        unset($data[0]);
+        // Remove the first array from the main array
+        $data = array_slice($conflictData, 1);
+
+        // Combine the keys with the remaining arrays
+        $result = [];
+        foreach ($data as $row) {
+            $result[] = array_combine($keys, $row);
+        }
         // Export the data to an Excel sheet using FastExcel
-        (new FastExcel($data))->export(
+        (new FastExcel($result))->export(
             base_path("app\scripts\lectures\conflict_table.xlsx")
         );
     }
+
     public function createHallsFile()
     {
         // Retrieve all halls with their corresponding department

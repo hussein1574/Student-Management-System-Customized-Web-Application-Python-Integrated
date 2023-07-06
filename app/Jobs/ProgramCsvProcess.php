@@ -28,7 +28,7 @@ class ProgramCsvProcess implements ShouldQueue
      */
     public function __construct($data, $header)
     {
-        $this->data   = $data;
+        $this->data = $data;
         $this->header = $header;
     }
 
@@ -41,77 +41,81 @@ class ProgramCsvProcess implements ShouldQueue
     {
         //added the course to the database
         $courseHeader = array_slice($this->header, 0, -2);
-        foreach($this->data as $course){
+        foreach ($this->data as $course) {
             $courseData = array_slice($course, 0, -2);
             $row = array_combine($courseHeader, $courseData);
-            $courseExist = Course::where('code', trim($courseData[0]))->first();
-            if($courseExist)
+            $courseExist = Course::where("code", trim($courseData[0]))->first();
+            if ($courseExist) {
                 continue;
+            }
             Course::create([
-                'code' => trim($courseData[0]),
-                'name' => $row['name'],
-                'LectureHours' => $row['LectureHours'],
-                'isElective' => $row['isElective'],
-                'level' => $row['level'],
-                'labHours' => $row['labHours'],
-                'sectionHours' => $row['sectionHours'],
+                "code" => trim($courseData[0]),
+                "name" => $row["name"],
+                "LectureHours" => $row["LectureHours"],
+                "isElective" => $row["isElective"],
+                "level" => $row["level"],
+                "labHours" => $row["labHours"],
+                "sectionHours" => $row["sectionHours"],
             ]);
         }
 
         //added the course department to the database
-        foreach($this->data as $course){
+        foreach ($this->data as $course) {
             $courseCode = $course[0];
             $departmentsNames = $course[count($course) - 2];
-            if($departmentsNames == null || $departmentsNames == "")
+            if ($departmentsNames == null || $departmentsNames == "") {
                 continue;
+            }
             $departmentsArray = explode(",", $departmentsNames);
             $courseCode = trim($courseCode);
-            $course = Course::where('code', $courseCode)->first();
-            foreach($departmentsArray as $departmentName){
+            $course = Course::where("code", $courseCode)->first();
+            foreach ($departmentsArray as $departmentName) {
                 $departmentName = trim($departmentName);
-                $department = Department::where('name', $departmentName)->first();
-                if($course[1] == "Graduation Project")
-                {
-                    $department->graduation_project_needed_hours = $course[count($course) - 1];
+                $department = Department::where(
+                    "name",
+                    $departmentName
+                )->first();
+                if ($course[1] == "Graduation Project") {
+                    $department->graduation_project_needed_hours =
+                        $course[count($course) - 1];
                     $department->save();
                 }
                 DepartmentCourse::create([
-                    'course_id' => $course->id,
-                    'department_id' => $department->id
+                    "course_id" => $course->id,
+                    "department_id" => $department->id,
                 ]);
-            }      
+            }
         }
-        
+
         //added the course pre to the database
-        foreach($this->data as $course){
+        foreach ($this->data as $course) {
             $courseCode = $course[0];
             $coursePreNames = $course[count($course) - 1];
-            if($course[1] == "Graduation Project")
-            {
+            if ($course[1] == "Graduation Project") {
                 continue;
             }
-            if($coursePreNames == null || $coursePreNames == "")
+            if ($coursePreNames == null || $coursePreNames == "") {
                 continue;
+            }
             $coursePreArray = explode(",", $coursePreNames);
             $courseCode = trim($courseCode);
-            $course = Course::where('code', $courseCode)->first();
-            foreach($coursePreArray as $coursePreName){
+            $course = Course::where("code", $courseCode)->first();
+            foreach ($coursePreArray as $coursePreName) {
                 // check if "(A)" is present in the string
-                $passed = (strpos($coursePreName, "(A)") !== false); 
+                $passed = strpos($coursePreName, "(A)") !== false;
                 if ($passed) {
                     // remove "(A)" from the string
-                    $coursePreName = str_replace("(A)", "", $coursePreName); 
-                } 
+                    $coursePreName = str_replace("(A)", "", $coursePreName);
+                }
                 $coursePreName = trim($coursePreName);
-                $coursePre = Course::where('code', $coursePreName)->first();
+                $coursePre = Course::where("code", $coursePreName)->first();
                 CoursePre::create([
-                    'course_id' => $course->id,
-                    'coursePre_id' => $coursePre->id,
-                    'passed' => $passed ? 1 : 0,
+                    "course_id" => $course->id,
+                    "coursePre_id" => $coursePre->id,
+                    "passed" => $passed ? 0 : 1,
                 ]);
-            }      
+            }
         }
-        
     }
     public function failed(Throwable $exception)
     {

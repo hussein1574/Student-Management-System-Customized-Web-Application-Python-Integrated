@@ -1,2 +1,0 @@
-Soft Value: 0
-Hard Value: 0

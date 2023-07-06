@@ -33,14 +33,7 @@ $acadmicAdvisor = App\Models\AcademicAdvisor::where(
 @else
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('admit-students-results') }}"><i class="nav-icon la la-newspaper-o"></i>Students results</a></li>
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-program') }}"><i class="nav-icon la la-newspaper-o"></i>Upload program courses</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('time-table-admition') }}"><i class="nav-icon la la-newspaper-o"></i>Timetables admition</a></li>
-<li class="nav-item nav-dropdown">
-    <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-cog"></i>Generate</a>
-    <ul class="nav-dropdown-items">
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('generate-exams') }}"><i class="nav-icon la la-newspaper-o"></i>Exams</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('generate-timetable') }}"><i class="nav-icon la la-newspaper-o"></i>Lectures</a></li>
-    </ul>
-</li>
+
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i class="nav-icon la la-user"></i> Users</a></li>
 
@@ -54,7 +47,7 @@ $acadmicAdvisor = App\Models\AcademicAdvisor::where(
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-group"></i>Professors</a>
     <ul class="nav-dropdown-items">
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('academic-advisor') }}"><i class="nav-icon la la-question"></i> Academic advisors</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('academic-advisor') }}"><i class="nav-icon la la-user"></i> Academic advisors</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor') }}"><i class="nav-icon la la-user"></i> Professors</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor-course') }}"><i class="nav-icon la la-book"></i> Professor courses</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('professor-day') }}"><i class="nav-icon la la-newspaper-o"></i> Professor days</a></li>
@@ -69,20 +62,28 @@ $acadmicAdvisor = App\Models\AcademicAdvisor::where(
 
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('course') }}"><i class="nav-icon la la-book"></i> Courses</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('course-pre') }}"><i class="nav-icon la la-book"></i> Course prerequisites</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('department-course') }}"><i class="nav-icon la la-question"></i> Course departments</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('department-course') }}"><i class="nav-icon la la-book"></i> Course departments</a></li>
     </ul>
 </li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('department') }}"><i class="nav-icon la la-question"></i> Departments</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('department') }}"><i class="nav-icon la la-building"></i> Departments</a></li>
 
 <li class="nav-item nav-dropdown">
     <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-newspaper-o"></i> Timetables</a>
-    <ul class="nav-dropdown-items">
+    <ul class="nav-dropdown-items"> 
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('lectures-time') }}"><i class="nav-icon la la-calendar"></i> Time periods</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('day') }}"><i class="nav-icon la la-calendar"></i> Days</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('hall') }}"><i class="nav-icon la la-building"></i> Halls</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('halls-department') }}"><i class="nav-icon la la-building"></i> Halls departments</a></li>
+        <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#"><i class="nav-icon la la-cog"></i>Generate</a>
+            <ul class="nav-dropdown-items">
+                <li class="nav-item"><a class="nav-link" href="{{ backpack_url('generate-exams') }}"><i class="nav-icon la la-newspaper-o"></i>Exams</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ backpack_url('generate-timetable') }}"><i class="nav-icon la la-newspaper-o"></i>Lectures</a></li>
+            </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('time-table-admition') }}"><i class="nav-icon la la-newspaper-o"></i>Timetables admition</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('lectures-time-table') }}"><i class="nav-icon la la-newspaper-o"></i> Lectures time tables</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ backpack_url('exams-time-table') }}"><i class="nav-icon la la-newspaper-o"></i> Exams time tables</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('lectures-time') }}"><i class="nav-icon la la-question"></i> Time periods</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('hall') }}"><i class="nav-icon la la-question"></i> Halls</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('halls-department') }}"><i class="nav-icon la la-question"></i> Halls departments</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ backpack_url('day') }}"><i class="nav-icon la la-question"></i> Days</a></li>
     </ul>
 </li>
 

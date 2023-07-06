@@ -13,7 +13,6 @@
         display: grid;
         grid-template-columns: 3fr 1fr;
         grid-template-rows: repeat(2, 1fr);
-        height: 80vh;
         padding: 12px;
         column-gap: 24px;
         row-gap: 24px;
@@ -29,6 +28,7 @@
       .exams-time-table {
         grid-column: 1 / 2;
         grid-row: 2 / 3;
+        height: 100%;
       }
       .exams-buttons {
         grid-column: 2 / 3;
@@ -51,6 +51,23 @@
         color: white;
         font-size: 16px;
         cursor: pointer;
+      }
+      .problems span {
+        display: inline-block
+        font-size: 18px;
+        font-weight: bold;
+        padding: 3px 6px;
+        border-radius: 100px;
+        background-color: #161c2d;
+        color: white;
+      }
+      .problems {
+        font-size: 16px;
+        text-align: center;
+        background-color: rgba(0,40,100,.12);
+        padding: 12px;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0,40,100,.12);
       }
     </style>
 <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/sweetalert2@11.0.10/dist/sweetalert2.min.css">
@@ -91,8 +108,13 @@
         @endforeach
       </tbody>
     </table>
-        <div class="lecture-buttons">
+      <div class="lecture-buttons">
         @if($lecturesTableAdmited == 0)
+        @if($timeTableProblems != "")
+        <p class="problems">
+            {!! html_entity_decode($timeTableProblems) !!}
+        </p>
+        @endif
         <form method="post" action="{{ route('admit-timetable') }}">
             @CSRF
             @method('POST')
@@ -116,7 +138,7 @@
                 </button>
             </div>
         </form>
-    </div>
+      </div>
     @endif
     @if (Session::has('alert-exams'))
     <div class="alert alert-{{ Session::get('alert-exams') }}">
@@ -149,6 +171,11 @@
       </tbody>
     </table>
     <div class="exams-buttons">
+      @if($examProblems != "")
+        <p class="problems">
+            {!! html_entity_decode($examProblems) !!}
+        </p>
+        @endif
         @if($examsTableAdmited == 0)
       <form method="post" action="{{ route('admit-exams') }}">
             @CSRF

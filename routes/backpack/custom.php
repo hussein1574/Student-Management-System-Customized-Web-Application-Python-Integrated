@@ -174,10 +174,18 @@ Route::group(
                 "app\scripts\lectures\Lecture_Table.xlsx"
             );
             $examsSheet = base_path("app/scripts/Exams_Table.xlsx");
+            $lectureFitnessFile = base_path("app/scripts/lectures/fitness.txt");
+            $examFitnessFile = base_path("app/scripts/fitness.txt");
+            // read the fitness file text
+            $timeTableProblems = file_get_contents($lectureFitnessFile);
+            $examProblems = file_get_contents($examFitnessFile);
+
             $hallsData = Hall::all();
             $halls = [];
             foreach ($hallsData as $hall) {
-                $halls[] = $hall->name;
+                if ($hall->is_active) {
+                    $halls[] = $hall->name;
+                }
             }
             $daysData = Day::all();
             $days = [];
@@ -224,7 +232,7 @@ Route::group(
                         } else {
                             $profName = "Section";
                         }
-                        $lectureData[] = [
+                        $lecturesData[] = [
                             "hall_name" => Hall::find($lecture->hall_id)->name,
                             "day_name" => Day::find($lecture->day_id)->name,
                             "time_name" => LecturesTime::find(
@@ -244,10 +252,13 @@ Route::group(
                         }
                     }
 
-                    foreach ($lectureData as $lecture) {
+                    foreach ($lecturesData as $lecture) {
                         $timePeriod = $lecture["time_name"];
                         $day = $lecture["day_name"];
                         $lectureTableData[$timePeriod][$day][] = $lecture;
+                    }
+                    if (empty($lecturesData)) {
+                        $timeTableProblems = "";
                     }
                     return view(
                         "timetablesPage",
@@ -256,7 +267,8 @@ Route::group(
                             "halls",
                             "days",
                             "timeperiods",
-                            "lecturesTableAdmited"
+                            "lecturesTableAdmited",
+                            "timeTableProblems"
                         )
                     );
                 } elseif (
@@ -265,7 +277,7 @@ Route::group(
                 ) {
                     $examsData = [];
                     foreach ($exams as $exam) {
-                        $examData[] = [
+                        $examsData[] = [
                             "hall_name" => Hall::find($exam->hall_id)->name,
                             "day_name" => $exam->day,
                             "course_name" => Course::find($exam->course_id)
@@ -274,7 +286,7 @@ Route::group(
                     }
 
                     $examDays = array_unique(
-                        array_column($examData, "day_name")
+                        array_column($examsData, "day_name")
                     );
 
                     // Restructure the data to organize exams by hall and day
@@ -286,10 +298,13 @@ Route::group(
                         }
                     }
 
-                    foreach ($examData as $exam) {
+                    foreach ($examsData as $exam) {
                         $hall = $exam["hall_name"];
                         $day = $exam["day_name"];
                         $examTableData[$hall][$day][] = $exam;
+                    }
+                    if (empty($examsData)) {
+                        $examProblems = "";
                     }
                     return view(
                         "timetablesPage",
@@ -297,7 +312,8 @@ Route::group(
                             "examTableData",
                             "halls",
                             "examDays",
-                            "examsTableAdmited"
+                            "examsTableAdmited",
+                            "examProblems"
                         )
                     );
                 } else {
@@ -314,7 +330,7 @@ Route::group(
                         } else {
                             $profName = "Section";
                         }
-                        $lectureData[] = [
+                        $lecturesData[] = [
                             "hall_name" => Hall::find($lecture->hall_id)->name,
                             "day_name" => Day::find($lecture->day_id)->name,
                             "time_name" => LecturesTime::find(
@@ -327,7 +343,7 @@ Route::group(
                     }
 
                     foreach ($exams as $exam) {
-                        $examData[] = [
+                        $examsData[] = [
                             "hall_name" => Hall::find($exam->hall_id)->name,
                             "day_name" => $exam->day,
                             "course_name" => Course::find($exam->course_id)
@@ -343,14 +359,14 @@ Route::group(
                         }
                     }
 
-                    foreach ($lectureData as $lecture) {
+                    foreach ($lecturesData as $lecture) {
                         $timePeriod = $lecture["time_name"];
                         $day = $lecture["day_name"];
                         $lectureTableData[$timePeriod][$day][] = $lecture;
                     }
 
                     $examDays = array_unique(
-                        array_column($examData, "day_name")
+                        array_column($examsData, "day_name")
                     );
 
                     // Restructure the data to organize exams by hall and day
@@ -362,10 +378,16 @@ Route::group(
                         }
                     }
 
-                    foreach ($examData as $exam) {
+                    foreach ($examsData as $exam) {
                         $hall = $exam["hall_name"];
                         $day = $exam["day_name"];
                         $examTableData[$hall][$day][] = $exam;
+                    }
+                    if (empty($lecturesData)) {
+                        $timeTableProblems = "";
+                    }
+                    if (empty($examsData)) {
+                        $examProblems = "";
                     }
                     return view(
                         "timetablesPage",
@@ -377,7 +399,9 @@ Route::group(
                             "timeperiods",
                             "examDays",
                             "lecturesTableAdmited",
-                            "examsTableAdmited"
+                            "examsTableAdmited",
+                            "timeTableProblems",
+                            "examProblems"
                         )
                     );
                 }

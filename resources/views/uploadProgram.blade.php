@@ -93,10 +93,10 @@
                     return response.json();
                 })
                 .then(data => {
-                    swal('Success', 'The file is being processed in the background.', 'success');
+                    swal('Success', data.result, 'success');
                 })
                 .catch(error => {
-                    swal('Error', 'Uploading file failed please check the file validty', 'error');
+                    swal('Error', data.result, 'error');
                 });
         });
 
