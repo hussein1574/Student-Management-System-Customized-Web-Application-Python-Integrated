@@ -40,6 +40,8 @@ class RegisterCourseJob implements ShouldQueue
         $studentCourse->student_id = $this->studentId;
         $studentCourse->course_id = $this->courseId;
         $studentCourse->grade = 0;
+        $studentCourse->class_work_grade = 0;
+        $studentCourse->lab_grade = 0;
         $studentCourse->status_id = 4;
         $studentCourse->save();
     }
