@@ -79,8 +79,6 @@ class ExamsTimeTableController extends Controller
 
         $exams = $this->getExamsForStudent($studentCourses);
 
-        dd($exams);
-
         return response()->json([
             "status" => "success",
             "results" => count($exams),
