@@ -25,10 +25,10 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email:rfc,dns',
-            'password' => 'required|min:8|max:255',
+            "email" => "required|email:rfc,dns",
+            "password" => "required|min:8|max:255",
             // remove the tags from name field
-            // 'name' => 'required|min:5|max:255'
+            "name" => "required|min:5|max:255",
         ];
     }
 
@@ -40,8 +40,8 @@ class UserRequest extends FormRequest
     public function attributes()
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 
     /**
@@ -52,7 +52,7 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            //
-        ];
+                //
+            ];
     }
 }

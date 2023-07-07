@@ -22,6 +22,38 @@ use Illuminate\Support\Facades\View;
 
 class StudentCoursesController extends Controller
 {
+    public function getStudentCoursesIndex(Request $request, $studentId)
+    {
+        $student = Student::where("id", $studentId)->first();
+        if (!$student) {
+            return response()->json(
+                [
+                    "status" => "fail",
+                    "message" => "Student not found ",
+                ],
+                404
+            );
+        }
+        $studentName = $student->user->name;
+        $studentCourses = StudentCourse::where("student_id", $studentId)
+            ->where("status_id", 3)
+            ->get();
+        // get the courses name and hours from the courses table
+        $courses = [];
+        foreach ($studentCourses as $studentCourse) {
+            $course = Course::where("id", $studentCourse->course_id)->first();
+            $courses[] = [
+                "name" => $course->name,
+                "hours" => floor(
+                    $course->LectureHours +
+                        $course->labHours / 2 +
+                        $course->sectionHours / 2
+                ),
+                "level" => $course->level,
+            ];
+        }
+        return view("studentCurrentCourses", compact("courses", "studentName"));
+    }
     public function transscriptShow(Request $request, $studentId)
     {
         $studentData = Student::where("id", $studentId)->first();
@@ -515,7 +547,10 @@ class StudentCoursesController extends Controller
                         $course->course->labHours / 2 +
                         $course->course->sectionHours / 2
                 ),
-                "grade" => $course->grade,
+                "grade" =>
+                    $course->grade +
+                    $course->class_work_grade +
+                    $course->lab_grade,
                 "level" => $course->course->level,
                 "status" => $course->courseStatus->id,
             ];
@@ -590,7 +625,10 @@ class StudentCoursesController extends Controller
                         $course->course->labHours / 2 +
                         $course->course->sectionHours / 2
                 ),
-                "grade" => $course->grade,
+                "grade" =>
+                    $course->grade +
+                    $course->class_work_grade +
+                    $course->lab_grade,
                 "level" => $course->course->level,
                 "status" => $course->courseStatus->id,
             ];

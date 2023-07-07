@@ -30,6 +30,10 @@
         grid-row: 2 / 3;
         height: 100%;
       }
+        .exams-time-table th,td {
+          text-align: center;
+          padding : 12px;
+      }
       .exams-buttons {
         grid-column: 2 / 3;
         grid-row: 2 / 3;
@@ -99,8 +103,15 @@
           @foreach($timeperiods as $timeperiod)
             <td>
                 @foreach ($lectureTableData[$timeperiod][$day] as $lecture)
-                {{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}
-                            <br>
+                @if($lecture['professor_name'] == "Lab")
+                &#9679; <span style="color:#1e81b0">{{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }}</span>
+                @elseif($lecture['professor_name'] == "Section")
+                &#9679; <span style="color:#e28743">{{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}</span>
+                @else
+                &#9679; {{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}
+                @endif
+                
+                            <br><br>
                         @endforeach
                     </td>
             @endforeach
@@ -161,7 +172,7 @@
                 @foreach ($halls as $hall)
                     <td>
                         @foreach ($examTableData[$hall][$day] as $exam)
-                            {{ $exam['course_name'] }}
+                            &#9679; {{ $exam['course_name'] }}
                             <br>
                         @endforeach
                     </td>

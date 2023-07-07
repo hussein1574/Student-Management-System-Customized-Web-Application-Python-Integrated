@@ -107,6 +107,11 @@ Route::group(
             "deleteStudentResults",
         ])->name("delete-student-results");
 
+        Route::get("/curr-student-courses/{id}", [
+            StudentCoursesController::class,
+            "getStudentCoursesIndex",
+        ])->name("curr-student-courses");
+
         Route::get("/generate-exams", [
             ExamsTimeTableController::class,
             "index",
