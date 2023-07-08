@@ -22,11 +22,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        return response()->json([
-            'status' => 'failed',
-            'message' => 'Unauthenticated',
-        ],401);
-      //  return view('auth.login');
+        return response()->json(
+            [
+                "status" => "failed",
+                "message" => "Unauthenticated",
+            ],
+            401
+        );
+        //  return view('auth.login');
     }
 
     /**
@@ -34,14 +37,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        
         //$request->authenticate();
-        $response =  $request->authenticate($request);
-        if($response->getStatusCode() != 401)
-            $request->session()->regenerate(); 
-  
+        $response = $request->authenticate($request);
+        if ($response->getStatusCode() != 401) {
+            $request->session()->regenerate();
+        }
+
         return $response;
-        
     }
 
     /**
@@ -52,14 +54,14 @@ class AuthenticatedSessionController extends Controller
         // remove the token
         $user = Auth::user()->token();
         $user->revoke();
-        
+
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Logged out successfully'
+            "status" => "success",
+            "message" => "Logged out successfully",
         ]);
     }
 }

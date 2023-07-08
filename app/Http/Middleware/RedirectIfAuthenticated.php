@@ -24,29 +24,29 @@ class RedirectIfAuthenticated
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                //return redirect(RouteServiceProvider::HOME);
-                if(Auth::guard($guard)->user()->isActivated == 0){
-                            
-                    Auth::guard('api')->logout();
+            if (Auth::guard("api")->check()) {
+                if (Auth::guard($guard)->user()->isActivated == 0) {
+                    $user = Auth::user()->token();
+                    $user->revoke();
+                    Auth::guard("api")->logout();
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
-                    // Auth::guard($guard)->logout();
-                    // $request->session()->invalidate();
-                    // $request->session()->regenerateToken();
-                    // Auth::logout($request);
-                    return response()->json([
-                        'status' => 'failed',
-                        'message' => 'Account not activated',
-                    ], 401);
+                    return response()->json(
+                        [
+                            "status" => "failed",
+                            "message" => "Account not activated",
+                        ],
+                        401
+                    );
+                } else {
+                    return response()->json(
+                        [
+                            "status" => "failed",
+                            "message" => "Method not allowed",
+                        ],
+                        405
+                    );
                 }
-                else{
-                    return response()->json([
-                        'status' => 'failed',
-                        'message' => 'Method not allowed'
-                    ], 405);
-                }
-                
             }
         }
 
