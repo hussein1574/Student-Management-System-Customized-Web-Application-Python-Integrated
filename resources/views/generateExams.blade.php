@@ -24,17 +24,7 @@
 </div>
 
 
-<form method="post" action="{{ route('clear-exam-timetable') }}">
-    @CSRF
-    @method('DELETE')
-    <div class="form-group">
-        <button type="submit" class="btn btn-danger">
-            <span class="la la-trash" role="presentation" aria-hidden="true"></span>
-            &nbsp;
-            <span data-value="clear-table">Clear Exam Table</span>
-        </button>
-    </div>
-</form>
+
 
 @endsection
 @section('after_scripts')

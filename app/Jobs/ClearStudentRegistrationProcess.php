@@ -32,22 +32,7 @@ class ClearStudentRegistrationProcess implements ShouldQueue
     {
         $pendingCourses = \App\Models\StudentCourse::where('status_id', 4)->get();
         foreach ($pendingCourses as $pendingCourse) {
-            if($pendingCourse->grade != null)
-            {
-                if($pendingCourse->grade < 2)
-                {
-                    $pendingCourse->status_id = 2;
-                }
-                else
-                {
-                    $pendingCourse->status_id = 1;
-                }
-                $pendingCourse->save();
-            }
-            else
-            {
                 $pendingCourse->delete();
-            }
         }
     }
 }

@@ -45,6 +45,7 @@ if(hardValue != 0):
         f.write("There are professors that assigned to non prefered time <br>")
     if(geneticAlgorithm.countDepartmentError > 0):
         f.write("There are courses that assigned to halls not in their department <br>")
+        f.write(str(geneticAlgorithm.countDepartmentError))
     if(geneticAlgorithm.countSection_LabError > 0):
         f.write("There are section/lab divided in two non following periods  <br>")
 else:

@@ -244,7 +244,7 @@ class TimetableProcess implements ShouldQueue
                 }
             }
 
-            // If the course code does not exist, add a new entry to the export data array
+            
             $exportData[] = [
                 "subject" => $courseCode,
                 "prof" => $professorNames,
@@ -286,7 +286,7 @@ class TimetableProcess implements ShouldQueue
                     } else {
                         $departments .=
                             "," .
-                            Professor::where(
+                            Department::where(
                                 "id",
                                 $departmentCourses->department_id
                             )->get()[0]->name;

@@ -104,11 +104,11 @@
             <td>
                 @foreach ($lectureTableData[$timeperiod][$day] as $lecture)
                 @if($lecture['professor_name'] == "Lab")
-                &#9679; <span style="color:#1e81b0">{{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }}</span>
+                 <span style="color:#1e81b0">[<strong>{{$lecture['department_name']}}</strong>] <br> {{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }}</span>
                 @elseif($lecture['professor_name'] == "Section")
-                &#9679; <span style="color:#e28743">{{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}</span>
+                 <span style="color:#e28743">[<strong>{{$lecture['department_name']}}</strong>]<br>{{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}</span>
                 @else
-                &#9679; {{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}
+                 [<strong>{{$lecture['department_name']}}</strong>]<br> {{ $lecture['course_name'] }} - {{ $lecture['professor_name'] }} - {{ $lecture['hall_name']}}
                 @endif
                 
                             <br><br>
@@ -172,7 +172,7 @@
                 @foreach ($halls as $hall)
                     <td>
                         @foreach ($examTableData[$hall][$day] as $exam)
-                            &#9679; {{ $exam['course_name'] }}
+                             [<strong>{{$exam['department_name']}}</strong>] <br> {{ $exam['course_name'] }}
                             <br>
                         @endforeach
                     </td>
@@ -217,7 +217,7 @@
 @endif
 @endsection
 @section('after_scripts')
-<script>
+<!-- <script>
     $(document).ready(function() {
         $('form').submit(function(event) {
             event.preventDefault();
@@ -239,5 +239,5 @@
             });
         });
     });
-</script>
+</script> -->
 @endsection

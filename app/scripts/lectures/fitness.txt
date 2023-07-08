@@ -1,1 +1,1 @@
-<span>Soft Problems:</span> <br>There are no soft problems. <br><span>Hard Problems:</span>  <br>There are courses that assigned to halls not in their department <br>
+<span>Soft Problems:</span> <br>There are no soft problems. <br><span>Hard Problems:</span>  <br>There are no hard problems. <br>

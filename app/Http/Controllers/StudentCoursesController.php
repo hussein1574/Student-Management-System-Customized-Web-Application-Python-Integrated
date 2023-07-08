@@ -669,24 +669,13 @@ class StudentCoursesController extends Controller
         $studentId = $request->student_id;
         $courseId = $request->course_id;
 
-        if (
-            StudentCourse::where("student_id", $studentId)
-                ->where("course_id", $courseId)
-                ->exists()
-        ) {
-            $studentCourse = StudentCourse::where("student_id", $studentId)
-                ->where("course_id", $courseId)
-                ->first();
-            $studentCourse->status_id = 4;
-            $studentCourse->save();
-        } else {
+        
             $studentCourse = new StudentCourse();
             $studentCourse->student_id = $studentId;
             $studentCourse->course_id = $courseId;
             $studentCourse->grade = 0;
             $studentCourse->status_id = 4;
             $studentCourse->save();
-        }
 
         return $this->getStudentCourses($request, $studentId);
     }
@@ -696,7 +685,7 @@ class StudentCoursesController extends Controller
         $studentId = $request->student_id;
         $courseId = $request->course_id;
         StudentCourse::where("student_id", $studentId)
-            ->where("course_id", $courseId)
+            ->where("course_id", $courseId)->where("status_id", 4)
             ->delete();
 
         return $this->getStudentCourses($request, $studentId);
@@ -907,7 +896,7 @@ class StudentCoursesController extends Controller
 
             $gpa = $this->getGPA($fullDegree);
 
-            if ($gpa > 1) {
+            if ($gpa >= 1) {
                 $studentCourse->status_id = 7;
             } else {
                 $studentCourse->status_id = 8;
@@ -958,6 +947,9 @@ class StudentCoursesController extends Controller
         $studentCourses->each(function ($studentCourse) use ($request) {
             if ($studentCourse->grade + $request->grade_value <= 50) {
                 $studentCourse->grade += $request->grade_value;
+            } else
+            {
+                $studentCourse->grade = 50;
             }
             if (
                 $this->getGPA(
