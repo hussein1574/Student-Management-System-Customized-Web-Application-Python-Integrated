@@ -289,140 +289,137 @@ class StudentCoursesController extends Controller
                     ->get();
                 $year = $earliestYear . "/" . ($earliestYear + 1);
                 $years[] = [
-                    "$year" => [
-                        "First term" => $FirstTermcourses->map(function (
-                            $course
-                        ) {
-                            $gpa = $this->getGPA(
-                                $course->grade +
-                                    $course->class_work_grade +
-                                    $course->lab_grade
-                            );
-                            $grade = "";
-                            if ($gpa == 4.0) {
-                                $grade = "A+";
-                            } elseif ($gpa >= 3.7) {
-                                $grade = "A-";
-                            } elseif ($gpa >= 3.3) {
-                                $grade = "B+";
-                            } elseif ($gpa >= 3.0) {
-                                $grade = "B";
-                            } elseif ($gpa >= 2.7) {
-                                $grade = "B-";
-                            } elseif ($gpa >= 2.3) {
-                                $grade = "C+";
-                            } elseif ($gpa >= 2) {
-                                $grade = "C";
-                            } elseif ($gpa >= 1.7) {
-                                $grade = "C-";
-                            } elseif ($gpa >= 1.3) {
-                                $grade = "D+";
-                            } elseif ($gpa >= 1.0) {
-                                $grade = "D";
-                            } elseif ($gpa >= 0.0) {
-                                $grade = "F";
-                            }
-                            return [
-                                "name" => $course->course->name,
-                                "hours" => floor(
-                                    $course->course->LectureHours +
-                                        $course->course->labHours / 2 +
-                                        $course->course->sectionHours / 2
-                                ),
-                                "grade" => $gpa,
-                                "level" => $course->course->level,
-                                "status" => $grade,
-                            ];
-                        }),
-                        "Second term" => $SecondTermcourses->map(function (
-                            $course
-                        ) {
-                            $gpa = $this->getGPA(
-                                $course->grade +
-                                    $course->class_work_grade +
-                                    $course->lab_grade
-                            );
-                            $grade = "";
-                            if ($gpa == 4.0) {
-                                $grade = "A+";
-                            } elseif ($gpa >= 3.7) {
-                                $grade = "A-";
-                            } elseif ($gpa >= 3.3) {
-                                $grade = "B+";
-                            } elseif ($gpa >= 3.0) {
-                                $grade = "B";
-                            } elseif ($gpa >= 2.7) {
-                                $grade = "B-";
-                            } elseif ($gpa >= 2.3) {
-                                $grade = "C+";
-                            } elseif ($gpa >= 2) {
-                                $grade = "C";
-                            } elseif ($gpa >= 1.7) {
-                                $grade = "C-";
-                            } elseif ($gpa >= 1.3) {
-                                $grade = "D+";
-                            } elseif ($gpa >= 1.0) {
-                                $grade = "D";
-                            } elseif ($gpa >= 0.0) {
-                                $grade = "F";
-                            }
-                            return [
-                                "name" => $course->course->name,
-                                "hours" => floor(
-                                    $course->course->LectureHours +
-                                        $course->course->labHours / 2 +
-                                        $course->course->sectionHours / 2
-                                ),
-                                "grade" => $gpa,
-                                "level" => $course->course->level,
-                                "status" => $grade,
-                            ];
-                        }),
-                        "Summer term" => $SummerTermcourses->map(function (
-                            $course
-                        ) {
-                            $gpa = $this->getGPA(
-                                $course->grade +
-                                    $course->class_work_grade +
-                                    $course->lab_grade
-                            );
-                            $grade = "";
-                            if ($gpa == 4.0) {
-                                $grade = "A+";
-                            } elseif ($gpa >= 3.7) {
-                                $grade = "A-";
-                            } elseif ($gpa >= 3.3) {
-                                $grade = "B+";
-                            } elseif ($gpa >= 3.0) {
-                                $grade = "B";
-                            } elseif ($gpa >= 2.7) {
-                                $grade = "B-";
-                            } elseif ($gpa >= 2.3) {
-                                $grade = "C+";
-                            } elseif ($gpa >= 2) {
-                                $grade = "C";
-                            } elseif ($gpa >= 1.7) {
-                                $grade = "C-";
-                            } elseif ($gpa >= 1.3) {
-                                $grade = "D+";
-                            } elseif ($gpa >= 1.0) {
-                                $grade = "D";
-                            } elseif ($gpa >= 0.0) {
-                                $grade = "F";
-                            }
-                            return [
-                                "name" => $course->course->name,
-                                "hours" => floor(
-                                    $course->course->LectureHours +
-                                        $course->course->labHours / 2 +
-                                        $course->course->sectionHours / 2
-                                ),
-                                "grade" => $gpa,
-                                "level" => $course->course->level,
-                                "status" => $grade,
-                            ];
-                        }),
-                    ],
+                    "year" => $year,
+                    "First term" => $FirstTermcourses->map(function ($course) {
+                        $gpa = $this->getGPA(
+                            $course->grade +
+                                $course->class_work_grade +
+                                $course->lab_grade
+                        );
+                        $grade = "";
+                        if ($gpa == 4.0) {
+                            $grade = "A+";
+                        } elseif ($gpa >= 3.7) {
+                            $grade = "A-";
+                        } elseif ($gpa >= 3.3) {
+                            $grade = "B+";
+                        } elseif ($gpa >= 3.0) {
+                            $grade = "B";
+                        } elseif ($gpa >= 2.7) {
+                            $grade = "B-";
+                        } elseif ($gpa >= 2.3) {
+                            $grade = "C+";
+                        } elseif ($gpa >= 2) {
+                            $grade = "C";
+                        } elseif ($gpa >= 1.7) {
+                            $grade = "C-";
+                        } elseif ($gpa >= 1.3) {
+                            $grade = "D+";
+                        } elseif ($gpa >= 1.0) {
+                            $grade = "D";
+                        } elseif ($gpa >= 0.0) {
+                            $grade = "F";
+                        }
+                        return [
+                            "name" => $course->course->name,
+                            "hours" => floor(
+                                $course->course->LectureHours +
+                                    $course->course->labHours / 2 +
+                                    $course->course->sectionHours / 2
+                            ),
+                            "grade" => $gpa,
+                            "level" => $course->course->level,
+                            "status" => $grade,
+                        ];
+                    }),
+                    "Second term" => $SecondTermcourses->map(function (
+                        $course
+                    ) {
+                        $gpa = $this->getGPA(
+                            $course->grade +
+                                $course->class_work_grade +
+                                $course->lab_grade
+                        );
+                        $grade = "";
+                        if ($gpa == 4.0) {
+                            $grade = "A+";
+                        } elseif ($gpa >= 3.7) {
+                            $grade = "A-";
+                        } elseif ($gpa >= 3.3) {
+                            $grade = "B+";
+                        } elseif ($gpa >= 3.0) {
+                            $grade = "B";
+                        } elseif ($gpa >= 2.7) {
+                            $grade = "B-";
+                        } elseif ($gpa >= 2.3) {
+                            $grade = "C+";
+                        } elseif ($gpa >= 2) {
+                            $grade = "C";
+                        } elseif ($gpa >= 1.7) {
+                            $grade = "C-";
+                        } elseif ($gpa >= 1.3) {
+                            $grade = "D+";
+                        } elseif ($gpa >= 1.0) {
+                            $grade = "D";
+                        } elseif ($gpa >= 0.0) {
+                            $grade = "F";
+                        }
+                        return [
+                            "name" => $course->course->name,
+                            "hours" => floor(
+                                $course->course->LectureHours +
+                                    $course->course->labHours / 2 +
+                                    $course->course->sectionHours / 2
+                            ),
+                            "grade" => $gpa,
+                            "level" => $course->course->level,
+                            "status" => $grade,
+                        ];
+                    }),
+                    "Summer term" => $SummerTermcourses->map(function (
+                        $course
+                    ) {
+                        $gpa = $this->getGPA(
+                            $course->grade +
+                                $course->class_work_grade +
+                                $course->lab_grade
+                        );
+                        $grade = "";
+                        if ($gpa == 4.0) {
+                            $grade = "A+";
+                        } elseif ($gpa >= 3.7) {
+                            $grade = "A-";
+                        } elseif ($gpa >= 3.3) {
+                            $grade = "B+";
+                        } elseif ($gpa >= 3.0) {
+                            $grade = "B";
+                        } elseif ($gpa >= 2.7) {
+                            $grade = "B-";
+                        } elseif ($gpa >= 2.3) {
+                            $grade = "C+";
+                        } elseif ($gpa >= 2) {
+                            $grade = "C";
+                        } elseif ($gpa >= 1.7) {
+                            $grade = "C-";
+                        } elseif ($gpa >= 1.3) {
+                            $grade = "D+";
+                        } elseif ($gpa >= 1.0) {
+                            $grade = "D";
+                        } elseif ($gpa >= 0.0) {
+                            $grade = "F";
+                        }
+                        return [
+                            "name" => $course->course->name,
+                            "hours" => floor(
+                                $course->course->LectureHours +
+                                    $course->course->labHours / 2 +
+                                    $course->course->sectionHours / 2
+                            ),
+                            "grade" => $gpa,
+                            "level" => $course->course->level,
+                            "status" => $grade,
+                        ];
+                    }),
                 ];
                 $earliestYear++;
             }
@@ -491,13 +488,18 @@ class StudentCoursesController extends Controller
             ->get();
 
         $finishedHoursByYear = $this->calculateHoursPerYear($courses);
+        $years = [];
+        foreach ($finishedHoursByYear as $year => $hours) {
+            $years[] = [
+                "year" => $year,
+                "hours" => $hours,
+            ];
+        }
 
         return response()->json([
             "status" => "success",
             "results" => count($finishedHoursByYear),
-            "data" => [
-                "years" => $finishedHoursByYear,
-            ],
+            "data" => $years,
         ]);
     }
     public function calculateHoursPerYear($courses)
@@ -669,13 +671,12 @@ class StudentCoursesController extends Controller
         $studentId = $request->student_id;
         $courseId = $request->course_id;
 
-        
-            $studentCourse = new StudentCourse();
-            $studentCourse->student_id = $studentId;
-            $studentCourse->course_id = $courseId;
-            $studentCourse->grade = 0;
-            $studentCourse->status_id = 4;
-            $studentCourse->save();
+        $studentCourse = new StudentCourse();
+        $studentCourse->student_id = $studentId;
+        $studentCourse->course_id = $courseId;
+        $studentCourse->grade = 0;
+        $studentCourse->status_id = 4;
+        $studentCourse->save();
 
         return $this->getStudentCourses($request, $studentId);
     }
@@ -685,7 +686,8 @@ class StudentCoursesController extends Controller
         $studentId = $request->student_id;
         $courseId = $request->course_id;
         StudentCourse::where("student_id", $studentId)
-            ->where("course_id", $courseId)->where("status_id", 4)
+            ->where("course_id", $courseId)
+            ->where("status_id", 4)
             ->delete();
 
         return $this->getStudentCourses($request, $studentId);
@@ -947,8 +949,7 @@ class StudentCoursesController extends Controller
         $studentCourses->each(function ($studentCourse) use ($request) {
             if ($studentCourse->grade + $request->grade_value <= 50) {
                 $studentCourse->grade += $request->grade_value;
-            } else
-            {
+            } else {
                 $studentCourse->grade = 50;
             }
             if (

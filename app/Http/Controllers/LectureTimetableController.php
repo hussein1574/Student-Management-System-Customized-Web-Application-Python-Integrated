@@ -65,12 +65,24 @@ class LectureTimetableController extends Controller
             ->get();
 
         $timetable = $this->getTimetableForStudent($studentCourses);
+        $finalTimetable = [];
+        foreach ($timetable as $day => $dayLectures) {
+            foreach ($dayLectures as $time => $lecture) {
+                $finalTimetable[] = [
+                    "day" => $day,
+                    "time" => $time,
+                    "courseName" => $lecture["courseName"],
+                    "professorName" => $lecture["professorName"],
+                    "hallName" => $lecture["hallName"],
+                ];
+            }
+        }
 
         return response()->json([
             "status" => "success",
             "results" => count($timetable),
             "data" => [
-                "days" => $timetable,
+                "days" => $finalTimetable,
             ],
         ]);
     }
