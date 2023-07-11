@@ -241,12 +241,13 @@ class TimetableScript:
                         subject = subject[:subject.find('-')]
                         subjectDep = self.subjects[subject]['department'].split(
                             ',')
-                            
-                        if (self.halls[hall]['department'] in subjectDep):
-                            error = False
-                        else:
-                            error = True
-
+                        hallDeps = self.halls[hall]['department'].split(',') if type(self.halls[hall]['department']) != float else []
+                        for hallDep in hallDeps:
+                            if (hallDep in subjectDep):
+                                error = False
+                                break
+                            else:
+                                error = True
                     
                         if error:
                             countError += 40

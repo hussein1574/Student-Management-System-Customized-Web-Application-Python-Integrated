@@ -86,6 +86,10 @@ Route::middleware("auth:api")->group(function () {
         StudentCoursesController::class,
         "getFinishedCourses",
     ]);
+    Route::get("/recent-finished-courses", [
+        StudentCoursesController::class,
+        "getLastTermFinishedCourses",
+    ]);
     Route::get("/student-hours", [
         StudentCoursesController::class,
         "getGraduationHours",

@@ -236,6 +236,42 @@ class StudentCoursesController extends Controller
         $courses = StudentCourse::where("student_id", $student->id)
             ->whereIn("status_id", [1, 2])
             ->get();
+
+        return response()->json([
+            "status" => "success",
+            "results" => $courses->count(),
+            "data" => [
+                "courses" => $courses->map(function ($course) {
+                    return [
+                        "name" => $course->course->name,
+                        "grade" => $this->getGPA(
+                            $course->grade +
+                                $course->class_work_grade +
+                                $course->lab_grade
+                        ),
+                        "status" => $course->courseStatus->status,
+                    ];
+                }),
+            ],
+        ]);
+    }
+    public function getLastTermFinishedCourses(Request $request)
+    {
+        $userId = $request->user()->id;
+        $student = Student::where("user_id", $userId)->first();
+        if (!$student) {
+            return response()->json(
+                [
+                    "status" => "fail",
+                    "message" => "Student not found",
+                ],
+                404
+            );
+        }
+
+        $courses = StudentCourse::where("student_id", $student->id)
+            ->whereIn("status_id", [1, 2])
+            ->get();
         // get the courses for the current year
         $years = [];
         $earliestYear = null; // Initialize earliest year to null
@@ -424,6 +460,27 @@ class StudentCoursesController extends Controller
                 $earliestYear++;
             }
         }
+        // get only the last term containing courses
+        foreach ($years as $year => $terms) {
+            if (
+                count($terms["First term"]) == 0 &&
+                count($terms["Second term"]) == 0 &&
+                count($terms["Summer term"]) == 0
+            ) {
+                unset($years[$year]);
+            }
+        }
+        $years = array_slice($years, -1);
+        foreach ($years as $year => $terms) {
+            if (count($terms["Summer term"]) != 0) {
+                $years = $terms["Summer term"];
+            } elseif (count($terms["Second term"]) != 0) {
+                $years = $terms["Second term"];
+            } else {
+                $years = $terms["First term"];
+            }
+        }
+
         return response()->json([
             "status" => "success",
             "results" => count($years),
