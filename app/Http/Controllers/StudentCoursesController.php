@@ -953,9 +953,7 @@ class StudentCoursesController extends Controller
 
             $fullDegree = $gpa + $classWork + $lab;
 
-            $gpa = $this->getGPA($fullDegree);
-
-            if ($gpa >= 1) {
+            if ($fullDegree >= 60) {
                 $studentCourse->status_id = 7;
             } else {
                 $studentCourse->status_id = 8;
@@ -1010,11 +1008,10 @@ class StudentCoursesController extends Controller
                 $studentCourse->grade = 50;
             }
             if (
-                $this->getGPA(
-                    $studentCourse->grade +
-                        $studentCourse->class_work_grade +
-                        $studentCourse->lab_grade
-                ) >= 60
+                $studentCourse->grade +
+                    $studentCourse->class_work_grade +
+                    $studentCourse->lab_grade >=
+                60
             ) {
                 $studentCourse->status_id = 7;
             } else {

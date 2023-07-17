@@ -109,6 +109,12 @@ class ProgramCsvProcess implements ShouldQueue
                 }
                 $coursePreName = trim($coursePreName);
                 $coursePre = Course::where("code", $coursePreName)->first();
+                $coursePreExists = CoursePre::where("course_id", $course->id)
+                    ->where("coursePre_id", $coursePre->id)
+                    ->first();
+                if ($coursePreExists) {
+                    continue;
+                }
                 CoursePre::create([
                     "course_id" => $course->id,
                     "coursePre_id" => $coursePre->id,

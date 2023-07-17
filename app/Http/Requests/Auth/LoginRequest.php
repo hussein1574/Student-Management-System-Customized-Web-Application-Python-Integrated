@@ -30,8 +30,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            "email" => ["required", "string", "email"],
+            "password" => ["required", "string"],
         ];
     }
 
@@ -40,38 +40,47 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
- public function authenticate(Request $request): JsonResponse
+    public function authenticate(Request $request): JsonResponse
     {
         $this->ensureIsNotRateLimited();
 
-        $credentials = $this->only('email', 'password');
+        $credentials = $this->only("email", "password");
 
         if (!Auth::attempt($credentials)) {
             RateLimiter::hit($this->throttleKey());
 
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Invalid email or password',
-            ], 401);
+            return response()->json(
+                [
+                    "status" => "failed",
+                    "message" => "Invalid email or password",
+                ],
+                401
+            );
         }
 
         if (Auth::user()->isActivated == false) {
-            Auth::guard('api')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
 
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Your account is not activated',
-            ], 401);
+            return response()->json(
+                [
+                    "status" => "failed",
+                    "message" => "Your account is not activated",
+                ],
+                401
+            );
         }
 
         $user = Auth::user();
-        $accessToken = $user->createToken('AuthToken')->accessToken;
-        $user['token'] = $accessToken;  
-        $response =  array('success' => true,'message' => "Login success",'token' => $accessToken);
+        $accessToken = $user->createToken("AuthToken")->accessToken;
+        $user["token"] = $accessToken;
+        $response = [
+            "success" => true,
+            "message" => "Login success",
+            "token" => $accessToken,
+        ];
         return response()->json($response);
-
     }
-
 
     /**
      * Ensure the login request is not rate limited.
@@ -89,9 +98,9 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
+            "email" => trans("auth.throttle", [
+                "seconds" => $seconds,
+                "minutes" => ceil($seconds / 60),
             ]),
         ]);
     }
@@ -101,6 +110,8 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->input('email')) . '|' . $this->ip());
+        return Str::transliterate(
+            Str::lower($this->input("email")) . "|" . $this->ip()
+        );
     }
 }

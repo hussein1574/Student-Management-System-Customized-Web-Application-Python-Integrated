@@ -49,6 +49,8 @@ class UserCrudController extends CrudController
             ->function(function ($entry) {
                 if ($entry->student) {
                     return "Student";
+                } elseif ($entry->acadmicAdvisor) {
+                    return "Academic Advisor";
                 } elseif ($entry->professor) {
                     return "Professor";
                 } elseif ($entry->isAdmin == "1") {

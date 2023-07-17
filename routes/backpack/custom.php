@@ -246,15 +246,21 @@ Route::group(
                         } else {
                             $profName = "Section";
                         }
-                        $departments =  DepartmentCourse::where('course_id', $lecture->course_id)->get();
+                        $departments = DepartmentCourse::where(
+                            "course_id",
+                            $lecture->course_id
+                        )->get();
                         $departmentsNames = "";
-                        foreach($departments as $department)
-                        {
-                            $department = Department::where('id', $department->department_id)->first();
-                            if($departmentsNames == "")
+                        foreach ($departments as $department) {
+                            $department = Department::where(
+                                "id",
+                                $department->department_id
+                            )->first();
+                            if ($departmentsNames == "") {
                                 $departmentsNames = $department->name;
-                            else
+                            } else {
                                 $departmentsNames .= ", $department->name";
+                            }
                         }
 
                         $lecturesData[] = [
@@ -303,24 +309,31 @@ Route::group(
                     !file_exists($lecturesSheet)
                 ) {
                     $examsData = [];
-                    
+
                     foreach ($exams as $exam) {
-                        $departments =  DepartmentCourse::where('course_id', $exam->course_id)->get();
+                        $departments = DepartmentCourse::where(
+                            "course_id",
+                            $exam->course_id
+                        )->get();
                         $departmentsNames = "";
-                        foreach($departments as $department)
-                        {
-                            $department = Department::where('id', $department->department_id)->first();
-                            if($departmentsNames == "")
+                        foreach ($departments as $department) {
+                            $department = Department::where(
+                                "id",
+                                $department->department_id
+                            )->first();
+                            if ($departmentsNames == "") {
                                 $departmentsNames = $department->name;
-                            else
+                            } else {
                                 $departmentsNames .= ", $department->name";
+                            }
                         }
+
                         $examsData[] = [
                             "hall_name" => Hall::find($exam->hall_id)->name,
                             "day_name" => $exam->day,
                             "course_name" => Course::find($exam->course_id)
                                 ->name,
-                                "department_name" => $departmentsNames,
+                            "department_name" => $departmentsNames,
                         ];
                     }
 
@@ -369,17 +382,23 @@ Route::group(
                         } else {
                             $profName = "Section";
                         }
-                        $departments =  DepartmentCourse::where('course_id', $lecture->course_id)->get();
+                        $departments = DepartmentCourse::where(
+                            "course_id",
+                            $lecture->course_id
+                        )->get();
                         $departmentsNames = "";
-                        foreach($departments as $department)
-                        {
-                            $department = Department::where('id', $department->department_id)->first();
-                            if($departmentsNames == "")
+                        foreach ($departments as $department) {
+                            $department = Department::where(
+                                "id",
+                                $department->department_id
+                            )->first();
+                            if ($departmentsNames == "") {
                                 $departmentsNames = $department->name;
-                            else
+                            } else {
                                 $departmentsNames .= ", $department->name";
+                            }
                         }
-                            
+
                         $lecturesData[] = [
                             "hall_name" => Hall::find($lecture->hall_id)->name,
                             "day_name" => Day::find($lecture->day_id)->name,
@@ -389,28 +408,34 @@ Route::group(
                             "professor_name" => $profName,
                             "course_name" => Course::find($lecture->course_id)
                                 ->name,
-                                "department_name" => $departmentsNames,
+                            "department_name" => $departmentsNames,
                         ];
                     }
 
                     foreach ($exams as $exam) {
-                        $departments =  DepartmentCourse::where('course_id', $exam->course_id)->get();
+                        $departments = DepartmentCourse::where(
+                            "course_id",
+                            $exam->course_id
+                        )->get();
                         $departmentsNames = "";
-                        foreach($departments as $department)
-                        {
-                            $department = Department::where('id', $department->department_id)->first();
-                            if($departmentsNames == "")
+                        foreach ($departments as $department) {
+                            $department = Department::where(
+                                "id",
+                                $department->department_id
+                            )->first();
+                            if ($departmentsNames == "") {
                                 $departmentsNames = $department->name;
-                            else
+                            } else {
                                 $departmentsNames .= ", $department->name";
+                            }
                         }
-                        
+
                         $examsData[] = [
                             "hall_name" => Hall::find($exam->hall_id)->name,
                             "day_name" => $exam->day,
                             "course_name" => Course::find($exam->course_id)
                                 ->name,
-                                "department_name" => $departmentsNames,
+                            "department_name" => $departmentsNames,
                         ];
                     }
                     // Restructure the data to organize exams by time period
@@ -442,7 +467,6 @@ Route::group(
                     }
 
                     foreach ($examsData as $exam) {
-                        
                         $hall = $exam["hall_name"];
                         $day = $exam["day_name"];
                         $examTableData[$hall][$day][] = $exam;

@@ -37,7 +37,19 @@ class CourseRegistrationController extends Controller
                     "status" => "fail",
                     "message" => "Registration is closed",
                 ],
-                404
+                422
+            );
+        }
+        $registeredCourses = StudentCourse::where("student_id", $student->id)
+            ->where("status_id", 4)
+            ->get();
+        if (count($registeredCourses) > 0) {
+            return response()->json(
+                [
+                    "status" => "fail",
+                    "message" => "You are already registered",
+                ],
+                422
             );
         }
         $data = $this->getStudentCoursesStatus($request, $student->id);
@@ -293,7 +305,7 @@ class CourseRegistrationController extends Controller
                     "status" => "fail",
                     "message" => "Student not found",
                 ],
-                404
+                422
             );
         }
         $registrationState = Constant::where(
@@ -306,7 +318,19 @@ class CourseRegistrationController extends Controller
                     "status" => "fail",
                     "message" => "Registration is closed",
                 ],
-                404
+                422
+            );
+        }
+        $registeredCourses = StudentCourse::where("student_id", $student->id)
+            ->where("status_id", 4)
+            ->get();
+        if (count($registeredCourses) > 0) {
+            return response()->json(
+                [
+                    "status" => "fail",
+                    "message" => "You are already registered",
+                ],
+                422
             );
         }
 

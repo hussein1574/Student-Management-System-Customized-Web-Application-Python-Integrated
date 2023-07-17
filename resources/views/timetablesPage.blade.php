@@ -166,9 +166,11 @@
         </tr>
       </thead>
       <tbody>
+        <?php $dayNum = 0; ?>
        @foreach ($examDays as $day)
+       <?php $dayNum++; ?>
             <tr>
-                <th>{{ $day }}</th>
+                <th>day - {{ $dayNum }}</th>
                 @foreach ($halls as $hall)
                     <td>
                         @foreach ($examTableData[$hall][$day] as $exam)
@@ -217,7 +219,7 @@
 @endif
 @endsection
 @section('after_scripts')
-<!-- <script>
+<script>
     $(document).ready(function() {
         $('form').submit(function(event) {
             event.preventDefault();
@@ -239,5 +241,5 @@
             });
         });
     });
-</script> -->
+</script>
 @endsection

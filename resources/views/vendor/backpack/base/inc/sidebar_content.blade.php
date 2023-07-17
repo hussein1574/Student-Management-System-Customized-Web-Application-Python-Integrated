@@ -32,7 +32,7 @@ $acadmicAdvisor = App\Models\AcademicAdvisor::where(
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-students-results') }}"><i class="nav-icon la la-newspaper-o"></i>Students results</a></li>
 @else
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('admit-students-results') }}"><i class="nav-icon la la-newspaper-o"></i>Students results</a></li>
-<li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-program') }}"><i class="nav-icon la la-newspaper-o"></i>Upload program courses</a></li>
+<li class="nav-item"><a class="nav-link" href="{{ backpack_url('upload-program') }}"><i class="nav-icon la la-newspaper-o"></i>Upload regulation courses</a></li>
 
 
 <li class="nav-item"><a class="nav-link" href="{{ backpack_url('user') }}"><i class="nav-icon la la-user"></i> Users</a></li>

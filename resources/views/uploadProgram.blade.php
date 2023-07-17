@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-12" style="display:flex;justify-content:space-between;align-items:center;margin-top:30px;">
         <div class="card" style="width:100%;height:100%">
-            <div class="card-header">Upload the program</div>
+            <div class="card-header">Upload the regulation courses</div>
             <div class="card-body">
                 <form action="{{ route('upload-program') }}" method="POST" enctype="multipart/form-data">
                     @csrf

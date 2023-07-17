@@ -28,9 +28,9 @@ class RedirectIfAuthenticated
                 if (Auth::guard($guard)->user()->isActivated == 0) {
                     $user = Auth::user()->token();
                     $user->revoke();
-                    Auth::guard("api")->logout();
                     $request->session()->invalidate();
                     $request->session()->regenerateToken();
+                    dd("here");
                     return response()->json(
                         [
                             "status" => "failed",
